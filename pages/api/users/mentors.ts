@@ -1,6 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import type { Message } from '../../../components/common/types';
-import type { User, Users } from '../../../components/users/types';
+import type { NextApiRequest, NextApiResponse } from "next";
+import type { Message } from "../../../components/common/types";
+import type { User, Users } from "../../../components/users/types";
 
 const sampleUser1: User = {
   email: "testemail@gmail.com",
@@ -9,7 +9,7 @@ const sampleUser1: User = {
   is_mentor: true,
   is_silenced: false,
   time_created: "1",
-}
+};
 
 const sampleUser2: User = {
   email: "testemail2@gmail.com",
@@ -18,19 +18,18 @@ const sampleUser2: User = {
   is_mentor: true,
   is_silenced: false,
   time_created: "1",
-}
+};
 
 /*
- * GET Request: Returns all mentor users 
+ * GET Request: Returns all mentor users
  */
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Users | Message>
 ) {
-  
-  if (req.method !== 'GET') {
-    res.status(405).send({ message: 'Only GET requests allowed' })
-    return
+  if (req.method !== "GET") {
+    res.status(405).send({ message: "Only GET requests allowed" });
+    return;
   }
 
   res.status(200).json({ data: [sampleUser1, sampleUser2] });
