@@ -1,11 +1,11 @@
-import React, { CSSProperties } from "react";
-import CSS from "csstype";
-import { signIn } from "next-auth/react";
+import React from 'react';
+import CSS from 'csstype';
+import { signIn } from 'next-auth/react';
 
 const backgroundProps: CSS.Properties = {
-  backgroundImage: "url(../images/th-cloudy-sky.png)",
-  backgroundRepeat: "no-repeat",
-  backgroundSize: "cover",
+  backgroundImage: 'url(../images/th-cloudy-sky.png)',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
 };
 
 export default function Landing() {
@@ -23,7 +23,7 @@ export default function Landing() {
         </p>
         <div className="flex relative justify-center items-center top-[10px]">
           <a
-            onClick={() => signIn("google", { callbackUrl: "/home" })}
+            onClick={() => signIn('google', { callbackUrl: '/home' })}
             className="py-4 px-8 bg-blue-500 text-white font-bold rounded-xl shadow-xl cursor-pointer"
           >
             Log in with Google

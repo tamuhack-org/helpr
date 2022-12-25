@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Message } from "../../../../components/common/types";
-import type { Ticket } from "../../../../components/tickets/types";
 
 /*
  * POST Request: Resolves ticket
@@ -14,7 +13,7 @@ export default function handler(
     return;
   }
 
-  const { ticketID } = req.query;
+  // const { ticketID } = req.query;
 
   res.status(200);
 }

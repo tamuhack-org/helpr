@@ -1,15 +1,12 @@
 import Head from 'next/head';
 
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
-import { Inter } from '@next/font/google';
 import axios from 'axios';
 
 import Banner from '../components/common/Banner';
 import Landing from '../components/Landing/Landing';
 import Navbar from '../components/common/Navbar';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   const { data: session } = useSession();

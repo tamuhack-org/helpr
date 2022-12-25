@@ -7,7 +7,7 @@ export type Ticket = {
   location: string;
   contact: string;
   review_description?: string;
-  review_stars?: Number;
+  review_stars?: number;
   author: string;
   claimant?: string;
 };
