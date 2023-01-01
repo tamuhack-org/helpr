@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import type { NavProps } from './types';
+import { User } from '@prisma/client';
+
 import {
   IoHomeOutline,
   IoMailOutline,
@@ -8,6 +9,11 @@ import {
   IoLogOutOutline,
 } from 'react-icons/io5';
 import { signOut } from 'next-auth/react';
+
+export type NavProps = {
+  page: string;
+  user?: User;
+};
 
 export default function Navbar(props: NavProps) {
   if (!props.user || !props.page) {
@@ -24,7 +30,6 @@ export default function Navbar(props: NavProps) {
     );
   }
 
-  console.log('HI');
   return (
     <div className="flex justify-between w-full my-4">
       <div className="flex">
@@ -37,7 +42,7 @@ export default function Navbar(props: NavProps) {
             <IoHomeOutline className="scale-[1.75] -translate-y-2/4 -translate-x-1/2" />
           </div>
         </Link>
-        {(props.user.is_mentor || props.user.is_admin) && (
+        {(props.user.mentor || props.user.admin) && (
           <Link href="/mentor">
             <div
               className={`${
@@ -48,7 +53,7 @@ export default function Navbar(props: NavProps) {
             </div>
           </Link>
         )}
-        {props.user.is_admin && (
+        {props.user.admin && (
           <Link href="/admin">
             <div
               className={`${

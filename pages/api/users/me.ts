@@ -1,27 +1,34 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { Message } from '../../../components/common/types';
-import type { User } from '../../../components/users/types';
 
-const sampleUser1: User = {
-  email: 'testemail@gmail.com',
-  name: 'Test User',
-  is_admin: false,
-  is_mentor: true,
-  is_silenced: false,
-  time_created: '1',
-};
+import { Nullable } from '../../../lib/common';
+import { User } from '@prisma/client';
+import { getToken, JWT } from 'next-auth/jwt';
 
+import prisma from '../../../lib/prisma';
 /*
  * GET Request: Returns current user
  */
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<User | Message>
+  res: NextApiResponse<{ user: Nullable<User> }>
 ) {
-  if (req.method !== 'GET') {
-    res.status(405).send({ message: 'Only GET requests allowed' });
+  const token: Nullable<JWT> = await getToken({ req });
+
+  if (!token) {
+    res.status(401);
+    res.send({ user: null });
     return;
   }
 
-  res.status(200).json(sampleUser1);
+  const user = await prisma.user.findUnique({
+    where: {
+      email: token?.email || '',
+    },
+    include: {
+      ticket: true,
+    },
+  });
+
+  res.status(200);
+  res.send({ user: user });
 }

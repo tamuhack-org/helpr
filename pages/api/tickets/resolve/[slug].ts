@@ -13,7 +13,5 @@ export default function handler(
     return;
   }
 
-  // const { ticketID } = req.query;
-
   res.status(200);
 }

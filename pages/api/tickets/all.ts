@@ -1,34 +1,21 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import type { Ticket, Tickets } from "../../../components/tickets/types";
-import type { Message } from "../../../components/common/types";
+import { Ticket } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { Nullable } from '../../../lib/common';
 
-const sampleTicket1: Ticket = {
-  time_opened: "1",
-  description: "Help Me",
-  location: "MSC",
-  contact: "Phone Number",
-  author: "email",
-};
-
-const sampleTicket2: Ticket = {
-  time_opened: "2",
-  description: "Help Us",
-  location: "MSC",
-  contact: "Phone Number",
-  author: "email",
-};
+import prisma from '../../../lib/prisma';
 
 /*
  * GET Request: Returns all tickets
  */
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Tickets | Message>
+  res: NextApiResponse<{ tickets: Nullable<Ticket[]> }>
 ) {
-  if (req.method !== "GET") {
-    res.status(405).send({ message: "Only GET requests allowed" });
+  if (req.method !== 'GET') {
     return;
   }
 
-  res.status(200).json({ data: [sampleTicket1, sampleTicket2] });
+  const tickets = await prisma.ticket.findMany();
+
+  res.status(200).send({ tickets: tickets });
 }
