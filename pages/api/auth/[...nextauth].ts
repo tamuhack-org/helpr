@@ -17,18 +17,6 @@ export default NextAuth({
   ],
   callbacks: {
     async jwt({ token }) {
-      const user = await prisma.user.findUnique({
-        where: {
-          email: token.email || '',
-        },
-      });
-
-      if (token) {
-        token.mentor = user?.mentor;
-        token.admin = user?.admin;
-        token.id = user?.id;
-      }
-
       return token;
     },
   },

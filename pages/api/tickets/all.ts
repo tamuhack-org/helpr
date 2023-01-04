@@ -15,7 +15,11 @@ export default async function handler(
     return;
   }
 
-  const tickets = await prisma.ticket.findMany();
+  const tickets = await prisma.ticket.findMany({
+    include: {
+      claimant: true,
+    },
+  });
 
   res.status(200).send({ tickets: tickets });
 }

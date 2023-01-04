@@ -15,41 +15,43 @@ import { Nullable } from '../lib/common';
 
 import prisma from '../lib/prisma';
 import { Ticket } from '@prisma/client';
+import Loading from '../components/common/Loading';
 
 export default function Home() {
-  const { data, error, isLoading } = useSWR('/api/tickets/all', fetcher, {});
+  const {
+    data: ticketsData,
+    error: ticketError,
+    isLoading: isTicketLoading,
+  } = useSWR('/api/tickets/all', fetcher, {});
+  const {
+    data: userData,
+    error: userError,
+    isLoading: isUserLoading,
+  } = useSWR('/api/users/me', fetcher, {});
 
-  if (isLoading) {
-    return 'Loading';
-  }
-
-  if (error) {
-    return 'Error';
+  if (isTicketLoading || ticketError || userError || isUserLoading) {
+    return <Loading />;
   }
 
   const ticketList: JSX.Element[] = [];
-  data.tickets.map((ticket: Ticket, index: number) => {
+  ticketsData.tickets.map((ticket: Ticket, index: number) => {
     ticketList.push(
       <div
         key={index}
-        className="relative block p-4 sm:p-8 bg-white border border-gray-100 shadow-md rounded-xl my-8 w-[90vw] md:w-[50vw] lg:w-[40vw]"
+        className="relative block p-4 sm:p-8 bg-white border border-gray-100 shadow-md rounded-xl my-8 mx-4 md:w-[500px]"
       >
         <span className="absolute right-4 top-4 rounded-full px-3 py-1.5 bg-green-100 text-green-600 font-medium text-xs">
           hi
         </span>
-
         <div className=" text-gray-500 sm:pr-8">
           <h5 className="w-3/4 text-xl font-bold text-gray-900">
             {ticket.issue}
           </h5>
-
           <p className="mt-2 text-sm">
             {ticket.contact} (Contact: {ticket.contact})
           </p>
-
           <p className="mt-2 text-sm">Located at: {ticket.location}</p>
         </div>
-
         <ClaimButton ticket={ticket} />
       </div>
     );
@@ -66,12 +68,14 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="w-screen overflow-y-hidden">
+      <div className="h-full py-10">
         <Banner />
-        <div className="flex justify-center overflow-y-auto h-full w-screen m-auto md:w-3/4">
-          <div className="mt-8">
-            <Navbar user={data.user} page="mentor" />
-            <div className="mt-8">
+        <div className="flex justify-center mt-8 md:mt-24">
+          <div className="">
+            <div className="flex justify-center mx-4 mb-6 md:w-[500px]">
+              <Navbar user={userData.user} page="mentor" />
+            </div>
+            <div className="mt-4 mx-4 md:w-[500px]">
               <Select bg="white">
                 <option defaultValue="unresolved" value="unresolved">
                   Active Tickets
@@ -82,8 +86,6 @@ export default function Home() {
               </Select>
             </div>
             {ticketList}
-
-            {/* <TTicketStream ticketData={tickets} user={user}></TTicketStream> */}
           </div>
         </div>
       </div>
@@ -113,10 +115,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   });
 
-  if (!user?.mentor || !user?.admin) {
+  if (!user?.mentor && !user?.admin) {
     return {
       redirect: {
-        destination: '/login',
+        destination: '/',
         permanent: false,
       },
     };

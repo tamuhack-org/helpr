@@ -8,15 +8,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 model Ticket {
   id        String  @id @default(cuid())
   issue     String
   location  String
   contact   String
-  claimantName  String?
-  claimantId String?
-  published Boolean @default(false)
+  publishTime DateTime @default(now())
+  claimedTime DateTime?
+  resolvedTime DateTime?
+  claimant User? @relation(name: "claim", fields: [claimantId], references: [id])
+  claimantId String? @unique
+  claimantName String?
   author    User   @relation(fields: [authorId], references: [id])
   authorId  String  @unique
 }
@@ -58,7 +60,8 @@ model User {
   image         String?
   admin         Boolean @default(false)
   mentor        Boolean @default(false)
-  ticketId      String?
+  claimedTicketId String?
+  claimedTicket Ticket? @relation(name: "claim")
   ticket        Ticket?
   accounts      Account[]
   sessions      Session[]

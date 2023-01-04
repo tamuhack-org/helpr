@@ -6,14 +6,14 @@ import { Ticket } from '@prisma/client';
 import { getToken } from 'next-auth/jwt';
 
 /*
- * POST Request: Creates new ticket and assigns it to user
+ * POST Request: Unclaims ticket
  */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ ticket: Nullable<Ticket> }>
 ) {
   const token = await getToken({ req });
-  const { issue, location, contact } = req.body;
+  const { ticketId } = req.body;
 
   if (!token) {
     res.status(401);
@@ -26,31 +26,38 @@ export default async function handler(
       email: token?.email || '',
     },
     include: {
+      claimedTicket: true,
       ticket: true,
     },
   });
 
-  if (!user || user?.ticket) {
-    res.status(409);
+  const ticket = await prisma.ticket.findUnique({
+    where: {
+      id: ticketId,
+    },
+  });
+
+  if (!user || !ticket || (!user.admin && !user.mentor)) {
+    res.status(401);
     res.send({ ticket: null });
     return;
   }
 
-  if (!issue || !location || !contact) {
-    res.status(400);
+  if (user.claimedTicket?.id != ticket.id) {
     res.send({ ticket: null });
     return;
   }
 
-  const ticket = await prisma.ticket.create({
+  await prisma.ticket.update({
+    where: {
+      id: ticketId,
+    },
     data: {
-      issue: issue,
-      location: location,
-      contact: contact,
-      author: {
-        connect: {
-          id: user.id,
-        },
+      claimantName: null,
+      claimedTime: null,
+      publishTime: new Date(),
+      claimant: {
+        disconnect: true,
       },
     },
   });
