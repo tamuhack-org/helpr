@@ -1,5 +1,5 @@
 import Banner from '../components/common/Banner';
-import Landing from '../components/landing/Landing';
+import Landing from '../components/Landing/Landing';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 
@@ -15,9 +15,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 
   return {
-    props: {
-      session: session,
-    },
+    props: {},
   };
 }
 

@@ -16,7 +16,7 @@ export default function Landing() {
       style={backgroundProps}
     >
       <div className="welcomem mt-48 md:mt-0">
-        <p className="text-center relative bottom-[20px] font-bold text-4xl sm:text-[65px] pb-8">
+        <p className="text-center relative bottom-[20px] font-bold text-4xl sm:text-[65px] pb-6">
           Welcome to HelpR
         </p>
         <p className="text-center font-medium pb-8 text-lg sm:text-2xl">
