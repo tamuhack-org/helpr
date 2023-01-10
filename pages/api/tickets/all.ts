@@ -16,6 +16,9 @@ export default async function handler(
   }
 
   const tickets = await prisma.ticket.findMany({
+    orderBy: {
+      publishTime: 'desc',
+    },
     include: {
       claimant: true,
     },

@@ -15,8 +15,6 @@ export default async function handler(
   const token = await getToken({ req });
   const { ticketId } = req.body;
 
-  console.log('TOKEN GOT');
-
   if (!token) {
     res.status(401);
     res.send({ ticket: null });
@@ -32,14 +30,12 @@ export default async function handler(
       ticket: true,
     },
   });
-  console.log('USER GOT');
 
   const ticket = await prisma.ticket.findUnique({
     where: {
       id: ticketId,
     },
   });
-  console.log('TICKET GOT');
 
   if (!user || !ticket || (!user.admin && !user.mentor)) {
     res.status(401);
@@ -48,6 +44,7 @@ export default async function handler(
   }
 
   if (user.claimedTicket || ticket.claimantId) {
+    res.status(400);
     res.send({ ticket: null });
     return;
   }
@@ -66,7 +63,6 @@ export default async function handler(
       },
     },
   });
-  console.log('TICKET UPDATED');
 
   res.status(200);
   res.send({ ticket: ticket });

@@ -57,7 +57,7 @@ export default async function handler(
       claimedTime: null,
       publishTime: new Date(),
       claimant: {
-        disconnect: true,
+        disconnect: true
       },
     },
   });

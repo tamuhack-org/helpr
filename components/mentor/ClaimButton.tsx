@@ -5,10 +5,9 @@ import { useState } from 'react';
 import { Ticket } from '@prisma/client';
 import { fetchData } from 'next-auth/client/_utils';
 import axios from 'axios';
-import Loading from '../common/Loading';
 
 export default function ClaimButton(props: { ticket: Ticket }) {
-  const { data } = useSWR('/api/users/me', fetchData, {});
+  const { data, isLoading } = useSWR('/api/users/me', fetchData, {});
   const [claimLoading, setClaimLoading] = useState(false);
   const [unclaimLoading, setUnclaimLoading] = useState(false);
   // const toast = useToast();
@@ -37,6 +36,20 @@ export default function ClaimButton(props: { ticket: Ticket }) {
     });
     setClaimLoading(false);
     setUnclaimLoading(false);
+  }
+
+  if (isLoading) {
+    return <p>Loading</p>;
+  }
+
+  if (claimLoading || unclaimLoading) {
+    return (
+      <div className="flex justify-center mt-6">
+        <a className="w-full text-center py-2 bg-gray-400 border-2 border-gray-400 rounded-lg text-md font-bold text-white">
+          Loading
+        </a>
+      </div>
+    );
   }
 
   if (
@@ -86,7 +99,7 @@ export default function ClaimButton(props: { ticket: Ticket }) {
       {/* {loading && <Loading />} */}
       <p
         className={`${
-          claimLoading
+          unclaimLoading
             ? 'bg-gray-400 border-gray-400'
             : 'bg-blue-500 border-blue-500'
         } w-full text-center py-2 border-2 rounded-lg text-md font-bold text-white`}
