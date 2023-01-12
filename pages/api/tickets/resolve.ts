@@ -46,34 +46,27 @@ export default async function handler(
     return;
   }
 
+  console.log(ticket);
+
+  const resTicket = await prisma.resolvedTicket.create({
+    data: {
+      issue: ticket.issue,
+      location: ticket.location,
+      contact: ticket.contact,
+      publishTime: ticket.publishTime,
+      claimedTime: ticket.claimedTime,
+      resolvedTime: new Date(),
+      claimantId: ticket.claimantId,
+      claimantName: ticket.claimantName,
+      authorId: ticket.authorId,
+    },
+  });
+
   await prisma.ticket.delete({
     where: {
       id: ticketId,
     },
   });
-
-  // await prisma.ticket.update({
-  //   where: {
-  //     id: ticketId,
-  //   },
-  //   data: {
-  //     resolvedTime: new Date(),
-  //     claimant: {
-  //       disconnect: true,
-  //     },
-  //   },
-  // });
-
-  // await prisma.user.update({
-  //   where: {
-  //     id: ticket.authorId,
-  //   },
-  //   data: {
-  //     ticket: {
-  //       disconnect: true,
-  //     },
-  //   },
-  // });
 
   res.status(200);
   res.send({});

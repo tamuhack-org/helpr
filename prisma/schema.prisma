@@ -24,6 +24,19 @@ model Ticket {
   authorId  String  @unique
 }
 
+model ResolvedTicket {
+  id        String  @id @default(cuid())
+  issue     String
+  location  String
+  contact   String
+  publishTime DateTime @default(now())
+  claimedTime DateTime?
+  resolvedTime DateTime?
+  claimantId String? 
+  claimantName String?
+  authorId  String 
+}
+
 model Account {
   id                 String  @id @default(cuid())
   userId             String  @map("user_id")
