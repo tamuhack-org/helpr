@@ -1,5 +1,5 @@
 import React from 'react';
-// import { useToast } from '@chakra-ui/react';
+import { useToast } from '@chakra-ui/react';
 import useSWR, { mutate } from 'swr';
 import { useState } from 'react';
 import { Ticket } from '@prisma/client';
@@ -10,7 +10,7 @@ export default function ClaimButton(props: { ticket: Ticket }) {
   const { data, isLoading } = useSWR('/api/users/me', fetchData, {});
   const [claimLoading, setClaimLoading] = useState(false);
   const [unclaimLoading, setUnclaimLoading] = useState(false);
-  // const toast = useToast();
+  const toast = useToast();
 
   async function ticketAction(action: string) {
     // setLoading(true);
@@ -30,10 +30,20 @@ export default function ClaimButton(props: { ticket: Ticket }) {
       data: {
         ticketId: props.ticket.id,
       },
-    }).then(async function (response) {
-      console.log(response);
-      await mutate('/api/tickets/all');
-    });
+    })
+      .then(async function () {
+        await mutate('/api/tickets/all');
+      })
+      .catch(function (error) {
+        console.log(error);
+        toast({
+          title: 'Error',
+          status: 'error',
+          position: 'bottom-right',
+          duration: 3000,
+          isClosable: true,
+        });
+      });
     setClaimLoading(false);
     setUnclaimLoading(false);
   }
