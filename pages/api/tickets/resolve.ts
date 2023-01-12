@@ -1,16 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { Nullable } from '../../../lib/common';
 import prisma from '../../../lib/prisma';
-import { Ticket } from '@prisma/client';
 import { getToken } from 'next-auth/jwt';
 
 /*
- * POST Request: Unclaims ticket
+ * POST Request: Resolves ticket
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ ticket: Nullable<Ticket> }>
+  res: NextApiResponse
 ) {
   const token = await getToken({ req });
   const { ticketId } = req.body;
@@ -39,29 +37,44 @@ export default async function handler(
 
   if (!user || !ticket || (!user.admin && !user.mentor)) {
     res.status(401);
-    res.send({ ticket: null });
+    res.send({});
     return;
   }
 
   if (user.claimedTicket?.id != ticket.id) {
-    res.send({ ticket: null });
+    res.send({});
     return;
   }
 
-  await prisma.ticket.update({
+  await prisma.ticket.delete({
     where: {
       id: ticketId,
     },
-    data: {
-      claimantName: null,
-      claimedTime: null,
-      publishTime: new Date(),
-      claimant: {
-        disconnect: true,
-      },
-    },
   });
 
+  // await prisma.ticket.update({
+  //   where: {
+  //     id: ticketId,
+  //   },
+  //   data: {
+  //     resolvedTime: new Date(),
+  //     claimant: {
+  //       disconnect: true,
+  //     },
+  //   },
+  // });
+
+  // await prisma.user.update({
+  //   where: {
+  //     id: ticket.authorId,
+  //   },
+  //   data: {
+  //     ticket: {
+  //       disconnect: true,
+  //     },
+  //   },
+  // });
+
   res.status(200);
-  res.send({ ticket: ticket });
+  res.send({});
 }

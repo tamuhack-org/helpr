@@ -47,9 +47,7 @@ export default function Home() {
           <h5 className="w-3/4 text-xl font-bold text-gray-900">
             {ticket.issue}
           </h5>
-          <p className="mt-2 text-sm">
-            {ticket.contact} (Contact: {ticket.contact})
-          </p>
+          <p className="mt-2 text-sm">Contact: {ticket.contact}</p>
           <p className="mt-2 text-sm">Located at: {ticket.location}</p>
         </div>
         <ClaimButton ticket={ticket} />

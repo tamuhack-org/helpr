@@ -52,6 +52,16 @@ export default function ClaimButton(props: { ticket: Ticket }) {
     );
   }
 
+  if (props.ticket.resolvedTime) {
+    return (
+      <div className="flex justify-center mt-6">
+        <a className="w-full text-center py-2 bg-gray-400 rounded-lg text-md font-bold text-white">
+          Resolved
+        </a>
+      </div>
+    );
+  }
+
   if (
     !unclaimLoading &&
     (claimLoading ||
@@ -96,7 +106,6 @@ export default function ClaimButton(props: { ticket: Ticket }) {
 
   return (
     <div className="flex justify-center mt-6 cursor-pointer">
-      {/* {loading && <Loading />} */}
       <p
         className={`${
           unclaimLoading
