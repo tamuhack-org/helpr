@@ -14,7 +14,7 @@ export default function AdminTable(props: { users: User[] }) {
   const userRows: JSX.Element[] = [];
 
   const users = props.users;
-  users.sort((a, b) => (a.email ?? "" > b.email ?? "" ? 1 : -1));
+  users.sort((a, b) => (a.email ?? '' > b.email ?? 'test@gmail.com' ? 1 : -1));
 
   users.forEach((user) => {
     userRows.push(
