@@ -23,6 +23,7 @@ export default function AdminStatus(props: { user: User }) {
           title: 'Success!',
           description: `Successfully updated ${props.user.name}'s ${role} status.`,
           status: 'success',
+          position: 'bottom-right',
           duration: 3000,
           isClosable: true,
         });
@@ -33,6 +34,7 @@ export default function AdminStatus(props: { user: User }) {
           title: 'Error!',
           description: `Failed to update ${props.user.name}'s ${role} status.`,
           status: 'error',
+          position: 'bottom-right',
           duration: 3000,
           isClosable: true,
         });
