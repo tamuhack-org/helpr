@@ -84,8 +84,7 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
         ticketId: props.ticket.id,
       },
     })
-      .then(async function (response) {
-        console.log(response);
+      .then(async function () {
         setSubmitted(false);
         await mutate('/api/users/me');
       })

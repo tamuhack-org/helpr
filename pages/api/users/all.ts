@@ -36,7 +36,11 @@ export default async function handler(
     return;
   }
 
-  const users = await prisma.user.findMany({});
+  const users = await prisma.user.findMany({
+    orderBy: {
+      email: 'asc',
+    },
+  });
 
   res.status(200);
   res.send({ users: users });
