@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { User } from '@prisma/client';
+import useSWR from 'swr';
+import { fetcher } from '../../lib/common';
 
 import {
   IoHomeOutline,
@@ -12,11 +13,20 @@ import { signOut } from 'next-auth/react';
 
 export type NavProps = {
   page: string;
-  user?: User;
 };
 
 export default function Navbar(props: NavProps) {
-  if (!props.user || !props.page) {
+  const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {});
+
+  if (error) {
+    return <div>error</div>;
+  }
+
+  if (isLoading) {
+    return <div>loading</div>;
+  }
+
+  if (!data.user || !props.page) {
     return (
       <div className="flex justify-between w-full">
         <div className="flex"></div>
@@ -42,7 +52,7 @@ export default function Navbar(props: NavProps) {
             <IoHomeOutline className="scale-[1.75] -translate-y-2/4 -translate-x-1/2" />
           </div>
         </Link>
-        {(props.user.mentor || props.user.admin) && (
+        {(data.user.mentor || data.user.admin) && (
           <Link href="/mentor">
             <div
               className={`${
@@ -53,7 +63,7 @@ export default function Navbar(props: NavProps) {
             </div>
           </Link>
         )}
-        {props.user.admin && (
+        {data.user.admin && (
           <Link href="/admin">
             <div
               className={`${

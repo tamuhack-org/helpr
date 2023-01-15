@@ -48,7 +48,7 @@ export default async function handler(
 
   console.log(ticket);
 
-  const resTicket = await prisma.resolvedTicket.create({
+  await prisma.resolvedTicket.create({
     data: {
       issue: ticket.issue,
       location: ticket.location,

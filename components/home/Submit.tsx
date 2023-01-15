@@ -104,7 +104,7 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
 
   if (submitted) {
     return (
-      <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[500px]">
+      <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
         <p className="font-bold text-3xl text-gray-700">
           {submitLoading ? 'Submitting Ticket' : 'Ticket Submitted'}
         </p>
@@ -124,7 +124,7 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
   }
 
   return (
-    <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[500px]">
+    <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
       <div className="flex justify-between items-center">
         <p className="font-bold text-3xl text-gray-700">Submit ticket</p>
         <InfoModal />

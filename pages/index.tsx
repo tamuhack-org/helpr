@@ -33,10 +33,14 @@ export default function Home() {
       </Head>
       <div className="h-full py-10">
         <Banner />
-        <div className="flex justify-center items-center mt-8 md:mt-24">
-          <div className="flex flex-col gap-4 mx-4 md:w-[500px]">
-            <Navbar user={data.user} page="home" />
-            <Submit user={data.user} ticket={data.user.ticket} />
+        <div className="flex justify-center mt-8 md:mt-24">
+          <div className="w-screen sm:w-auto">
+            <div className="flex justify-center mx-4 mb-6 md:w-[90vw] lg:w-[35vw]">
+              <Navbar page="home" />
+            </div>
+            <div className="mx-4 ">
+              <Submit user={data.user} ticket={data.user.ticket} />
+            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-// import Image from 'next/image';
+import Image from 'next/image';
 import CSS from 'csstype';
 import { signIn } from 'next-auth/react';
 
@@ -37,7 +37,12 @@ export default function Landing() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img src="../images/tamuhack.png" />
+          <Image
+            src="/images/tamuhack.png"
+            alt="cloudy background"
+            width={100}
+            height={100}
+          />
         </a>
       </div>
     </div>

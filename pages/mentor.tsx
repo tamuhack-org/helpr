@@ -23,13 +23,8 @@ export default function Home() {
     error: ticketError,
     isLoading: isTicketLoading,
   } = useSWR('/api/tickets/all', fetcher, {});
-  const {
-    data: userData,
-    error: userError,
-    isLoading: isUserLoading,
-  } = useSWR('/api/users/me', fetcher, {});
 
-  if (isTicketLoading || ticketError || userError || isUserLoading) {
+  if (isTicketLoading || ticketError) {
     return <Loading />;
   }
 
@@ -38,7 +33,7 @@ export default function Home() {
     ticketList.push(
       <div
         key={index}
-        className="relative block p-4 sm:p-8 bg-white border border-gray-100 shadow-md rounded-xl my-8 mx-4 md:w-[500px]"
+        className="relative block p-4 sm:p-8 bg-white border border-gray-100 shadow-md rounded-xl my-8 md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]"
       >
         <span className="absolute right-4 top-4 rounded-full px-3 py-1.5 bg-green-100 text-green-600 font-medium text-xs">
           {getTimeDifferenceString(ticket.publishTime)}
@@ -68,12 +63,12 @@ export default function Home() {
       </Head>
       <div className="h-full py-10">
         <Banner />
-        <div className="flex justify-center mt-8 md:mt-24">
-          <div className="">
-            <div className="flex justify-center mx-4 mb-6 md:w-[500px]">
-              <Navbar user={userData.user} page="mentor" />
+        <div className="flex justify-center mt-8 mx-4 md:mt-24">
+          <div className="w-screen sm:w-auto">
+            <div className="flex justify-center mb-6 md:w-[90vw] lg:w-[35vw]">
+              <Navbar page="mentor" />
             </div>
-            <div className="mt-4 mx-4 md:w-[500px]">
+            <div className="mt-4 md:w-[90vw] lg:w-[35vw]">
               <Select bg="white">
                 <option defaultValue="unresolved" value="unresolved">
                   Active Tickets
@@ -83,7 +78,13 @@ export default function Home() {
                 <option value="resolved">Resolved Tickets</option>
               </Select>
             </div>
-            {ticketList}
+            {ticketList.length == 0 ? (
+              <div className="flex justify-center p-8 bg-white border border-gray-100 shadow-md rounded-xl my-8 w-[90vw] lg:w-[35vw]">
+                <p className="text-xl font-bold">No Tickets!</p>
+              </div>
+            ) : (
+              ticketList
+            )}
           </div>
         </div>
       </div>
