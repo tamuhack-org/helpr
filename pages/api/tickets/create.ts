@@ -44,6 +44,7 @@ export default async function handler(
 
   const ticket = await prisma.ticket.create({
     data: {
+      authorName: user.name,
       issue: issue,
       location: location,
       contact: contact,

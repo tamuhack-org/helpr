@@ -7,7 +7,7 @@ import useSWR from 'swr';
 import Banner from '../components/common/Banner';
 import Navbar from '../components/common/Navbar';
 import ClaimButton from '../components/mentor/ClaimButton';
-import { Select } from '@chakra-ui/react';
+// import { Select } from '@chakra-ui/react';
 
 import { Session, unstable_getServerSession } from 'next-auth';
 import authOptions from './api/auth/[...nextauth]';
@@ -42,7 +42,9 @@ export default function Home() {
           <h5 className="w-3/4 text-xl font-bold text-gray-900">
             {ticket.issue}
           </h5>
-          <p className="mt-2 text-sm">Contact: {ticket.contact}</p>
+          <p className="mt-2 text-sm">
+            {ticket.authorName} (Contact: {ticket.contact})
+          </p>
           <p className="mt-2 text-sm">Located at: {ticket.location}</p>
         </div>
         <ClaimButton ticket={ticket} />
@@ -68,7 +70,7 @@ export default function Home() {
             <div className="flex justify-center mb-6 md:w-[90vw] lg:w-[35vw]">
               <Navbar page="mentor" />
             </div>
-            <div className="mt-4 md:w-[90vw] lg:w-[35vw]">
+            {/* <div className="mt-4 md:w-[90vw] lg:w-[35vw]">
               <Select bg="white">
                 <option defaultValue="unresolved" value="unresolved">
                   Active Tickets
@@ -77,7 +79,7 @@ export default function Home() {
                 <option value="claimedunresolved">Claimed Tickets</option>
                 <option value="resolved">Resolved Tickets</option>
               </Select>
-            </div>
+            </div> */}
             {ticketList.length == 0 ? (
               <div className="flex justify-center p-8 bg-white border border-gray-100 shadow-md rounded-xl my-8 w-[90vw] lg:w-[35vw]">
                 <p className="text-xl font-bold">No Tickets!</p>

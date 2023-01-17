@@ -11,6 +11,7 @@ generator client {
 
 model Ticket {
   id        String  @id @default(cuid())
+  authorName      String
   issue     String
   location  String
   contact   String
@@ -26,6 +27,7 @@ model Ticket {
 
 model ResolvedTicket {
   id        String  @id @default(cuid())
+  authorName      String
   issue     String
   location  String
   contact   String
