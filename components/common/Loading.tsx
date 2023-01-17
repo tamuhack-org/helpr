@@ -9,7 +9,7 @@ export default function Loading() {
   useEffect(() => {
     setTimeout(() => {
       setRefreshVisible(true);
-    }, 3000);
+    }, 6000);
   });
 
   return (
