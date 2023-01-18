@@ -39,7 +39,7 @@ export default function Home() {
       <Banner />
       <div className="flex justify-center mx-4 mt-8 md:mt-24">
         <div className="w-screen sm:w-auto">
-          <div className="flex justify-center mb-6 ">
+          <div className="flex justify-center mb-6 2xl:w-[500px]">
             <Navbar page="admin" />
           </div>
           <div className="mt-8">

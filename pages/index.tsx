@@ -35,10 +35,10 @@ export default function Home() {
         <Banner />
         <div className="flex justify-center mt-8 md:mt-24">
           <div className="w-screen sm:w-auto">
-            <div className="flex justify-center mx-4 mb-6 md:w-[90vw] lg:w-[35vw]">
+            <div className="flex justify-center mx-4 mb-6 md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
               <Navbar page="home" />
             </div>
-            <div className="mx-4 ">
+            <div className="mx-4">
               <Submit user={data.user} ticket={data.user.ticket} />
             </div>
           </div>

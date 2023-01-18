@@ -67,7 +67,7 @@ export default function Home() {
         <Banner />
         <div className="flex justify-center mt-8 mx-4 md:mt-24">
           <div className="w-screen sm:w-auto">
-            <div className="flex justify-center mb-6 md:w-[90vw] lg:w-[35vw]">
+            <div className="flex justify-center mb-6 md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
               <Navbar page="mentor" />
             </div>
             {/* <div className="mt-4 md:w-[90vw] lg:w-[35vw]">
