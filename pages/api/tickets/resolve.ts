@@ -46,8 +46,6 @@ export default async function handler(
     return;
   }
 
-  console.log(ticket);
-
   await prisma.resolvedTicket.create({
     data: {
       authorName: ticket.authorName,

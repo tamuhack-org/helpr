@@ -2,6 +2,9 @@ import React from 'react';
 import axios from 'axios';
 import { Input } from '@chakra-ui/react';
 import InfoModal from './InfoModal';
+import Loading from '../common/Loading';
+import useSWR from 'swr';
+import { fetcher } from '../../lib/common';
 import { useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useSWRConfig } from 'swr';
@@ -9,9 +12,17 @@ import { Ticket, User } from '@prisma/client';
 
 export default function Submit(props: { user: User; ticket: Ticket }) {
   const toast = useToast();
+
+  const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {
+    refreshInterval: 5000,
+  });
+
   const { mutate } = useSWRConfig();
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(props.ticket != null);
+
+  if (isLoading || error) {
+    return <Loading />;
+  }
 
   async function submitTicket() {
     const issue = document.getElementById('issue') as HTMLInputElement;
@@ -35,8 +46,6 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
       return;
     }
 
-    setSubmitted(true);
-    setSubmitLoading(true);
     await axios({
       method: 'post',
       url: '/api/tickets/create',
@@ -59,7 +68,6 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
         });
       })
       .catch(function (error: Error) {
-        setSubmitted(false);
         setSubmitLoading(false);
         toast({
           title: 'Error',
@@ -85,7 +93,6 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
       },
     })
       .then(async function () {
-        setSubmitted(false);
         await mutate('/api/users/me');
       })
       .catch(function (error: Error) {
@@ -101,7 +108,7 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
       });
   }
 
-  if (submitted) {
+  if (data.user.ticket) {
     return (
       <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
         <p className="font-bold text-3xl text-gray-700">
