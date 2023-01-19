@@ -14,7 +14,9 @@ import { Nullable } from '../lib/common';
 import Loading from '../components/common/Loading';
 
 export default function Home() {
-  const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {});
+  const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {
+    refreshInterval: 5000,
+  });
 
   if (isLoading || error) {
     return <Loading />;
