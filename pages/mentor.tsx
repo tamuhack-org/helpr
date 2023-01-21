@@ -1,12 +1,8 @@
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 
-import { fetcher, getTimeDifferenceString } from '../lib/common';
-import useSWR from 'swr';
-
 import Banner from '../components/common/Banner';
 import Navbar from '../components/common/Navbar';
-import ClaimButton from '../components/mentor/ClaimButton';
 // import { Select } from '@chakra-ui/react';
 
 import { Session, unstable_getServerSession } from 'next-auth';

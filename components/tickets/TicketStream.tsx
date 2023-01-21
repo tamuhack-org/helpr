@@ -10,7 +10,9 @@ export default function TicketStream(props: { filter: string }) {
     data: ticketsData,
     error: ticketError,
     isLoading: isTicketLoading,
-  } = useSWR(`/api/tickets/${props.filter || 'all'}`, fetcher, {});
+  } = useSWR(`/api/tickets/${props.filter || 'all'}`, fetcher, {
+    refreshInterval: 5000,
+  });
 
   if (isTicketLoading) {
     return (

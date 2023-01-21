@@ -18,10 +18,6 @@ export type NavProps = {
 export default function Navbar(props: NavProps) {
   const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {});
 
-  if (error) {
-    return <div>error</div>;
-  }
-
   if (isLoading) {
     return <div>loading</div>;
   }
@@ -52,7 +48,7 @@ export default function Navbar(props: NavProps) {
             <IoHomeOutline className="scale-[1.75] -translate-y-2/4 -translate-x-1/2" />
           </div>
         </Link>
-        {(data.user.mentor || data.user.admin) && (
+        {(data.user.mentor || data.user.admin) && !error && (
           <Link href="/mentor">
             <div
               className={`${
@@ -63,7 +59,7 @@ export default function Navbar(props: NavProps) {
             </div>
           </Link>
         )}
-        {data.user.admin && (
+        {data.user.admin && !error && (
           <Link href="/admin">
             <div
               className={`${
