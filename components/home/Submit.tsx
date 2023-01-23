@@ -114,9 +114,14 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
         <p className="font-bold text-3xl text-gray-700">
           {submitLoading ? 'Submitting Ticket' : 'Ticket Submitted'}
         </p>
-        <p className="mt-3 text-md text-gray-600">
+        <p className="mt-4 text-md text-gray-600">
           {submitLoading
             ? 'Your ticket is currently being submitted to our queue.'
+            : ''}
+        </p>
+        <p className="text-md text-gray-600">
+          {data.user.ticket.claimantId
+            ? `A mentor has claimed your ticket and is on their way!`
             : 'Your ticket is currently in the queue. A mentor will arrive shortly!'}
         </p>
         <button
