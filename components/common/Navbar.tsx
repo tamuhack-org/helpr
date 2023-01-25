@@ -16,7 +16,9 @@ export type NavProps = {
 };
 
 export default function Navbar(props: NavProps) {
-  const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {});
+  const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {
+    refreshInterval: 1000,
+  });
 
   if (isLoading) {
     return <div>loading</div>;
