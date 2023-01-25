@@ -1,4 +1,4 @@
-import { Ticket } from '@prisma/client';
+import { ResolvedTicket } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Nullable } from '../../../lib/common';
 
@@ -9,13 +9,13 @@ import prisma from '../../../lib/prisma';
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ tickets: Nullable<Ticket[]> }>
+  res: NextApiResponse<{ tickets: Nullable<ResolvedTicket[]> }>
 ) {
   if (req.method !== 'GET') {
     return;
   }
 
-  const tickets = await prisma.ticket.findMany({
+  const tickets = await prisma.resolvedTicket.findMany({
     where: {
       NOT: {
         resolvedTime: null
@@ -23,9 +23,6 @@ export default async function handler(
     },
     orderBy: {
       publishTime: 'desc',
-    },
-    include: {
-      claimant: true,
     },
   });
 
