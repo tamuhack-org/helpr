@@ -1,9 +1,10 @@
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
+import React, { useState } from "react";
 
 import Banner from '../components/common/Banner';
 import Navbar from '../components/common/Navbar';
-// import { Select } from '@chakra-ui/react';
+import { Select } from '@chakra-ui/react';
 
 import { Session, unstable_getServerSession } from 'next-auth';
 import authOptions from './api/auth/[...nextauth]';
@@ -13,6 +14,13 @@ import prisma from '../lib/prisma';
 import TicketStream from '../components/tickets/TicketStream';
 
 export default function Home() {
+  const [filter, setFilter] = useState("");
+
+  const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setFilter(value);
+  };
+
   return (
     <>
       <Head>
@@ -31,17 +39,15 @@ export default function Home() {
             <div className="flex justify-center mb-6 ">
               <Navbar page="mentor" />
             </div>
-            {/* <div className="mt-4 md:w-[90vw] lg:w-[35vw]">
-              <Select bg="white">
-                <option defaultValue="unresolved" value="unresolved">
-                  Active Tickets
-                </option>
+            <div className="mt-8 md:w-[90vw] lg:w-[35vw]">
+              <Select onChange={handleDropdownChange} bg="white">
+                <option defaultValue="unresolved" value="unresolved">Active Tickets</option>
                 <option value="all">All Tickets</option>
                 <option value="claimedunresolved">Claimed Tickets</option>
                 <option value="resolved">Resolved Tickets</option>
               </Select>
-            </div> */}
-            <TicketStream filter="all" />
+            </div>
+            <TicketStream filter={filter} />
           </div>
         </div>
       </div>
