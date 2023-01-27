@@ -1,5 +1,5 @@
 import React from 'react';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { Input } from '@chakra-ui/react';
 import InfoModal from './InfoModal';
 import Loading from '../common/Loading';
