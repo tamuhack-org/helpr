@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 import Banner from '../components/common/Banner';
 import Navbar from '../components/common/Navbar';
@@ -14,9 +14,11 @@ import prisma from '../lib/prisma';
 import TicketStream from '../components/tickets/TicketStream';
 
 export default function Home() {
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState('');
 
-  const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleDropdownChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const value = event.target.value;
     setFilter(value);
   };
@@ -39,9 +41,11 @@ export default function Home() {
             <div className="flex justify-center mb-6 ">
               <Navbar page="mentor" />
             </div>
-            <div className="mt-8 md:w-[90vw] lg:w-[35vw]">
+            <div className="mt-8 w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
               <Select onChange={handleDropdownChange} bg="white">
-                <option defaultValue="unresolved" value="unresolved">Active Tickets</option>
+                <option defaultValue="unresolved" value="unresolved">
+                  Active Tickets
+                </option>
                 <option value="all">All Tickets</option>
                 <option value="claimedunresolved">Claimed Tickets</option>
                 <option value="resolved">Resolved Tickets</option>

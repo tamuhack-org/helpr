@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Input } from '@chakra-ui/react';
 import InfoModal from './InfoModal';
 import Loading from '../common/Loading';
@@ -67,11 +67,12 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
           isClosable: true,
         });
       })
-      .catch(function (error: Error) {
+      .catch(function (error) {
         setSubmitLoading(false);
+        console.log(typeof error);
         toast({
           title: 'Error',
-          description: 'Unable to submit ticket',
+          description: error.response.data.error,
           status: 'error',
           position: 'bottom-right',
           duration: 3000,
