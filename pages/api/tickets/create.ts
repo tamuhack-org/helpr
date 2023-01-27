@@ -49,17 +49,27 @@ export default async function handler(
   }
 
   if (issue.length > maxIssueLength) {
-    res.status(400).json({ error: 'Issue too long' });
+    res
+      .status(400)
+      .json({ error: 'Issue too long. Max ' + maxIssueLength + ' characters' });
     return;
   }
 
   if (location.length > maxLocationLength) {
-    res.status(400).json({ error: 'Location too long' });
+    res
+      .status(400)
+      .json({
+        error: 'Location too long. Max' + maxLocationLength + ' characters',
+      });
     return;
   }
 
   if (contact.length > maxContactLength) {
-    res.status(400).json({ error: 'Contact too long' });
+    res
+      .status(400)
+      .json({
+        error: 'Contact too long. Max ' + maxContactLength + ' characters',
+      });
     return;
   }
 
