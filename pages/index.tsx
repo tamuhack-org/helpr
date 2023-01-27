@@ -33,7 +33,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="h-full py-10">
+      <div id="index" className="h-full py-10">
         <Banner />
         <div className="flex justify-center mt-8 md:mt-24">
           <div className="w-screen sm:w-auto">

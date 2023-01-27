@@ -13,10 +13,18 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      authorization: {
+        params: {
+          scope: 'openid',
+        },
+      },
     }),
   ],
   callbacks: {
-    async jwt({ token }) {
+    async jwt({ token, account }) {
+      if (account) {
+        token.id_token = account.id_token;
+      }
       return token;
     },
   },

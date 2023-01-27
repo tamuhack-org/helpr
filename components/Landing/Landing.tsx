@@ -24,6 +24,7 @@ export default function Landing() {
         </p>
         <div className="flex relative justify-center items-center top-[10px]">
           <a
+            id="login-button"
             onClick={() => signIn('google')}
             className="py-4 px-8 bg-blue-500 text-white font-bold rounded-xl shadow-xl cursor-pointer"
           >
