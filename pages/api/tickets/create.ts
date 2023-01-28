@@ -20,7 +20,7 @@ export default async function handler(
   const token = await getToken({ req });
   const { issue, location, contact } = req.body;
   const maxIssueLength = 80;
-  const maxLocationLength = 40;
+  const maxLocationLength = 60;
   const maxContactLength = 20;
 
   if (!token) {
@@ -56,20 +56,16 @@ export default async function handler(
   }
 
   if (location.length > maxLocationLength) {
-    res
-      .status(400)
-      .json({
-        error: 'Location too long. Max' + maxLocationLength + ' characters',
-      });
+    res.status(400).json({
+      error: 'Location too long. Max' + maxLocationLength + ' characters',
+    });
     return;
   }
 
   if (contact.length > maxContactLength) {
-    res
-      .status(400)
-      .json({
-        error: 'Contact too long. Max ' + maxContactLength + ' characters',
-      });
+    res.status(400).json({
+      error: 'Contact too long. Max ' + maxContactLength + ' characters',
+    });
     return;
   }
 
