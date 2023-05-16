@@ -1,43 +1,43 @@
 // schema.prisma
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_PRISMA_URL") // uses connection pooling
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["orderByNulls"]
-  engineType = "binary"
+  engineType      = "binary"
 }
 
 model Ticket {
-  id        String  @id @default(cuid())
-  authorName      String
-  issue     String
-  location  String
-  contact   String
-  publishTime DateTime @default(now())
-  claimedTime DateTime?
+  id           String    @id @default(cuid())
+  authorName   String
+  issue        String
+  location     String
+  contact      String
+  publishTime  DateTime  @default(now())
+  claimedTime  DateTime?
   resolvedTime DateTime?
-  claimant User? @relation(name: "claim", fields: [claimantId], references: [id])
-  claimantId String? @unique
+  claimant     User?     @relation(name: "claim", fields: [claimantId], references: [id])
+  claimantId   String?   @unique
   claimantName String?
-  author    User   @relation(fields: [authorId], references: [id])
-  authorId  String  @unique
+  author       User      @relation(fields: [authorId], references: [id])
+  authorId     String    @unique
 }
 
 model ResolvedTicket {
-  id        String  @id @default(cuid())
-  authorName      String
-  issue     String
-  location  String
-  contact   String
-  publishTime DateTime @default(now())
-  claimedTime DateTime?
+  id           String    @id @default(cuid())
+  authorName   String
+  issue        String
+  location     String
+  contact      String
+  publishTime  DateTime  @default(now())
+  claimedTime  DateTime?
   resolvedTime DateTime?
-  claimantId String? 
+  claimantId   String?
   claimantName String?
-  authorId  String 
+  authorId     String
 }
 
 model Account {
@@ -70,18 +70,18 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String   @unique
-  emailVerified DateTime?
-  image         String?
-  admin         Boolean @default(false)
-  mentor        Boolean @default(false)
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  emailVerified   DateTime?
+  image           String?
+  admin           Boolean   @default(false)
+  mentor          Boolean   @default(false)
   claimedTicketId String?
-  claimedTicket Ticket? @relation(name: "claim")
-  ticket        Ticket?
-  accounts      Account[]
-  sessions      Session[]
+  claimedTicket   Ticket?   @relation(name: "claim")
+  ticket          Ticket?
+  accounts        Account[]
+  sessions        Session[]
 }
 
 model VerificationToken {
