@@ -41,7 +41,7 @@ export default function Home() {
               <Navbar page="home" />
             </div>
             <div className="mx-4">
-              <Submit user={data.user} ticket={data.user.ticket} />
+              <Submit user={data.user} ticket={data.user?.ticket} />
             </div>
           </div>
         </div>

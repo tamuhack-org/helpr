@@ -109,7 +109,7 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
       });
   }
 
-  if (data.user.ticket) {
+  if (data.user?.ticket) {
     return (
       <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
         <p className="font-bold text-3xl text-gray-700">
