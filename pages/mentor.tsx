@@ -6,7 +6,7 @@ import Banner from '../components/common/Banner';
 import Navbar from '../components/common/Navbar';
 import { Select } from '@chakra-ui/react';
 
-import { Session, unstable_getServerSession } from 'next-auth';
+import { Session, getServerSession } from 'next-auth';
 import authOptions from './api/auth/[...nextauth]';
 import { Nullable } from '../lib/common';
 
@@ -60,7 +60,7 @@ export default function Home() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session: Nullable<Session> = await unstable_getServerSession(
+  const session: Nullable<Session> = await getServerSession(
     context.req,
     context.res,
     authOptions
