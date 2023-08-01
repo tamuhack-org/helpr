@@ -59,6 +59,8 @@ export default function Home() {
   );
 }
 
+//Check if user is authenticated
+//If not, redirect to login page
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session: Nullable<Session> = await getServerSession(
     context.req,
