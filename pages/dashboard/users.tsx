@@ -1,21 +1,19 @@
 import { GetServerSideProps } from 'next';
 
 import { Session, getServerSession } from 'next-auth';
-import authOptions from './api/auth/[...nextauth]';
-import { Nullable } from '../lib/common';
+import authOptions from '../api/auth/[...nextauth]';
+import { Nullable } from '../../lib/common';
+import prisma from '../../lib/prisma';
 
-import prisma from '../lib/prisma';
+import DashboardLayout from '../../components/dashboard/DashboardLayout';
+import AutoBreadcrumbs from '../../components/dashboard/AutoBreadcrumbs';
 
-import Banner from '../components/common/Banner';
+import type { ReactElement } from 'react';
+import type { NextPageWithLayout } from '../_app';
 
-export default function Home() {
-  return (
-    <div className="h-full py-10">
-      <Banner />
-      <p className="p-4 text-xl">Dashboard</p>
-    </div>
-  );
-}
+const Users: NextPageWithLayout = () => {
+  return <AutoBreadcrumbs />;
+};
 
 //Check if user is authenticated
 //If not, redirect to login page
@@ -56,3 +54,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {},
   };
 };
+
+Users.getLayout = function getLayout(page: ReactElement) {
+  return <DashboardLayout>{page}</DashboardLayout>;
+};
+
+export default Users;
