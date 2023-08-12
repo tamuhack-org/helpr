@@ -23,7 +23,7 @@ const Overview: NextPageWithLayout = () => {
         <MiniIncomingTickets />
       </div>
       <div className="mt-8">
-        <p className="text-3xl font-bold">Leaderboard</p>
+        <p className="text-3xl font-bold mb-4">Leaderboard</p>
         <Leaderboard />
       </div>
     </div>

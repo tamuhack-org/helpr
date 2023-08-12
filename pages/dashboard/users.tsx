@@ -6,13 +6,12 @@ import { Nullable } from '../../lib/common';
 import prisma from '../../lib/prisma';
 
 import DashboardLayout from '../../components/dashboard/DashboardLayout';
-import AutoBreadcrumbs from '../../components/dashboard/AutoBreadcrumbs';
 
 import type { ReactElement } from 'react';
 import type { NextPageWithLayout } from '../_app';
 
 const Users: NextPageWithLayout = () => {
-  return <AutoBreadcrumbs />;
+  return <p>Hi</p>;
 };
 
 //Check if user is authenticated
