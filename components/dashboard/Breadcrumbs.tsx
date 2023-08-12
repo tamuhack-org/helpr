@@ -10,7 +10,7 @@ export default function Breadcrumbs() {
     <div className="flex gap-2 items-center w-full">
       {breadcrumbs.map((breadcrumb, index) => (
         <div className="flex gap-2 items-center" key={index}>
-          <Link href={`/${breadcrumbs.slice(0, index + 1).join('/')}`}>
+          <Link href={`/${breadcrumbs.slice(0, index + 1).join('/')}/`}>
             <p
               className={`${
                 index == breadcrumbs.length - 1 ? '' : 'text-gray-500'

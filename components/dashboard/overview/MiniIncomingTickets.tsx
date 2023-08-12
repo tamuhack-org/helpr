@@ -41,13 +41,14 @@ export default function MiniIncomingTickets() {
   }
 
   const points = createDataPoints(data.tickets);
+  console.log(points);
 
   return (
     <div className="flex flex-shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4">
       <div>
         <p>Incoming</p>
-        <p className="mt-8 font-bold text-lg">{data.tickets.length}</p>
-        <p>Published Tickets</p>
+        <p className="mt-8 font-bold text-lg">{points.length}</p>
+        <p>Recent Tickets</p>
       </div>
       <div className="w-[100px] h-full">
         <ResponsiveContainer width="100%" height="100%">
