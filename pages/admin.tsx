@@ -29,7 +29,7 @@ export default function Home() {
           <div className="flex justify-center mb-6 2xl:w-[500px]">
             <Navbar page="admin" />
           </div>
-          <Link href="/dashboard" className="h-8 text-center">
+          <Link href="/dashboard/overview" className="h-8 text-center">
             View full admin dashboard
           </Link>
           <AdminTable users={data.users} />

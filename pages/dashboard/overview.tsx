@@ -9,8 +9,12 @@ import DashboardLayout from '../../components/dashboard/DashboardLayout';
 
 import type { ReactElement } from 'react';
 import type { NextPageWithLayout } from '../_app';
-import MiniIncomingTickets from '../../components/dashboard/overview/MiniIncomingTickets';
+import {
+  MiniResolvedTickets,
+  MiniIncomingTickets,
+} from '../../components/dashboard/overview/MiniIncomingTickets';
 import Leaderboard from '../../components/dashboard/overview/Leaderboard';
+import Topics from '../../components/dashboard/overview/Topics';
 
 const Overview: NextPageWithLayout = () => {
   return (
@@ -21,10 +25,15 @@ const Overview: NextPageWithLayout = () => {
       </p>
       <div className="flex overflow-y-scroll mt-8 gap-2">
         <MiniIncomingTickets />
+        <MiniResolvedTickets />
       </div>
       <div className="mt-8">
         <p className="text-3xl font-bold mb-4">Leaderboard</p>
         <Leaderboard />
+      </div>
+      <div className="mt-8">
+        <p className="text-3xl font-bold mb-4">Topics</p>
+        <Topics />
       </div>
     </div>
   );

@@ -84,6 +84,17 @@ model User {
   sessions        Session[]
 }
 
+model TopicCacheStatus {
+  id         Int      @id @default(autoincrement())
+  lastAccess DateTime
+}
+
+model TopicFrequency {
+  id        Int    @id @default(autoincrement())
+  topic     String @unique
+  frequency Int
+}
+
 model VerificationToken {
   id         Int      @id @default(autoincrement())
   identifier String

@@ -14,41 +14,40 @@ export default function Leaderboard() {
   }
 
   return (
-    <div className="inline-block ">
+    <div className="inline-block w-full md:w-auto border-[1px] rounded-lg overflow-hidden">
       <div className="relative overflow-x-auto sm:rounded-lg">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3"></th>
+              <th scope="col" className="pr-6 py-3">
                 Name
               </th>
-              <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3 text-center">
                 Tickets
               </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
+              <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
           <tbody>
-            {Object.keys(data).map((key) => (
-              <tr
-                key={key}
-                className="border-b bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
-              >
+            {Object.keys(data).map((key, index) => (
+              <tr key={key} className="dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-6 py-4 text-center">{index + 1}</td>
                 <th
                   scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  className="pr-6 py-4 min-w-[200px] max-w-[200px] overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {key}
+                  {key}{' '}
                 </th>
-                <td className="px-6 py-4">{data[key]}</td>
+                <td className="px-6 py-4 font-medium text-gray-900 text-center">
+                  {data[key]}
+                </td>
                 <td className="px-6 py-4">
                   <a
                     href="#"
                     className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                   >
-                    Edit
+                    View
                   </a>
                 </td>
               </tr>
