@@ -19,45 +19,35 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
 
   const { mutate } = useSWRConfig();
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [issue, setIssue] = useState('');
+  const [location, setLocation] = useState('');
+  const [contact, setContact] = useState('');
 
   if (isLoading || error) {
     return <Loading />;
   }
 
   async function submitTicket() {
-    const issue = document.getElementById('issue') as HTMLInputElement;
-    const location = document.getElementById('location') as HTMLInputElement;
-    const contact = document.getElementById('contact') as HTMLInputElement;
-
-    const issueValue = issue.value;
-    const locationValue = location.value;
-    const contactValue = contact.value;
-
-    if (!issueValue || !locationValue || !contactValue) {
-      //TODO: Write a wrapper for this toast stuff because this is irritating me.
-      toast({
-        title: 'Error',
-        description: 'Please fill out all forms',
-        status: 'error',
-        position: 'bottom-right',
-        duration: 2000,
-        isClosable: true,
-      });
+    if (submitLoading) {
       return;
     }
 
-    await axios({
-      method: 'post',
-      url: '/api/tickets/create',
-      data: {
-        issue: issueValue,
-        location: locationValue,
-        contact: contactValue,
-      },
-    })
-      .then(async function () {
+    try {
+      setSubmitLoading(true);
+      if (!issue || !location || !contact) {
+        throw new Error('Please fill out all fields');
+      }
+
+      await axios({
+        method: 'post',
+        url: '/api/tickets/create',
+        data: {
+          issue: issue,
+          location: location,
+          contact: contact,
+        },
+      }).then(async function () {
         await mutate('/api/users/me');
-        setSubmitLoading(false);
         toast({
           title: 'Ticket Submitted',
           description: 'Please wait for a mentor to arrive',
@@ -66,70 +56,68 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
           duration: 3000,
           isClosable: true,
         });
-      })
-      .catch(function (error) {
-        setSubmitLoading(false);
-        console.log(typeof error);
-        toast({
-          title: 'Error',
-          description: error.response.data.error,
-          status: 'error',
-          position: 'bottom-right',
-          duration: 3000,
-          isClosable: true,
-        });
-        console.log('Request Failed', error.message);
       });
+    } catch (e) {
+      const error = e as Error;
+      toast({
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+        position: 'bottom-right',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setSubmitLoading(false);
+    }
   }
 
   async function cancelTicket() {
     if (submitLoading) {
       return;
     }
-    await axios({
-      method: 'post',
-      url: '/api/tickets/cancel',
-      data: {
-        ticketId: props.ticket.id,
-      },
-    })
-      .then(async function () {
+    try {
+      setSubmitLoading(true);
+      await axios({
+        method: 'post',
+        url: '/api/tickets/cancel',
+        data: {
+          ticketId: props.ticket.id,
+        },
+      }).then(async function () {
         await mutate('/api/users/me');
-      })
-      .catch(function (error: Error) {
-        toast({
-          title: 'Error',
-          description: 'Unable to cancel ticket',
-          status: 'error',
-          position: 'bottom-right',
-          duration: 3000,
-          isClosable: true,
-        });
-        console.log('Request Failed', error.message);
       });
+    } catch (e) {
+      const error = e as Error;
+      toast({
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+        position: 'bottom-right',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setSubmitLoading(false);
+    }
   }
 
   if (data.user?.ticket) {
     return (
       <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
-        <p className="font-bold text-3xl text-gray-700">
-          {submitLoading ? 'Submitting Ticket' : 'Ticket Submitted'}
-        </p>
+        <p className="font-bold text-3xl text-gray-700">Ticket Submitted</p>
         <p className="mt-4 text-md text-gray-600">
-          {submitLoading
-            ? 'Your ticket is currently being submitted to our queue.'
-            : ''}
-        </p>
-        <p className="text-md text-gray-600">
           {data.user.ticket.claimantId
             ? `A mentor has claimed your ticket and is on their way!`
             : 'Your ticket is currently in the queue. A mentor will arrive shortly!'}
         </p>
         <button
           onClick={() => cancelTicket()}
-          className="w-full mt-8 py-4 px-8 text-white font-bold bg-red-500 rounded-xl"
+          className={`${
+            submitLoading ? 'bg-gray-500' : 'bg-red-500'
+          } w-full mt-8 py-4 px-8 text-white font-bold rounded-xl`}
         >
-          Cancel Ticket
+          {submitLoading ? 'Cancelling Ticket' : 'Cancel Ticket'}
         </button>
       </div>
     );
@@ -147,6 +135,8 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
         className="mt-2"
         variant="outline"
         placeholder="Issue"
+        value={issue}
+        onChange={(e) => setIssue(e.target.value)}
       />
       <p className="mt-3 text-md text-gray-600">
         Location (so we can find you!)
@@ -156,6 +146,8 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
         className="mt-2"
         variant="outline"
         placeholder="Location"
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
       />
       <p className="mt-3 text-md text-gray-600">
         Contact (if we can&apos;t find you!)
@@ -165,12 +157,16 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
         className="mt-2"
         variant="outline"
         placeholder="Contact"
+        value={contact}
+        onChange={(e) => setContact(e.target.value)}
       />
       <button
         onClick={() => submitTicket()}
-        className="w-full mt-8 py-4 px-8 text-white font-bold bg-blue-500 rounded-xl"
+        className={`${
+          submitLoading ? 'bg-gray-500' : 'bg-blue-500'
+        } w-full mt-8 py-4 px-8 text-white font-bold rounded-xl`}
       >
-        Submit Ticket
+        {submitLoading ? 'Submitting Ticket' : 'Submit Ticket'}
       </button>
     </div>
   );
