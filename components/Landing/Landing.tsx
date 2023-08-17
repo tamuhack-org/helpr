@@ -19,8 +19,8 @@ export default function Landing() {
         <p className="text-center relative bottom-[20px] font-bold text-4xl sm:text-[65px] pb-6">
           Welcome to HelpR
         </p>
-        <p className="text-center font-medium pb-8 text-lg sm:text-2xl">
-          A one-stop shop to get help and ask questions
+        <p className="text-center font-medium pb-8 px-2 text-lg sm:text-2xl">
+          A one-stop shop to get help and ask questions.
         </p>
         <div className="flex relative justify-center items-center top-[10px]">
           <a
