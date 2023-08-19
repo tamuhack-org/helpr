@@ -10,7 +10,13 @@ import { useState } from 'react';
 import { useSWRConfig } from 'swr';
 import { Ticket, User } from '@prisma/client';
 
-export default function Submit(props: { user: User; ticket: Ticket }) {
+export default function Submit({
+  user,
+  ticket,
+}: {
+  user: User;
+  ticket: Ticket;
+}) {
   const toast = useToast();
 
   const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {
@@ -82,7 +88,7 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
         method: 'post',
         url: '/api/tickets/cancel',
         data: {
-          ticketId: props.ticket.id,
+          ticketId: ticket.id,
         },
       }).then(async function () {
         await mutate('/api/users/me');
@@ -127,7 +133,7 @@ export default function Submit(props: { user: User; ticket: Ticket }) {
     <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
       <div className="flex justify-between items-center">
         <p className="font-bold text-3xl text-gray-700">Submit ticket</p>
-        <InfoModal />
+        <InfoModal email={user.email} />
       </div>
       <p className="mt-3 text-md text-gray-600">Issue</p>
       <Input
