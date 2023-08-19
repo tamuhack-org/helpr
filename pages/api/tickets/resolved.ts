@@ -18,8 +18,8 @@ export default async function handler(
   const tickets = await prisma.resolvedTicket.findMany({
     where: {
       NOT: {
-        resolvedTime: null
-      }
+        resolvedTime: null,
+      },
     },
     orderBy: {
       publishTime: 'desc',

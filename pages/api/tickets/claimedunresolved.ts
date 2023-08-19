@@ -19,14 +19,14 @@ export default async function handler(
     where: {
       resolvedTime: null,
       NOT: {
-        claimedTime: null
-      }
+        claimedTime: null,
+      },
     },
     orderBy: {
       publishTime: 'desc',
     },
     include: {
-        claimant: true,
+      claimant: true,
     },
   });
 
