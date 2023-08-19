@@ -1,15 +1,45 @@
 import { User } from '@prisma/client';
 import Image from 'next/image';
-import React, { useState } from 'react';
-import { FormControl, FormLabel, Switch, useToast } from '@chakra-ui/react';
+import React, { useRef, useState } from 'react';
+import { FormControl, FormLabel, Switch, ToastId, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { mutate } from 'swr';
 
 const UserInfo = (props: { user: User; resetReader: () => void }) => {
   const toast = useToast();
+  const toastIdRef = useRef<ToastId>();
 
   const [isAdmin, setIsAdmin] = useState(props.user.admin);
   const [isMentor, setIsMentor] = useState(props.user.mentor);
+
+  function triggerToast(role: string, status: 'success' | 'error') {
+    if (toastIdRef.current) {
+      toast.close(toastIdRef.current);
+    }
+    status === 'success' ? addSuccessToast(role) : addErrorToast(role);
+  }
+
+  function addSuccessToast(role: string) {
+    toastIdRef.current = toast({
+      title: 'Success!',
+      description: `Successfully updated ${props.user.name}'s ${role} status.`,
+      status: 'success',
+      position: 'bottom-right',
+      duration: 3000,
+      isClosable: true,
+    });
+  }
+
+  function addErrorToast(role: string) {
+    toastIdRef.current = toast({
+      title: 'Error!',
+      description: `Failed to update ${props.user.name}'s ${role} status.`,
+      status: 'error',
+      position: 'bottom-right',
+      duration: 3000,
+      isClosable: true,
+    });
+  }
 
   async function toggleStatus(role: string, currentRole: boolean) {
     if (role != 'mentor' && role != 'admin') return;
@@ -23,25 +53,11 @@ const UserInfo = (props: { user: User; resetReader: () => void }) => {
         await mutate('/api/users/all');
         if (role === 'mentor') setIsMentor((prev) => !prev);
         if (role === 'admin') setIsAdmin((prev) => !prev);
-        toast({
-          title: 'Success!',
-          description: `Successfully updated ${props.user.name}'s ${role} status.`,
-          status: 'success',
-          position: 'bottom-right',
-          duration: 3000,
-          isClosable: true,
-        });
+        triggerToast(role, 'success');
       })
       .catch(function (error) {
         console.log(error);
-        toast({
-          title: 'Error!',
-          description: `Failed to update ${props.user.name}'s ${role} status.`,
-          status: 'error',
-          position: 'bottom-right',
-          duration: 3000,
-          isClosable: true,
-        });
+        triggerToast(role, 'error');
       });
   }
 
