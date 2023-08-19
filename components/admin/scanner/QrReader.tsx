@@ -32,7 +32,7 @@ const QrReader = () => {
             description: `Failed to find user with email ${email}.`,
             status: 'error',
             position: 'bottom-right',
-            duration: 3000,
+            duration: 1000,
             isClosable: true,
           });
           resetReader();
@@ -47,7 +47,7 @@ const QrReader = () => {
           description: `Failed to look up user.`,
           status: 'error',
           position: 'bottom-right',
-          duration: 3000,
+          duration: 1000,
           isClosable: true,
         });
       });
