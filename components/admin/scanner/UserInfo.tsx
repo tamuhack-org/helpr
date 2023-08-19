@@ -5,7 +5,7 @@ import { FormControl, FormLabel, Switch, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { mutate } from 'swr';
 
-const UserInfo = (props: { user: User; resetReader: Function }) => {
+const UserInfo = (props: { user: User; resetReader: () => void }) => {
   const toast = useToast();
 
   const [isAdmin, setIsAdmin] = useState(props.user.admin);

@@ -16,7 +16,7 @@ import QrReader from '../components/admin/scanner/QrReader';
 import { MdDashboard } from 'react-icons/md';
 
 export default function Home() {
-  const { data, error, isLoading } = useSWR('/api/users/all', fetcher, {});
+  const { error, isLoading } = useSWR('/api/users/all', fetcher, {});
 
   if (isLoading || error) {
     return <Loading />;
