@@ -21,6 +21,7 @@
     "@types/stopword": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@vercel/analytics": "^1.0.1",
+    "@yudiel/react-qr-scanner": "^1.1.10",
     "axios": "^1.2.1",
     "dayjs": "^1.11.7",
     "eslint-config-prettier": "^8.5.0",
