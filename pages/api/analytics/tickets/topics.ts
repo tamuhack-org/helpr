@@ -32,7 +32,6 @@ export default async function handler(
   totalTickets.forEach((ticket) => {
     const issueTokens = ticket.issue.toLowerCase().split(' ');
     const relevantTokens = removeStopwords(issueTokens);
-    console.log('Ticket', ticket.issue);
 
     relevantTokens.forEach((token) => {
       if (frequencies[token]) {
