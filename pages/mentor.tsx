@@ -1,20 +1,30 @@
 import Head from 'next/head';
-import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
 
 import Banner from '../components/common/Banner';
 import Navbar from '../components/common/Navbar';
 import { Select } from '@chakra-ui/react';
 
-import { Session, getServerSession } from 'next-auth';
-import authOptions from './api/auth/[...nextauth]';
-import { Nullable } from '../lib/common';
-
-import prisma from '../lib/prisma';
 import TicketStream from '../components/tickets/TicketStream';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const [filter, setFilter] = useState('');
+  const session = useSession();
+  const router = useRouter();
+
+  if (!session) {
+    router.push('/login');
+    return;
+  }
+
+  if (
+    session.data?.user &&
+    (!session.data?.user.mentor || !session.data?.user.admin)
+  ) {
+    router.push('/');
+  }
 
   const handleDropdownChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -58,41 +68,3 @@ export default function Home() {
     </>
   );
 }
-
-//Check if user is authenticated
-//If not, redirect to login page
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session: Nullable<Session> = await getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  const user = await prisma.user.findUnique({
-    where: {
-      email: session.user?.email || '',
-    },
-  });
-
-  if (!user?.mentor && !user?.admin) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-};
