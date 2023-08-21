@@ -2,6 +2,11 @@ import React from 'react';
 import { fetcher } from '../../../lib/common';
 import useSWR from 'swr';
 
+interface FrequencyItem {
+  email: string;
+  frequency: number;
+}
+
 export default function Leaderboard() {
   const { data, error, isLoading } = useSWR(
     '/api/analytics/leaderboard',
@@ -12,6 +17,13 @@ export default function Leaderboard() {
   if (isLoading || error) {
     return <p>Loading...</p>;
   }
+
+  const frequency: { [key: string]: { email: string; frequency: number } } =
+    data;
+
+  const frequencyArray: FrequencyItem[] = Object.values(frequency);
+  frequencyArray.sort((a, b) => b.frequency - a.frequency);
+  console.log(frequencyArray);
 
   return (
     <div className="inline-block w-full md:w-auto border-[1px] rounded-lg overflow-hidden">
@@ -30,7 +42,7 @@ export default function Leaderboard() {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(data).map((key, index) => (
+            {frequencyArray.map((key, index) => (
               <tr key={key} className="dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-6 py-4 text-center">{index + 1}</td>
                 <th

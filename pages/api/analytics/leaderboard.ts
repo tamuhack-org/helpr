@@ -4,7 +4,7 @@ import { Nullable } from '../../../lib/common';
 import { getToken, JWT } from 'next-auth/jwt';
 
 import prisma from '../../../lib/prisma';
-import { Ticket } from '@prisma/client';
+import { ResolvedTicket } from '@prisma/client';
 
 /*
  * GET Request: Returns ranked list of users
@@ -32,13 +32,16 @@ export default async function handler(
     },
   });
 
-  const frequency: { [key: string]: number } = {};
+  const frequency: { [key: string]: { email: string; frequency: number } } = {};
 
-  tickets.forEach((ticket: Ticket) => {
+  tickets.forEach((ticket: ResolvedTicket) => {
     if (frequency[String(ticket.claimantName)]) {
-      frequency[String(ticket.claimantName)] += 1;
+      frequency[String(ticket.claimantName)].frequency += 1;
     } else {
-      frequency[String(ticket.claimantName)] = 1;
+      frequency[String(ticket.claimantName)] = {
+        email: ticket.claimantEmail || '',
+        frequency: 1,
+      };
     }
   });
 
