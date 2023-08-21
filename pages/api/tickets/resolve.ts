@@ -57,6 +57,7 @@ export default async function handler(
       resolvedTime: new Date(),
       claimantId: ticket.claimantId,
       claimantName: ticket.claimantName,
+      claimantEmail: user.email,
       authorId: ticket.authorId,
     },
   });
