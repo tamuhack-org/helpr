@@ -27,17 +27,18 @@ model Ticket {
 }
 
 model ResolvedTicket {
-  id           String    @id @default(cuid())
-  authorName   String
-  issue        String
-  location     String
-  contact      String
-  publishTime  DateTime  @default(now())
-  claimedTime  DateTime?
-  resolvedTime DateTime?
-  claimantId   String?
-  claimantName String?
-  authorId     String
+  id            String    @id @default(cuid())
+  authorName    String
+  issue         String
+  location      String
+  contact       String
+  publishTime   DateTime  @default(now())
+  claimedTime   DateTime?
+  resolvedTime  DateTime?
+  claimantId    String?
+  claimantName  String?
+  claimantEmail String?
+  authorId      String
 }
 
 model Account {
