@@ -1,32 +1,15 @@
 import Head from 'next/head';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-
-import useSWR from 'swr';
-import { fetcher } from '../lib/common';
+import { GetServerSideProps } from 'next';
 
 import Banner from '../components/common/Banner';
 import Navbar from '../components/common/Navbar';
 import Submit from '../components/home/Submit';
 
-import Loading from '../components/common/Loading';
+import { Session, getServerSession } from 'next-auth';
+import authOptions from './api/auth/[...nextauth]';
+import { Nullable } from '../lib/common';
 
 export default function Home() {
-  const session = useSession();
-  const router = useRouter();
-  const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {
-    refreshInterval: 5000,
-  });
-
-  if (!session) {
-    router.push('/login');
-    return;
-  }
-
-  if (isLoading || error) {
-    return <Loading />;
-  }
-
   return (
     <>
       <Head>
@@ -46,7 +29,7 @@ export default function Home() {
               <Navbar page="home" />
             </div>
             <div className="mx-4">
-              <Submit user={data.user} ticket={data.user?.ticket} />
+              <Submit />
             </div>
           </div>
         </div>
@@ -54,3 +37,24 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session: Nullable<Session> = await getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};

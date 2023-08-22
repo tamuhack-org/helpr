@@ -25,14 +25,21 @@ export default NextAuth({
           ticket: true,
         },
       });
-      token.admin = user?.admin;
-      token.mentor = user?.mentor;
+      token.admin = user?.admin || false;
+      token.mentor = user?.mentor || false;
       return token;
     },
     session: async ({ session, token }) => {
-      session.user.admin = token.admin;
-      session.user.mentor = token.mentor;
-      console.log('session', session);
+      const user = await prisma.user.findUnique({
+        where: {
+          email: token?.email || '',
+        },
+        include: {
+          ticket: true,
+        },
+      });
+      session.user.admin = user?.admin || false;
+      session.user.mentor = user?.mentor || false;
       return session;
     },
   },

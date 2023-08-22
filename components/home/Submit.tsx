@@ -2,25 +2,17 @@ import React from 'react';
 import axios from 'axios';
 import { Input } from '@chakra-ui/react';
 import InfoModal from './InfoModal';
-import Loading from '../common/Loading';
 import useSWR from 'swr';
 import { fetcher } from '../../lib/common';
 import { useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useSWRConfig } from 'swr';
-import { Ticket, User } from '@prisma/client';
 
-export default function Submit({
-  user,
-  ticket,
-}: {
-  user: User;
-  ticket: Ticket;
-}) {
+export default function Submit() {
   const toast = useToast();
 
   const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {
-    refreshInterval: 5000,
+    refreshInterval: 1000,
   });
 
   const { mutate } = useSWRConfig();
@@ -30,7 +22,7 @@ export default function Submit({
   const [contact, setContact] = useState('');
 
   if (isLoading || error) {
-    return <Loading />;
+    return <p>Loading</p>;
   }
 
   async function submitTicket() {
@@ -88,7 +80,7 @@ export default function Submit({
         method: 'post',
         url: '/api/tickets/cancel',
         data: {
-          ticketId: ticket.id,
+          ticketId: data.user.ticket.id,
         },
       }).then(async function () {
         await mutate('/api/users/me');
@@ -133,7 +125,7 @@ export default function Submit({
     <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
       <div className="flex justify-between items-center">
         <p className="font-bold text-3xl text-gray-700">Submit ticket</p>
-        <InfoModal email={user.email} />
+        <InfoModal email={data.user.email} />
       </div>
       <p className="mt-3 text-md text-gray-600">Issue</p>
       <Input
