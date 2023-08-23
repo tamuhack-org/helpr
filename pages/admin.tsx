@@ -1,11 +1,5 @@
-import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 
-import { Session, getServerSession } from 'next-auth';
-import authOptions from './api/auth/[...nextauth]';
-import { Nullable } from '../lib/common';
-
-import prisma from '../lib/prisma';
 import { fetcher } from '../lib/common';
 import useSWR from 'swr';
 
@@ -26,10 +20,8 @@ export default function Home() {
     <div className="h-full py-10">
       <Banner />
       <div className="flex flex-row justify-center mx-4 mt-8 md:mt-24">
-        <div className="flex flex-col justify-center w-screen sm:w-auto">
-          <div className="flex justify-center mb-6 2xl:w-[500px]">
-            <Navbar page="admin" />
-          </div>
+        <div className="flex flex-col gap-6 justify-center sm:w-auto w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
+          <Navbar page="admin" />
           <div className="flex flex-col gap-8 w-full">
             <Link
               href="/dashboard/overview"
@@ -45,43 +37,3 @@ export default function Home() {
     </div>
   );
 }
-
-//Check if user is authenticated
-//If not, redirect to login page
-//Then check if user is admin
-//If not, redirect to home page
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session: Nullable<Session> = await getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  const user = await prisma.user.findUnique({
-    where: {
-      email: session.user?.email || '',
-    },
-  });
-
-  if (!user?.admin) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-};

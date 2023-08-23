@@ -1,13 +1,8 @@
 import Head from 'next/head';
-import { GetServerSideProps } from 'next';
 
 import Banner from '../components/common/Banner';
 import Navbar from '../components/common/Navbar';
 import Submit from '../components/home/Submit';
-
-import { Session, getServerSession } from 'next-auth';
-import authOptions from './api/auth/[...nextauth]';
-import { Nullable } from '../lib/common';
 
 export default function Home() {
   return (
@@ -37,24 +32,3 @@ export default function Home() {
     </>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session: Nullable<Session> = await getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-};

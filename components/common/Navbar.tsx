@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import useSWR from 'swr';
-import { fetcher } from '../../lib/common';
+import { useSession } from 'next-auth/react';
 
 import {
   IoHomeOutline,
@@ -16,11 +15,9 @@ export type NavProps = {
 };
 
 export default function Navbar(props: NavProps) {
-  const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {
-    refreshInterval: 1000,
-  });
+  const session = useSession();
 
-  if (isLoading || !data.user || !props.page) {
+  if (!session.data || !session.data.user || !props.page) {
     return (
       <div className="flex justify-between w-full">
         <div className="flex">
@@ -54,7 +51,7 @@ export default function Navbar(props: NavProps) {
             <IoHomeOutline className="scale-[1.75] -translate-y-2/4 -translate-x-1/2" />
           </div>
         </Link>
-        {(data.user.mentor || data.user.admin) && !error && (
+        {(session.data.user.mentor || session.data.user.admin) && (
           <Link href="/mentor">
             <div
               className={`${
@@ -65,7 +62,7 @@ export default function Navbar(props: NavProps) {
             </div>
           </Link>
         )}
-        {data.user.admin && !error && (
+        {session.data.user.admin && (
           <Link href="/admin">
             <div
               className={`${
