@@ -10,10 +10,9 @@ HelpR is an [_open-source_](https://github.com/tamuhack-org/helpr) mentorship qu
 
 Our goal was to keep the software as easy to use as possible for both participants and mentors.
 
-<BoxGroup>
-  <img src="/images/mentoring/helpr-home.png" />
-  <img src="/images/mentoring/helpr-mentor.png" />
-</BoxGroup>
+|                     Home                      |                   Mentor View                   |
+| :-------------------------------------------: | :---------------------------------------------: |
+| ![](./public/images/mentoring/helpr-home.png) | ![](./public/images/mentoring/helpr-mentor.png) |
 
 ### HelpR Tech Stack
 
