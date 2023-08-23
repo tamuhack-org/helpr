@@ -6,7 +6,12 @@ export default withAuth({
     authorized({ req, token }) {
       const roles = { isAdmin: false, isMentor: false };
 
-      fetch('https://helpr.tamuhack.org/api/users/getRoles').then((res) => {
+      fetch(
+        'https://helpr.tamuhack.org/api/users/getRoles' +
+          new URLSearchParams({
+            email: token?.email || '',
+          })
+      ).then((res) => {
         console.log(res.json());
       });
 
