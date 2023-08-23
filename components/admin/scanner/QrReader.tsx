@@ -69,7 +69,7 @@ const QrReader = () => {
   return (
     <>
       <button
-        className="flex flex-row items-center justify-center text-center py-4 px-8 bg-blue-500 text-white font-bold rounded-xl shadow-xl cursor-pointer w-full gap-3"
+        className="flex flex-row items-center justify-center text-center py-4 px-8 bg-blue-500 text-white font-bold rounded-xl cursor-pointer w-full gap-3"
         onClick={onOpen}
       >
         <MdQrCodeScanner size={24} />
