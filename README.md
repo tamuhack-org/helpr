@@ -23,6 +23,7 @@ Our goal was to keep the software as easy to use as possible for both participan
 ### Quick Start
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftamuhack-org%2Fhelpr&env=NEXTAUTH_URL,NEXTAUTH_SECRET,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,DATABASE_PRISMA_URL&envDescription=Necessary%20Environment%20Variables%20for%20Auth%20and%20DB.%20See%20link%20for%20more%20info%20about%20NextAuth%20variables&envLink=https%3A%2F%2Fnext-auth.js.org%2Fconfiguration%2Foptions)
+
 Deploy to Vercel with only a few clicks. Vercel will ask for information about the necessary environment variables.
 
 ## Running HelpR Locally
