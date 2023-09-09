@@ -8,8 +8,6 @@ import axios from 'axios';
 
 export default function ClaimButton(props: { ticket: Ticket }) {
   const { data, isLoading } = useSWR('/api/users/me', fetcher, {});
-
-  console.log(data);
   const [claimLoading, setClaimLoading] = useState(false);
   const [unclaimLoading, setUnclaimLoading] = useState(false);
   const toast = useToast();

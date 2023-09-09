@@ -56,10 +56,9 @@ export default function Submit() {
         });
       });
     } catch (e) {
-      const error = e as Error;
       toast({
         title: 'Error',
-        description: error.message,
+        description: 'Ticket length is too long!',
         status: 'error',
         position: 'bottom-right',
         duration: 3000,
@@ -87,6 +86,7 @@ export default function Submit() {
       });
     } catch (e) {
       const error = e as Error;
+      console.log(error.message);
       toast({
         title: 'Error',
         description: error.message,

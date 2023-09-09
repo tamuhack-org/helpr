@@ -29,8 +29,6 @@ export default async function handler(
     return;
   }
 
-  console.log(token);
-
   const user = await prisma.user.findUnique({
     where: {
       email: token?.email || '',
