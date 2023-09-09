@@ -3,11 +3,13 @@ import { useToast } from '@chakra-ui/react';
 import useSWR, { mutate } from 'swr';
 import { useState } from 'react';
 import { Ticket } from '@prisma/client';
-import { fetchData } from 'next-auth/client/_utils';
+import { fetcher } from '../../lib/common';
 import axios from 'axios';
 
 export default function ClaimButton(props: { ticket: Ticket }) {
-  const { data, isLoading } = useSWR('/api/users/me', fetchData, {});
+  const { data, isLoading } = useSWR('/api/users/me', fetcher, {});
+
+  console.log(data);
   const [claimLoading, setClaimLoading] = useState(false);
   const [unclaimLoading, setUnclaimLoading] = useState(false);
   const toast = useToast();
