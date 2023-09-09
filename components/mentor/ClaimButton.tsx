@@ -75,7 +75,7 @@ export default function ClaimButton(props: { ticket: Ticket }) {
   if (
     !unclaimLoading &&
     (claimLoading ||
-      (props.ticket.claimantId && props.ticket.claimantId == data.user.id))
+      (props.ticket.claimantId && props.ticket.claimantId == data?.user.id))
   ) {
     return (
       <div className="flex justify-between items-center mt-6">
