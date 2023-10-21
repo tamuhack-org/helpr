@@ -1,6 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import useSWR from 'swr';
-import Loading from '../../../components/common/Loading';
 import { Nullable, fetcher } from '../../../lib/common';
 import { useRouter } from 'next/router';
 import { User } from '@prisma/client';

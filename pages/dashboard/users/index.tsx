@@ -82,7 +82,7 @@ const Users: NextPageWithLayout = () => {
                     </td>
                     <td className="px-6 py-4">
                       <a
-                        href={`/dashboard/users/user?email=${user.email}`}
+                        href={`/dashboard/users/${user.email}`}
                         className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                       >
                         View
