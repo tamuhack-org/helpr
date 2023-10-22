@@ -14,12 +14,14 @@ import useSWR from 'swr';
 import { User } from '@prisma/client';
 import styles from '../../../styles/Home.module.css';
 import { MdCheck } from 'react-icons/md';
-import { Input, InputGroup } from '@chakra-ui/react';
+import { Button, ButtonGroup, Input, InputGroup } from '@chakra-ui/react';
 
 const Users: NextPageWithLayout = () => {
   const { data, error, isLoading } = useSWR('/api/users/all', fetcher, {});
 
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showOnlyMentors, setShowOnlyMentors] = useState<boolean>(false);
+  const [showOnlyAdmins, setShowOnlyAdmins] = useState<boolean>(false);
 
   const handleSearchQueryChange = (event: any) => {
     const value = event.target.value;
@@ -27,8 +29,15 @@ const Users: NextPageWithLayout = () => {
   };
 
   const searchFilter = (user: User) => {
+    if (showOnlyMentors && !user.mentor) return false;
+    if (showOnlyAdmins && !user.admin) return false;
     return user.name.toLowerCase().includes(searchQuery) || user.email.toLowerCase().includes(searchQuery);
   }
+
+  useEffect(() => {
+    console.log(showOnlyAdmins);
+  }
+    , [showOnlyAdmins]);
 
   if (isLoading || error) {
     return <></>;
@@ -51,11 +60,15 @@ const Users: NextPageWithLayout = () => {
           <MiniNumberDisplay role="Admins" number={data.users.filter((user: User) => user.admin).length} />
         </div>
       </div>
-      <form className="mt-4">
+      <div className="mt-4 flex gap-2">
         <InputGroup>
           <Input placeholder="Search users" onChange={handleSearchQueryChange} value={searchQuery} />
         </InputGroup>
-      </form>
+        <ButtonGroup spacing="2">
+          <Button variant={showOnlyMentors ? "solid" : "outline"} onClick={() => setShowOnlyMentors(!showOnlyMentors)}>Mentor</Button>
+          <Button variant={showOnlyAdmins ? "solid" : "outline"} onClick={() => setShowOnlyAdmins(!showOnlyAdmins)}>Admin</Button>
+        </ButtonGroup>
+      </div>
       <div className="mt-4">
         <div className="inline-block w-full border-[1px] rounded-lg overflow-hidden">
           <div className="relative overflow-x-auto sm:rounded-lg">
