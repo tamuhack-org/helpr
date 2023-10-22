@@ -7,7 +7,7 @@ import prisma from '../../../lib/prisma';
 
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 
-import { useState, type ReactElement, useEffect } from 'react';
+import { useState, type ReactElement } from 'react';
 import type { NextPageWithLayout } from '../../_app';
 import MiniNumberDisplay from '../../../components/dashboard/users/MiniNumberDisplay';
 import useSWR from 'swr';
@@ -23,7 +23,7 @@ const Users: NextPageWithLayout = () => {
   const [showOnlyMentors, setShowOnlyMentors] = useState<boolean>(false);
   const [showOnlyAdmins, setShowOnlyAdmins] = useState<boolean>(false);
 
-  const handleSearchQueryChange = (event: any) => {
+  const handleSearchQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchQuery(value);
   };
@@ -33,11 +33,6 @@ const Users: NextPageWithLayout = () => {
     if (showOnlyAdmins && !user.admin) return false;
     return user.name.toLowerCase().includes(searchQuery) || user.email.toLowerCase().includes(searchQuery);
   }
-
-  useEffect(() => {
-    console.log(showOnlyAdmins);
-  }
-    , [showOnlyAdmins]);
 
   if (isLoading || error) {
     return <></>;
