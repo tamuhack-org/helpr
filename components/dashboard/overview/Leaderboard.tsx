@@ -1,7 +1,13 @@
 import React from 'react';
 import { fetcher } from '../../../lib/common';
 import useSWR from 'swr';
-import styles from '../../../styles/Home.module.css'
+import Link from 'next/link';
+
+interface FrequencyItem {
+  name: string;
+  email: string;
+  frequency: number;
+}
 
 export default function Leaderboard() {
   const { data, error, isLoading } = useSWR(
@@ -13,6 +19,12 @@ export default function Leaderboard() {
   if (isLoading || error) {
     return <p>Loading...</p>;
   }
+
+  const frequency: { [key: string]: FrequencyItem } = data;
+
+  const frequencyArray: FrequencyItem[] = Object.values(frequency);
+  frequencyArray.sort((a, b) => b.frequency - a.frequency);
+  console.log(frequencyArray);
 
   return (
     <div className="inline-block w-full md:w-auto border-[1px] rounded-lg overflow-hidden">
@@ -31,25 +43,28 @@ export default function Leaderboard() {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(data).map((key, index) => (
-              <tr key={key} className="dark:bg-gray-800 dark:border-gray-700">
+            {frequencyArray.map((key, index) => (
+              <tr
+                key={key.email}
+                className="dark:bg-gray-800 dark:border-gray-700"
+              >
                 <td className="px-6 py-4 text-center">{index + 1}</td>
                 <th
                   scope="row"
-                  className={`pr-6 py-4 min-w-[200px] max-w-[200px] overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white ${styles.hideScrollbar}`}
+                  className="pr-6 py-4 min-w-[200px] max-w-[200px] overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {key.split(',')[0]}{' '}
+                  {key.name}{' '}
                 </th>
                 <td className="px-6 py-4 font-medium text-gray-900 text-center">
-                  {data[key]}
+                  {key.frequency}
                 </td>
                 <td className="px-6 py-4">
-                  <a
-                    href={`/dashboard/users/${key.split(',')[1]}`}
+                  <Link
+                    href={`/dashboard/users/${key.email}`}
                     className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                   >
                     View
-                  </a>
+                  </Link>
                 </td>
               </tr>
             ))}

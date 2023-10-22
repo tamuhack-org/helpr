@@ -3,11 +3,11 @@ import { useToast } from '@chakra-ui/react';
 import useSWR, { mutate } from 'swr';
 import { useState } from 'react';
 import { Ticket } from '@prisma/client';
-import { fetchData } from 'next-auth/client/_utils';
+import { fetcher } from '../../lib/common';
 import axios from 'axios';
 
 export default function ClaimButton(props: { ticket: Ticket }) {
-  const { data, isLoading } = useSWR('/api/users/me', fetchData, {});
+  const { data, isLoading } = useSWR('/api/users/me', fetcher, {});
   const [claimLoading, setClaimLoading] = useState(false);
   const [unclaimLoading, setUnclaimLoading] = useState(false);
   const toast = useToast();
@@ -75,7 +75,7 @@ export default function ClaimButton(props: { ticket: Ticket }) {
   if (
     !unclaimLoading &&
     (claimLoading ||
-      (props.ticket.claimantId && props.ticket.claimantId == data.user.id))
+      (props.ticket.claimantId && props.ticket.claimantId == data?.user.id))
   ) {
     return (
       <div className="flex justify-between items-center mt-6">

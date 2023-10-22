@@ -32,14 +32,19 @@ export default async function handler(
     },
   });
 
-  const frequency: { [key: string]: number } = {};
+  const frequency: {
+    [key: string]: { email: string; frequency: number; name: string };
+  } = {};
 
   tickets.forEach((ticket: ResolvedTicket) => {
-    const keyString = String(`${ticket.claimantName},${ticket.claimantEmail}`);
-    if (frequency[keyString]) {
-      frequency[keyString] += 1;
+    if (frequency[String(ticket.claimantName)]) {
+      frequency[String(ticket.claimantName)].frequency += 1;
     } else {
-      frequency[keyString] = 1;
+      frequency[String(ticket.claimantName)] = {
+        email: ticket.claimantEmail || '',
+        name: ticket.claimantName || '',
+        frequency: 1,
+      };
     }
   });
 
