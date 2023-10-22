@@ -7,16 +7,28 @@ import prisma from '../../../lib/prisma';
 
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 
-import type { ReactElement } from 'react';
+import { useState, type ReactElement, useEffect } from 'react';
 import type { NextPageWithLayout } from '../../_app';
 import MiniNumberDisplay from '../../../components/dashboard/users/MiniNumberDisplay';
 import useSWR from 'swr';
 import { User } from '@prisma/client';
 import styles from '../../../styles/Home.module.css';
 import { MdCheck } from 'react-icons/md';
+import { Input, InputGroup } from '@chakra-ui/react';
 
 const Users: NextPageWithLayout = () => {
   const { data, error, isLoading } = useSWR('/api/users/all', fetcher, {});
+
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const handleSearchQueryChange = (event: any) => {
+    const value = event.target.value;
+    setSearchQuery(value);
+  };
+
+  const searchFilter = (user: User) => {
+    return user.name.toLowerCase().includes(searchQuery) || user.email.toLowerCase().includes(searchQuery);
+  }
 
   if (isLoading || error) {
     return <></>;
@@ -39,6 +51,11 @@ const Users: NextPageWithLayout = () => {
           <MiniNumberDisplay role="Admins" number={data.users.filter((user: User) => user.admin).length} />
         </div>
       </div>
+      <form className="mt-4">
+        <InputGroup>
+          <Input placeholder="Search users" onChange={handleSearchQueryChange} value={searchQuery} />
+        </InputGroup>
+      </form>
       <div className="mt-4">
         <div className="inline-block w-full border-[1px] rounded-lg overflow-hidden">
           <div className="relative overflow-x-auto sm:rounded-lg">
@@ -62,34 +79,39 @@ const Users: NextPageWithLayout = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.users.map((user: User, index: number) => (
-                  <tr key={index} className="dark:bg-gray-800 dark:border-gray-700 w-full">
-                    <td className="px-6 py-4 text-center">{index + 1}</td>
-                    <td
-                      scope="row"
-                      className={` py-4 overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white ${styles.hideScrollbar}`}
-                    >
-                      {user.name}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-gray-900">
-                      {user.email}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-gray-900">
-                      {user.mentor && <MdCheck />}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-gray-900">
-                      {user.admin && <MdCheck />}
-                    </td>
-                    <td className="px-6 py-4">
-                      <a
-                        href={`/dashboard/users/${user.email}`}
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                      >
-                        View
-                      </a>
-                    </td>
+                {data.users.filter((user: User) => searchFilter(user)).length === 0 ?
+                  <tr className="dark:bg-gray-800 dark:border-gray-700 w-full">
+                    <td className="px-6 py-4 text-center" />
+                    <td className="px-6 py-4 text-center" colSpan={6}>No users found.</td>
                   </tr>
-                ))}
+                  : data.users.filter((user: User) => searchFilter(user)).map((user: User, index: number) => (
+                    <tr key={index} className="dark:bg-gray-800 dark:border-gray-700 w-full">
+                      <td className="px-6 py-4 text-center">{index + 1}</td>
+                      <td
+                        scope="row"
+                        className={` py-4 overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white ${styles.hideScrollbar}`}
+                      >
+                        {user.name}
+                      </td>
+                      <td className="px-6 py-4 font-medium text-gray-900">
+                        {user.email}
+                      </td>
+                      <td className="px-6 py-4 font-medium text-gray-900">
+                        {user.mentor && <MdCheck />}
+                      </td>
+                      <td className="px-6 py-4 font-medium text-gray-900">
+                        {user.admin && <MdCheck />}
+                      </td>
+                      <td className="px-6 py-4">
+                        <a
+                          href={`/dashboard/users/${user.email}`}
+                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        >
+                          View
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
