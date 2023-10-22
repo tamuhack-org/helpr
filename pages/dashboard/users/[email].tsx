@@ -11,7 +11,7 @@ import prisma from '../../../lib/prisma';
 import authOptions from '../../api/auth/[...nextauth]';
 import Image from 'next/image';
 import { Tag } from '@chakra-ui/react';
-import { MiniResolvedTickets } from '../../../components/dashboard/overview/MiniIncomingTickets';
+import { MiniIncomingTickets, MiniResolvedTickets } from '../../../components/dashboard/overview/MiniIncomingTickets';
 import Topics from '../../../components/dashboard/overview/Topics';
 
 const UserInfo: NextPageWithLayout = () => {
@@ -52,16 +52,16 @@ const UserInfo: NextPageWithLayout = () => {
           </div>
         </div>
       </div>
+      <div className="flex gap-2 mt-8">
+        <MiniIncomingTickets authorId={user?.id} />
+        {user?.mentor && <MiniResolvedTickets email={user?.email} />
+        }
+      </div>
       {user?.mentor && (
-        <>
-          <div className="flex mt-8">
-            <MiniResolvedTickets email={user?.email} />
-          </div>
-          <div className="mt-8">
-            <p className="text-3xl font-bold mb-4">Topics</p>
-            <Topics email={user?.email} />
-          </div>
-        </>
+        <div className="mt-8">
+          <p className="text-3xl font-bold mb-4">Topics</p>
+          <Topics email={user?.email} />
+        </div>
       )}
     </div>
   )

@@ -35,9 +35,9 @@ export function createDataPoints(data: [Ticket]) {
   return datapoints;
 }
 
-export function MiniIncomingTickets() {
+export function MiniIncomingTickets({ authorId }: { authorId?: string | undefined }) {
   const { data, error, isLoading } = useSWR(
-    '/api/analytics/tickets/incoming',
+    authorId ? `/api/analytics/tickets/userincoming?authorId=${authorId}` : '/api/analytics/tickets/incoming',
     fetcher,
     {}
   );
