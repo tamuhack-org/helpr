@@ -38,102 +38,14 @@ export default function Leaderboard() {
                   scope="row"
                   className={`pr-6 py-4 min-w-[200px] max-w-[200px] overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white ${styles.hideScrollbar}`}
                 >
-                  {key}{' '}
+                  {key.split(',')[0]}{' '}
                 </th>
                 <td className="px-6 py-4 font-medium text-gray-900 text-center">
                   {data[key]}
                 </td>
                 <td className="px-6 py-4">
                   <a
-                    href="#"
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                  >
-                    View
-                  </a>
-                </td>
-              </tr>
-            ))}
-            {Object.keys(data).map((key, index) => (
-              <tr key={key} className="dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-6 py-4 text-center">{index + 1}</td>
-                <th
-                  scope="row"
-                  className={`pr-6 py-4 min-w-[200px] max-w-[200px] overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white ${styles.hideScrollbar}`}
-                >
-                  {key}{' '}
-                </th>
-                <td className="px-6 py-4 font-medium text-gray-900 text-center">
-                  {data[key]}
-                </td>
-                <td className="px-6 py-4">
-                  <a
-                    href="#"
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                  >
-                    View
-                  </a>
-                </td>
-              </tr>
-            ))}
-            {Object.keys(data).map((key, index) => (
-              <tr key={key} className="dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-6 py-4 text-center">{index + 1}</td>
-                <th
-                  scope="row"
-                  className={`pr-6 py-4 min-w-[200px] max-w-[200px] overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white ${styles.hideScrollbar}`}
-                >
-                  {key}{' '}
-                </th>
-                <td className="px-6 py-4 font-medium text-gray-900 text-center">
-                  {data[key]}
-                </td>
-                <td className="px-6 py-4">
-                  <a
-                    href="#"
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                  >
-                    View
-                  </a>
-                </td>
-              </tr>
-            ))}
-            {Object.keys(data).map((key, index) => (
-              <tr key={key} className="dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-6 py-4 text-center">{index + 1}</td>
-                <th
-                  scope="row"
-                  className={`pr-6 py-4 min-w-[200px] max-w-[200px] overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white ${styles.hideScrollbar}`}
-                >
-                  {key}{' '}
-                </th>
-                <td className="px-6 py-4 font-medium text-gray-900 text-center">
-                  {data[key]}
-                </td>
-                <td className="px-6 py-4">
-                  <a
-                    href="#"
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                  >
-                    View
-                  </a>
-                </td>
-              </tr>
-            ))}
-            {Object.keys(data).map((key, index) => (
-              <tr key={key} className="dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-6 py-4 text-center">{index + 1}</td>
-                <th
-                  scope="row"
-                  className={`pr-6 py-4 min-w-[200px] max-w-[200px] overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white ${styles.hideScrollbar}`}
-                >
-                  {key}{' '}
-                </th>
-                <td className="px-6 py-4 font-medium text-gray-900 text-center">
-                  {data[key]}
-                </td>
-                <td className="px-6 py-4">
-                  <a
-                    href="#"
+                    href={`/dashboard/users/${key.split(',')[1]}`}
                     className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                   >
                     View
