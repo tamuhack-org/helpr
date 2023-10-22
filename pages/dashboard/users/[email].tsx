@@ -11,6 +11,7 @@ import prisma from '../../../lib/prisma';
 import authOptions from '../../api/auth/[...nextauth]';
 import Image from 'next/image';
 import { Tag } from '@chakra-ui/react';
+import MentorTopics from '../../../components/dashboard/users/MentorTopics';
 
 const UserInfo: NextPageWithLayout = () => {
   const [user, setUser] = useState<User | null>();
@@ -50,7 +51,8 @@ const UserInfo: NextPageWithLayout = () => {
           </div>
         </div>
       </div>
-
+      {user?.mentor && (
+        <MentorTopics email={user?.email} />)}
     </div>
   )
 }
