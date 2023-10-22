@@ -11,7 +11,8 @@ import prisma from '../../../lib/prisma';
 import authOptions from '../../api/auth/[...nextauth]';
 import Image from 'next/image';
 import { Tag } from '@chakra-ui/react';
-import MentorTopics from '../../../components/dashboard/users/MentorTopics';
+import { MiniResolvedTickets } from '../../../components/dashboard/overview/MiniIncomingTickets';
+import Topics from '../../../components/dashboard/overview/Topics';
 
 const UserInfo: NextPageWithLayout = () => {
   const [user, setUser] = useState<User | null>();
@@ -52,7 +53,16 @@ const UserInfo: NextPageWithLayout = () => {
         </div>
       </div>
       {user?.mentor && (
-        <MentorTopics email={user?.email} />)}
+        <>
+          <div className="flex mt-8">
+            <MiniResolvedTickets email={user?.email} />
+          </div>
+          <div className="mt-8">
+            <p className="text-3xl font-bold mb-4">Topics</p>
+            <Topics email={user?.email} />
+          </div>
+        </>
+      )}
     </div>
   )
 }

@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation'
 
 
@@ -17,7 +16,7 @@ export default function Breadcrumbs() {
               className={`${index == breadcrumbs.length - 1 ? '' : 'text-gray-500'
                 } hover:underline`}
             >
-              {breadcrumb.charAt(0).toUpperCase() + breadcrumb.slice(1)}
+              {breadcrumb.includes('@') ? breadcrumb : breadcrumb.charAt(0).toUpperCase() + breadcrumb.slice(1)}
             </p>
           </Link>
           <p

@@ -2,9 +2,9 @@ import React from 'react';
 import { fetcher } from '../../../lib/common';
 import useSWR from 'swr';
 
-export default function Topics() {
+export default function Topics({ email }: { email?: string | undefined }) {
   const { data, error, isLoading } = useSWR(
-    '/api/analytics/tickets/topics',
+    email ? `/api/analytics/tickets/mentortopics?email=${email}` : '/api/analytics/tickets/topics',
     fetcher,
     {}
   );

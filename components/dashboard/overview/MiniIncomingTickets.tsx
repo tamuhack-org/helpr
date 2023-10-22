@@ -96,9 +96,9 @@ export function MiniIncomingTickets() {
   );
 }
 
-export function MiniResolvedTickets() {
+export function MiniResolvedTickets({ email }: { email?: string | undefined }) {
   const { data, error, isLoading } = useSWR(
-    '/api/tickets/resolved',
+    email ? `/api/tickets/mentorresolved?email=${email}` : '/api/tickets/resolved',
     fetcher,
     {}
   );
