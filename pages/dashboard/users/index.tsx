@@ -28,6 +28,10 @@ const Users: NextPageWithLayout = () => {
     setSearchQuery(value);
   };
 
+  const handleRowClick = (email: string) => {
+    window.location.href = `/dashboard/users/${email}`;
+  };
+
   const searchFilter = (user: User) => {
     if (showOnlyMentors && !user.mentor) return false;
     if (showOnlyAdmins && !user.admin) return false;
@@ -44,24 +48,18 @@ const Users: NextPageWithLayout = () => {
       <p className="text-gray-500 mt-1">
         View and manage your users.
       </p>
-      <div className="flex flex-row gap-8 justify-between items-center mt-8">
-        <div className="w-1/3">
-          <MiniNumberDisplay role="Users" number={data.users.length} />
-        </div>
-        <div className="w-1/3">
-          <MiniNumberDisplay role="Mentors" number={data.users.filter((user: User) => user.mentor).length} />
-        </div>
-        <div className="w-1/3">
-          <MiniNumberDisplay role="Admins" number={data.users.filter((user: User) => user.admin).length} />
-        </div>
+      <div className="flex flex-row gap-4 justify-start items-center mt-8 w-full">
+        <MiniNumberDisplay role="Users" number={data.users.length} />
+        <MiniNumberDisplay role="Mentors" number={data.users.filter((user: User) => user.mentor).length} />
+        <MiniNumberDisplay role="Admins" number={data.users.filter((user: User) => user.admin).length} />
       </div>
       <div className="mt-4 flex gap-2">
         <InputGroup>
           <Input placeholder="Search users" onChange={handleSearchQueryChange} value={searchQuery} />
         </InputGroup>
         <ButtonGroup spacing="2">
-          <Button variant={showOnlyMentors ? "solid" : "outline"} onClick={() => setShowOnlyMentors(!showOnlyMentors)}>Mentor</Button>
-          <Button variant={showOnlyAdmins ? "solid" : "outline"} onClick={() => setShowOnlyAdmins(!showOnlyAdmins)}>Admin</Button>
+          <Button colorScheme="blue" variant={showOnlyMentors ? "solid" : "outline"} onClick={() => setShowOnlyMentors(!showOnlyMentors)}>Mentor</Button>
+          <Button colorScheme="blue" variant={showOnlyAdmins ? "solid" : "outline"} onClick={() => setShowOnlyAdmins(!showOnlyAdmins)}>Admin</Button>
         </ButtonGroup>
       </div>
       <div className="mt-4">
@@ -74,7 +72,7 @@ const Users: NextPageWithLayout = () => {
                   <th scope="col" className=" w-2/5 py-3">
                     Name
                   </th>
-                  <th scope="col" className="w-3/5 px-6 py-3">
+                  <th scope="col" className="w-3/5 px-6 py-3 max-lg:hidden">
                     Email
                   </th>
                   <th scope="col" className="px-6 py-3">
@@ -83,7 +81,6 @@ const Users: NextPageWithLayout = () => {
                   <th scope="col" className="px-6 py-3">
                     Admin?
                   </th>
-                  <th scope="col" className="px-6 py-3"></th>
                 </tr>
               </thead>
               <tbody>
@@ -93,7 +90,7 @@ const Users: NextPageWithLayout = () => {
                     <td className="px-6 py-4 text-center" colSpan={6}>No users found.</td>
                   </tr>
                   : data.users.filter((user: User) => searchFilter(user)).map((user: User, index: number) => (
-                    <tr key={index} className="dark:bg-gray-800 dark:border-gray-700 w-full">
+                    <tr key={index} className="dark:bg-gray-800 dark:border-gray-700 w-full cursor-pointer hover:bg-gray-100" onClick={() => handleRowClick(user.email)}>
                       <td className="px-6 py-4 text-center">{index + 1}</td>
                       <td
                         scope="row"
@@ -101,7 +98,7 @@ const Users: NextPageWithLayout = () => {
                       >
                         {user.name}
                       </td>
-                      <td className="px-6 py-4 font-medium text-gray-900">
+                      <td className="px-6 py-4 font-medium text-gray-900 max-lg:hidden">
                         {user.email}
                       </td>
                       <td className="px-6 py-4 font-medium text-gray-900">
@@ -110,14 +107,14 @@ const Users: NextPageWithLayout = () => {
                       <td className="px-6 py-4 font-medium text-gray-900">
                         {user.admin && <MdCheck />}
                       </td>
-                      <td className="px-6 py-4">
+                      {/* <td className="px-6 py-4">
                         <a
                           href={`/dashboard/users/${user.email}`}
                           className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                         >
                           View
                         </a>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
               </tbody>
