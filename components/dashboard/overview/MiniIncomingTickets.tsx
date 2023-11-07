@@ -9,7 +9,7 @@ function emptyPoints(count: number) {
   return Array.from({ length: count }, () => ({ Tickets: 0 }));
 }
 
-export function createDataPoints(data: [Ticket], hoursAgo: number = 6) {
+export function createDataPoints(data: [Ticket], hoursAgo = 6) {
   const times = data.map((ticket) => new Date(ticket.publishTime));
 
   const currentTime = new Date();
