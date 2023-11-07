@@ -13,6 +13,8 @@ import Image from 'next/image';
 import { Tag } from '@chakra-ui/react';
 import { MiniIncomingTickets, MiniResolvedTickets } from '../../../components/dashboard/overview/MiniIncomingTickets';
 import Topics from '../../../components/dashboard/overview/Topics';
+import { MiniTotalTicketsResolved } from '../../../components/dashboard/users/MiniTotalTicketsResolved';
+import { MiniTotalTicketsCreated } from '../../../components/dashboard/users/MiniTotalTicketsCreated';
 
 const UserInfo: NextPageWithLayout = () => {
   const [user, setUser] = useState<User | null>();
@@ -30,31 +32,23 @@ const UserInfo: NextPageWithLayout = () => {
 
   return (
     <div className="flex flex-col w-full items-start mt-4">
-      <div className="flex flex-row w-full gap-6">
-        {user?.image ? (
-          <Image
-            src={user.image}
-            alt="user-image"
-            className="rounded-full"
-            width={120}
-            height={120}
-            sizes="(max-width: 768px) 25px, (max-width: 1200px) 36px, 50px"
-          />
-        ) : (
-          <div className="w-32 rounded-full bg-gray-400" />
-        )}
-        <div className="flex flex-col gap-4">
-          <h1 className="text-2xl font-bold -mb-3">{user?.name}</h1>
-          <p>{user?.email}</p>
-          <div className="flex flex-row gap-2">
-            {user?.admin && <Tag>Admin</Tag>}
-            {user?.mentor && <Tag>Mentor</Tag>}
-          </div>
+      <div className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold -mb-3">{user?.name}</h1>
+        <p>{user?.email}</p>
+        <div className="flex flex-row gap-2">
+          {user?.admin && <Tag>Admin</Tag>}
+          {user?.mentor && <Tag>Mentor</Tag>}
         </div>
       </div>
-      <div className="flex gap-2 mt-8">
-        <MiniIncomingTickets authorId={user?.id} />
-        {user?.mentor && <MiniResolvedTickets email={user?.email} />
+      <div className="flex flex-col gap-2 mt-8">
+        <div className="flex gap-2">
+          <MiniTotalTicketsCreated userId={user?.id} />
+          {user?.mentor &&
+            <MiniTotalTicketsResolved email={user?.email} />
+          }
+        </div>
+        {user?.mentor &&
+          <MiniResolvedTickets email={user?.email} />
         }
       </div>
       {user?.mentor && (

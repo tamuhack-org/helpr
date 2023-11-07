@@ -53,7 +53,7 @@ const Users: NextPageWithLayout = () => {
         <MiniNumberDisplay role="Mentors" number={data.users.filter((user: User) => user.mentor).length} />
         <MiniNumberDisplay role="Admins" number={data.users.filter((user: User) => user.admin).length} />
       </div>
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex gap-2 lg:w-[500px]">
         <InputGroup>
           <Input placeholder="Search users" onChange={handleSearchQueryChange} value={searchQuery} />
         </InputGroup>
@@ -63,16 +63,16 @@ const Users: NextPageWithLayout = () => {
         </ButtonGroup>
       </div>
       <div className="mt-4">
-        <div className="inline-block w-full border-[1px] rounded-lg overflow-hidden">
+        <div className="inline-block border-[1px] rounded-lg overflow-hidden">
           <div className="relative overflow-x-auto sm:rounded-lg">
-            <table className="block w-full text-sm text-left text-gray-500 dark:text-gray-500 max-h-[500px]">
-              <thead className="w-full sticky top-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <table className="block text-sm text-left text-gray-500 dark:text-gray-500 max-h-[500px]">
+              <thead className=" sticky top-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="w-auto py-3"></th>
-                  <th scope="col" className=" w-2/5 py-3">
+                  <th scope="col" className=" py-3">
                     Name
                   </th>
-                  <th scope="col" className="w-3/5 px-6 py-3 max-lg:hidden">
+                  <th scope="col" className=" px-6 py-3 max-lg:hidden">
                     Email
                   </th>
                   <th scope="col" className="px-6 py-3">

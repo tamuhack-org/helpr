@@ -9,22 +9,22 @@ function emptyPoints(count: number) {
   return Array.from({ length: count }, () => ({ Tickets: 0 }));
 }
 
-export function createDataPoints(data: [Ticket]) {
+export function createDataPoints(data: [Ticket], hoursAgo: number = 6) {
   const times = data.map((ticket) => new Date(ticket.publishTime));
 
   const currentTime = new Date();
 
-  const sixHoursAgo = new Date(currentTime.getTime() - 6 * 60 * 60 * 1000);
+  const xHoursAgo = new Date(currentTime.getTime() - hoursAgo * 60 * 60 * 1000);
 
-  const timesWithinLastSixHours = times.filter((time) => time >= sixHoursAgo);
+  const timesWithinLastXHours = times.filter((time) => time >= xHoursAgo);
 
   const timesPerHour: { [hour: number]: number } = {};
 
-  timesWithinLastSixHours.forEach((time) => {
+  timesWithinLastXHours.forEach((time) => {
     const hour = time.getHours();
-    const hourRelativeToSixHoursAgo = (hour - sixHoursAgo.getHours() + 24) % 24;
-    timesPerHour[hourRelativeToSixHoursAgo - 1] =
-      (timesPerHour[hourRelativeToSixHoursAgo - 1] || 0) + 1;
+    const hourRelativeToXHoursAgo = (hour - xHoursAgo.getHours() + 24) % 24;
+    timesPerHour[hourRelativeToXHoursAgo - 1] =
+      (timesPerHour[hourRelativeToXHoursAgo - 1] || 0) + 1;
   });
 
   // Generate the final result in the desired format, substituting 0 for missing hours
@@ -35,9 +35,8 @@ export function createDataPoints(data: [Ticket]) {
   return datapoints;
 }
 
-export function MiniIncomingTickets({ authorId }: { authorId?: string | undefined }) {
-  const { data, error, isLoading } = useSWR(
-    authorId ? `/api/analytics/tickets/userincoming?authorId=${authorId}` : '/api/analytics/tickets/incoming',
+export function MiniIncomingTickets() {
+  const { data, error, isLoading } = useSWR('/api/analytics/tickets/incoming',
     fetcher,
     {}
   );
@@ -98,7 +97,7 @@ export function MiniIncomingTickets({ authorId }: { authorId?: string | undefine
 
 export function MiniResolvedTickets({ email }: { email?: string | undefined }) {
   const { data, error, isLoading } = useSWR(
-    email ? `/api/tickets/mentorresolved?email=${email}` : '/api/tickets/resolved',
+    email ? `/api/analytics/tickets/mentorresolved?email=${email}` : '/api/tickets/resolved',
     fetcher,
     {}
   );
@@ -106,7 +105,17 @@ export function MiniResolvedTickets({ email }: { email?: string | undefined }) {
   if (error) {
     return <p>Error</p>;
   }
-  const points = data ? createDataPoints(data.tickets) : emptyPoints(6);
+
+  let points = [];
+  if (data) {
+    if (email) {
+      points = createDataPoints(data.tickets, 24);
+    } else {
+      points = createDataPoints(data.tickets);
+    }
+  } else {
+    points = emptyPoints(6);
+  }
 
   return (
     <div className="flex flex-shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4">
@@ -122,10 +131,10 @@ export function MiniResolvedTickets({ email }: { email?: string | undefined }) {
         </Skeleton>
         <p>Recent Tickets</p>
       </div>
-      <div className="w-[100px] h-full">
+      <div className={`${email ? 'w-[200px]' : 'w-[100px]'} h-full`}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
-            width={200}
+            width={email ? 400 : 200}
             height={60}
             data={points}
             margin={{
