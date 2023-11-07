@@ -17,8 +17,6 @@ export default async function handler(
 
   const { userId } = req.query;
 
-  console.log(userId);
-
   const unresolvedTickets = await prisma.ticket.findMany({
     where: {
       authorId: userId as string,
