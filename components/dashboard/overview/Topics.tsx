@@ -22,7 +22,7 @@ export default function Topics({ email }: { email?: string | undefined }) {
   });
 
   return (
-    <div className="flex gap-2 flex-wrap lg:w-1/2 max-h-[200px] overflow-y-scroll">
+    <div className="flex gap-2 flex-wrap lg:w-[500px] max-h-[200px] overflow-y-scroll">
       {topics.filter((topic) => topic[1] > 1).map((topic) => (
         <div
           key={topic[0]}
