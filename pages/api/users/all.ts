@@ -38,7 +38,7 @@ export default async function handler(
 
   const users = await prisma.user.findMany({
     orderBy: {
-      email: 'asc',
+      name: 'asc',
     },
   });
 
