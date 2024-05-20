@@ -22,45 +22,44 @@ const QrReader = () => {
   const [email, setEmail] = useState('');
   const [user, setUser] = useState<User | null>();
 
-  async function lookupUser(email: string) {
-    await axios
-      .get(`/api/users/lookup?email=${email}`)
-      .then(function (res) {
-        if (!res?.data.user) {
-          toast({
-            title: 'User not found!',
-            description: `Failed to find user with email ${email}.`,
-            status: 'error',
-            position: 'bottom-right',
-            duration: 1000,
-            isClosable: true,
-          });
-          resetReader();
-        } else {
-          setUser(res?.data.user);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-        toast({
-          title: 'Error!',
-          description: `Failed to look up user.`,
-          status: 'error',
-          position: 'bottom-right',
-          duration: 1000,
-          isClosable: true,
-        });
-      });
-  }
-
   function resetReader() {
     setEmail('');
     setUser(null);
   }
 
   useEffect(() => {
+    async function lookupUser(email: string) {
+      await axios
+        .get(`/api/users/lookup?email=${email}`)
+        .then(function (res) {
+          if (!res?.data.user) {
+            toast({
+              title: 'User not found!',
+              description: `Failed to find user with email ${email}.`,
+              status: 'error',
+              position: 'bottom-right',
+              duration: 1000,
+              isClosable: true,
+            });
+            resetReader();
+          } else {
+            setUser(res?.data.user);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          toast({
+            title: 'Error!',
+            description: `Failed to look up user.`,
+            status: 'error',
+            position: 'bottom-right',
+            duration: 1000,
+            isClosable: true,
+          });
+        });
+    }
     if (email !== '') lookupUser(email);
-  }, [email]);
+  }, [email, toast]);
 
   useEffect(() => {
     if (!isOpen) resetReader();
