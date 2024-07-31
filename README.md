@@ -37,7 +37,7 @@ First, clone/fork [the repo](https://github.com/tamuhack-org/helpr) and install 
 ```bash
 $ git clone https://github.com/tamuhack-org/helpr.git
 $ cd helpr
-$ npm i
+$ yarn
 ```
 
 Then, create a `.env` file in the root of the project and add the following:
@@ -55,7 +55,7 @@ See more information about these variables below.
 Finally, run the development server:
 
 ```bash
-$ npm run dev
+$ yarn dev
 ```
 
 ## Environment Variables
