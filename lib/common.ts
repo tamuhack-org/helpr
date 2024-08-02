@@ -5,7 +5,7 @@ export type Nullable<T> = T | null;
 
 export const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
-export function getTimeDifferenceString(time: Date) {
+export const getTimeDifferenceString = (time: Date) => {
   const formattedTime = dayjs(time);
   let difference = Date.now() - formattedTime.valueOf();
   difference = difference / 1000;
@@ -16,4 +16,4 @@ export function getTimeDifferenceString(time: Date) {
   } else {
     return `${Math.round(difference / 86400)} d`;
   }
-}
+};
