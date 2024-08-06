@@ -64,9 +64,7 @@ export default function Submit() {
     }
   };
 
-  const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {
-    refreshInterval: 1000,
-  });
+  const { data, error, isLoading } = useSWR('/api/users/me', fetcher);
 
   const { mutate } = useSWRConfig();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -141,7 +139,7 @@ export default function Submit() {
             variant="outline"
             placeholder="Issue"
             errorBorderColor="crimson"
-            {...register('issue', { required: true, maxLength: 20 })}
+            {...register('issue', { required: true, maxLength: 80 })}
             isInvalid={errors.issue ? true : false}
           />
         </div>
@@ -153,7 +151,9 @@ export default function Submit() {
           <Input
             variant="outline"
             placeholder="Location"
-            {...register('location')}
+            errorBorderColor="crimson"
+            {...register('location', { required: true, maxLength: 60 })}
+            isInvalid={errors.location ? true : false}
           />
         </div>
 
@@ -164,7 +164,9 @@ export default function Submit() {
           <Input
             variant="outline"
             placeholder="Contact"
-            {...register('contact')}
+            errorBorderColor="crimson"
+            {...register('contact', { required: true, maxLength: 20 })}
+            isInvalid={errors.contact ? true : false}
           />
         </div>
 
