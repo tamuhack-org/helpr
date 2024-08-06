@@ -37,9 +37,6 @@ const QrReader = () => {
               title: 'User not found!',
               description: `Failed to find user with email ${email}.`,
               status: 'error',
-              position: 'bottom-right',
-              duration: 1000,
-              isClosable: true,
             });
             resetReader();
           } else {
@@ -52,9 +49,6 @@ const QrReader = () => {
             title: 'Error!',
             description: `Failed to look up user.`,
             status: 'error',
-            position: 'bottom-right',
-            duration: 1000,
-            isClosable: true,
           });
         });
     }
