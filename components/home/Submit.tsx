@@ -51,9 +51,6 @@ export default function Submit() {
           title: 'Ticket Submitted',
           description: 'Please wait for a mentor to arrive',
           status: 'success',
-          position: 'bottom-right',
-          duration: 3000,
-          isClosable: true,
         });
       });
     } catch (e) {
@@ -61,9 +58,6 @@ export default function Submit() {
         title: 'Error',
         description: 'Ticket length is too long!',
         status: 'error',
-        position: 'bottom-right',
-        duration: 3000,
-        isClosable: true,
       });
     } finally {
       setSubmitLoading(false);
@@ -104,9 +98,6 @@ export default function Submit() {
         title: 'Error',
         description: error.message,
         status: 'error',
-        position: 'bottom-right',
-        duration: 3000,
-        isClosable: true,
       });
     } finally {
       setSubmitLoading(false);

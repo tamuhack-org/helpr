@@ -23,7 +23,15 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const AnyComponent = Component as any; //tried for an hour to fix this type error but I'm giving up now
 
   return getLayout(
-    <ChakraProvider>
+    <ChakraProvider
+      toastOptions={{
+        defaultOptions: {
+          position: 'bottom-right',
+          isClosable: true,
+          duration: 3000,
+        },
+      }}
+    >
       <SessionProvider session={pageProps.session}>
         <AnyComponent {...pageProps} />
         <Analytics />
