@@ -17,3 +17,6 @@ export const getTimeDifferenceString = (time: Date) => {
     return `${Math.round(difference / 86400)} d`;
   }
 };
+
+export const phoneNumberRegex =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;

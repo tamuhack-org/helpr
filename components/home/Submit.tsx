@@ -3,34 +3,65 @@ import axios from 'axios';
 import { Input } from '@chakra-ui/react';
 import InfoModal from './InfoModal';
 import useSWR from 'swr';
-import { fetcher } from '../../lib/common';
+import { fetcher, phoneNumberRegex } from '../../lib/common';
 import { useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useSWRConfig } from 'swr';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-//Using React Hook Form for for submission
-//Just using the built in validation for this simple case, but look into Zod or Yup for more complex validation
+//Using React Hook Form for formsubmission
 
-type Inputs = {
-  issue: string;
-  location: string;
-  contact: string;
-};
+const maxLengthIssue = 80;
+const maxLengthLocation = 60;
+const maxLengthContact = 20;
+
+const FormSchema = z.object({
+  issue: z
+    .string()
+    .min(1, { message: 'Required' })
+    .max(maxLengthIssue, { message: 'Too Long' }),
+  location: z
+    .string()
+    .min(1, { message: 'Required' })
+    .max(maxLengthLocation, { message: 'Too Long' }),
+  contact: z
+    .string()
+    .min(1, { message: 'Required' })
+    .max(maxLengthContact, { message: 'Too Long' })
+    .regex(phoneNumberRegex, 'Enter valid number'),
+});
+
+type IFormInput = z.infer<typeof FormSchema>;
 
 export default function Submit() {
+  const { data, error, isLoading } = useSWR('/api/users/me', fetcher);
+  const { mutate } = useSWRConfig();
+  const [submitLoading, setSubmitLoading] = useState(false);
   const toast = useToast();
   const {
     register,
     handleSubmit,
-    control,
     reset,
+    watch,
     formState: { errors },
-  } = useForm<Inputs>({
-    resetOptions: { keepValues: true },
+  } = useForm<IFormInput>({
+    resolver: zodResolver(FormSchema),
+    resetOptions: { keepValues: true, keepErrors: false },
+    reValidateMode: 'onSubmit',
+    shouldFocusError: false,
   });
 
-  const onSubmit: SubmitHandler<Inputs> = async (
+  const issue = watch('issue');
+  const contact = watch('contact');
+  const location = watch('location');
+
+  if (isLoading || error) {
+    return <p>Loading</p>;
+  }
+
+  const onSubmit: SubmitHandler<IFormInput> = async (
     data,
     e?: React.BaseSyntheticEvent
   ) => {
@@ -57,22 +88,13 @@ export default function Submit() {
     } catch (e) {
       toast({
         title: 'Error',
-        description: 'Ticket length is too long!',
+        description: 'An unexpected error occured!',
         status: 'error',
       });
     } finally {
       setSubmitLoading(false);
     }
   };
-
-  const { data, error, isLoading } = useSWR('/api/users/me', fetcher);
-
-  const { mutate } = useSWRConfig();
-  const [submitLoading, setSubmitLoading] = useState(false);
-
-  if (isLoading || error) {
-    return <p>Loading</p>;
-  }
 
   async function cancelTicket() {
     if (submitLoading) {
@@ -135,35 +157,71 @@ export default function Submit() {
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="flex flex-col gap-2">
-          <p className="text-md text-gray-600">Issue</p>
+          <div className="flex justify-between items-end">
+            <p className="text-md text-gray-600">Issue</p>
 
+            <p
+              className={`${
+                errors.issue || issue.length > maxLengthIssue
+                  ? 'text-crimson'
+                  : 'text-gray-600'
+              } text-sm transition-all`}
+            >
+              {errors.issue?.message || `${issue.length}/${maxLengthIssue}`}
+            </p>
+          </div>
           <Input
             variant="outline"
             placeholder="Issue"
             errorBorderColor="crimson"
-            {...register('issue', { required: true, maxLength: 80 })}
+            {...register('issue')}
             isInvalid={errors.issue ? true : false}
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="text-md text-gray-600">
-            Location (so we can find you!)
-          </p>
+          <div className="flex justify-between items-end">
+            <p className="text-md text-gray-600">
+              Location (so we can find you!)
+            </p>
+            <p
+              className={`${
+                errors.location || location.length > maxLengthIssue
+                  ? 'text-crimson'
+                  : 'text-gray-600'
+              } text-sm transition-all`}
+            >
+              {errors.location?.message ||
+                `${location.length}/${maxLengthLocation}`}
+            </p>
+          </div>
 
           <Input
             variant="outline"
             placeholder="Location"
             errorBorderColor="crimson"
-            {...register('location', { required: true, maxLength: 60 })}
+            {...register('location')}
             isInvalid={errors.location ? true : false}
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="text-md text-gray-600">
-            Contact (if we can&apos;t find you!)
-          </p>
+          <div className="flex justify-between items-end">
+            <p className="text-md text-gray-600">
+              Contact (if we can&apos;t find you!)
+            </p>
+
+            <p
+              className={`${
+                errors.contact || contact.length > maxLengthContact
+                  ? 'text-crimson'
+                  : 'text-gray-600'
+              } text-sm transition-all`}
+            >
+              {errors.contact?.message ||
+                `${contact.length}/${maxLengthContact}`}
+            </p>
+          </div>
 
           <Input
             autoComplete="tel-national"
@@ -171,7 +229,7 @@ export default function Submit() {
             variant="outline"
             placeholder="Phone Number"
             errorBorderColor="crimson"
-            {...register('contact', { required: true, maxLength: 20 })}
+            {...register('contact')}
             isInvalid={errors.contact ? true : false}
           />
         </div>
