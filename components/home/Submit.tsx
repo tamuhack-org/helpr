@@ -23,6 +23,7 @@ export default function Submit() {
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors },
   } = useForm<Inputs>({
@@ -161,9 +162,12 @@ export default function Submit() {
           <p className="text-md text-gray-600">
             Contact (if we can&apos;t find you!)
           </p>
+
           <Input
+            autoComplete="tel-national"
+            type="tel"
             variant="outline"
-            placeholder="Contact"
+            placeholder="Phone Number"
             errorBorderColor="crimson"
             {...register('contact', { required: true, maxLength: 20 })}
             isInvalid={errors.contact ? true : false}
