@@ -28,6 +28,8 @@ Deploy to Vercel with only a few clicks. Vercel will ask for information about t
 
 # Running HelpR Locally
 
+Note for TAMUhack devs: Pushing to the staging branch allows for Vercel previews to work with Next Auth. Normal branches with random links do not have permission from Google auth to sign users in.
+
 ## Getting Started
 
 Getting HelpR up and running locally is pretty easy!
