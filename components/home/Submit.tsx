@@ -136,6 +136,7 @@ export default function Submit() {
       >
         <div className="flex flex-col gap-2">
           <p className="text-md text-gray-600">Issue</p>
+
           <Input
             variant="outline"
             placeholder="Issue"
@@ -149,6 +150,7 @@ export default function Submit() {
           <p className="text-md text-gray-600">
             Location (so we can find you!)
           </p>
+
           <Input
             variant="outline"
             placeholder="Location"
