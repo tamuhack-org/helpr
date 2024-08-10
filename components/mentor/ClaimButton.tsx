@@ -13,7 +13,6 @@ export default function ClaimButton(props: { ticket: Ticket }) {
   const toast = useToast();
 
   async function ticketAction(action: string) {
-    // setLoading(true);
     if (claimLoading || unclaimLoading) {
       return;
     }
@@ -39,9 +38,6 @@ export default function ClaimButton(props: { ticket: Ticket }) {
         toast({
           title: 'Error',
           status: 'error',
-          position: 'bottom-right',
-          duration: 3000,
-          isClosable: true,
         });
       });
     setClaimLoading(false);

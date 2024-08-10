@@ -13,7 +13,6 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@next-auth/prisma-adapter": "^1.0.5",
-    "@next/font": "^13.0.7",
     "@prisma/client": "^5.1.1",
     "@types/node": "18.11.15",
     "@types/react": "18.0.26",
@@ -28,13 +27,15 @@
     "flowbite": "^1.8.1",
     "flowbite-react": "^0.5.0",
     "framer-motion": "^8.0.2",
-    "next": "13.0.7",
+    "next": "^14.2.5",
     "next-auth": "^4.18.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.52.1",
     "react-icons": "^4.7.1",
     "react-pro-sidebar": "^1.1.0-alpha.1",
     "react-qr-code": "^2.0.12",
+    "react-qrcode-logo": "^3.0.0",
     "react-spinners": "^0.13.7",
     "recharts": "^2.7.2",
     "stopword": "^2.0.8",
@@ -49,5 +50,6 @@
     "prettier": "2.8.1",
     "prisma": "^5.1.1",
     "tailwindcss": "^3.2.4"
-  }
+  },
+  "resolutions": {}
 }

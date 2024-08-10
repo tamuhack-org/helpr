@@ -41,12 +41,12 @@ export default function Navbar(props: NavProps) {
 
   return (
     <div className="flex justify-between w-full my-4">
-      <div className="flex">
+      <div className="flex gap-4">
         <Link href="/">
           <div
             className={`${
               props.page == 'home' ? '' : 'shadow-md'
-            } p-8 mr-4 border h-12 w-12 bg-white border-gray-100 rounded-xl`}
+            } p-8 border h-12 w-12 bg-white border-gray-100 rounded-xl`}
           >
             <IoHomeOutline className="scale-[1.75] -translate-y-2/4 -translate-x-1/2" />
           </div>
@@ -56,7 +56,7 @@ export default function Navbar(props: NavProps) {
             <div
               className={`${
                 props.page == 'mentor' ? '' : 'shadow-md'
-              } p-8 mr-4 border h-12 w-12 bg-white border-gray-100 rounded-xl`}
+              } p-8 border h-12 w-12 bg-white border-gray-100 rounded-xl`}
             >
               <IoMailOutline className="scale-[1.75] -translate-y-2/4 -translate-x-1/2" />
             </div>
@@ -67,7 +67,7 @@ export default function Navbar(props: NavProps) {
             <div
               className={`${
                 props.page == 'admin' ? '' : 'shadow-md'
-              } p-8 mr-4 border h-12 w-12 bg-white border-gray-100 rounded-xl`}
+              } p-8 border h-12 w-12 bg-white border-gray-100 rounded-xl`}
             >
               <IoPeopleOutline className="scale-[1.75] -translate-y-2/4 -translate-x-1/2" />
             </div>

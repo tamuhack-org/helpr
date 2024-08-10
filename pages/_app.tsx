@@ -10,7 +10,7 @@ import { SessionProvider } from 'next-auth/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Analytics } from '@vercel/analytics/react';
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+export type NextPageWithLayout<P = unknown, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
@@ -20,11 +20,20 @@ type AppPropsWithLayout = AppProps & {
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
+  const AnyComponent = Component as any; //tried for an hour to fix this type error but I'm giving up now
 
   return getLayout(
-    <ChakraProvider>
+    <ChakraProvider
+      toastOptions={{
+        defaultOptions: {
+          position: 'bottom-right',
+          isClosable: true,
+          duration: 3000,
+        },
+      }}
+    >
       <SessionProvider session={pageProps.session}>
-        <Component {...pageProps} />
+        <AnyComponent {...pageProps} />
         <Analytics />
       </SessionProvider>
     </ChakraProvider>

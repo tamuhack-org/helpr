@@ -1,7 +1,13 @@
 import { User } from '@prisma/client';
 import Image from 'next/image';
 import React, { useRef, useState } from 'react';
-import { FormControl, FormLabel, Switch, ToastId, useToast } from '@chakra-ui/react';
+import {
+  FormControl,
+  FormLabel,
+  Switch,
+  ToastId,
+  useToast,
+} from '@chakra-ui/react';
 import axios from 'axios';
 import { mutate } from 'swr';
 
@@ -24,9 +30,6 @@ const UserInfo = (props: { user: User; resetReader: () => void }) => {
       title: 'Success!',
       description: `Successfully updated ${props.user.name}'s ${role} status.`,
       status: 'success',
-      position: 'bottom-right',
-      duration: 3000,
-      isClosable: true,
     });
   }
 
@@ -35,9 +38,6 @@ const UserInfo = (props: { user: User; resetReader: () => void }) => {
       title: 'Error!',
       description: `Failed to update ${props.user.name}'s ${role} status.`,
       status: 'error',
-      position: 'bottom-right',
-      duration: 3000,
-      isClosable: true,
     });
   }
 

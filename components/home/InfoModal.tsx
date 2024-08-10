@@ -9,7 +9,7 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import QRCode from 'react-qr-code';
+import { QRCode } from 'react-qrcode-logo';
 
 export default function InfoModal({ email }: { email: string }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -38,7 +38,6 @@ export default function InfoModal({ email }: { email: string }) {
                 size={256}
                 style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
                 value={email}
-                viewBox={`0 0 256 256`}
               />
             </div>
           </ModalBody>
