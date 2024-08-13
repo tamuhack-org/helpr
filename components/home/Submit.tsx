@@ -21,15 +21,15 @@ const FormSchema = z.object({
   issue: z
     .string()
     .min(1, { message: 'Required' })
-    .max(maxLengthIssue, { message: 'Too Long' }),
+    .max(maxLengthIssue, { message: 'Too long' }),
   location: z
     .string()
     .min(1, { message: 'Required' })
-    .max(maxLengthLocation, { message: 'Too Long' }),
+    .max(maxLengthLocation, { message: 'Too long' }),
   contact: z
     .string()
     .min(1, { message: 'Required' })
-    .max(maxLengthContact, { message: 'Too Long' })
+    .max(maxLengthContact, { message: 'Too long' })
     .regex(phoneNumberRegex, 'Enter valid number'),
 });
 
@@ -48,8 +48,11 @@ export default function Submit() {
     formState: { errors },
   } = useForm<IFormInput>({
     resolver: zodResolver(FormSchema),
-    resetOptions: { keepValues: true, keepErrors: false },
-    reValidateMode: 'onSubmit',
+    resetOptions: {
+      keepValues: true,
+      keepErrors: false,
+    },
+    reValidateMode: 'onBlur',
     shouldFocusError: false,
   });
 
@@ -162,12 +165,13 @@ export default function Submit() {
 
             <p
               className={`${
-                errors.issue || issue.length > maxLengthIssue
+                errors.issue || issue?.length > maxLengthIssue
                   ? 'text-crimson'
                   : 'text-gray-600'
               } text-sm transition-all`}
             >
-              {errors.issue?.message || `${issue.length}/${maxLengthIssue}`}
+              {errors.issue?.message ||
+                `${issue?.length || 0}/${maxLengthIssue}`}
             </p>
           </div>
           <Input
@@ -186,13 +190,13 @@ export default function Submit() {
             </p>
             <p
               className={`${
-                errors.location || location.length > maxLengthIssue
+                errors.location || location?.length > maxLengthIssue
                   ? 'text-crimson'
                   : 'text-gray-600'
               } text-sm transition-all`}
             >
               {errors.location?.message ||
-                `${location.length}/${maxLengthLocation}`}
+                `${location?.length || 0}/${maxLengthLocation}`}
             </p>
           </div>
 
@@ -213,13 +217,13 @@ export default function Submit() {
 
             <p
               className={`${
-                errors.contact || contact.length > maxLengthContact
+                errors.contact || contact?.length > maxLengthContact
                   ? 'text-crimson'
                   : 'text-gray-600'
               } text-sm transition-all`}
             >
               {errors.contact?.message ||
-                `${contact.length}/${maxLengthContact}`}
+                `${contact?.length || 0}/${maxLengthContact}`}
             </p>
           </div>
 
