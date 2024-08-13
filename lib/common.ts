@@ -20,3 +20,7 @@ export const getTimeDifferenceString = (time: Date) => {
 
 export const phoneNumberRegex =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+export const maxIssueLength = 80;
+export const maxLocationLength = 60;
+export const maxPhoneLength = 20;

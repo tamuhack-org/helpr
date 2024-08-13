@@ -10,26 +10,27 @@ import { useSWRConfig } from 'swr';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  maxPhoneLength,
+  maxIssueLength,
+  maxLocationLength,
+} from '../../lib/common';
 
 //Using React Hook Form for formsubmission
-
-const maxLengthIssue = 80;
-const maxLengthLocation = 60;
-const maxLengthContact = 20;
 
 const FormSchema = z.object({
   issue: z
     .string()
     .min(1, { message: 'Required' })
-    .max(maxLengthIssue, { message: 'Too long' }),
+    .max(maxIssueLength, { message: 'Too long' }),
   location: z
     .string()
     .min(1, { message: 'Required' })
-    .max(maxLengthLocation, { message: 'Too long' }),
-  contact: z
+    .max(maxLocationLength, { message: 'Too long' }),
+  phone: z
     .string()
     .min(1, { message: 'Required' })
-    .max(maxLengthContact, { message: 'Too long' })
+    .max(maxPhoneLength, { message: 'Too long' })
     .regex(phoneNumberRegex, 'Enter valid number'),
 });
 
@@ -57,7 +58,7 @@ export default function Submit() {
   });
 
   const issue = watch('issue');
-  const contact = watch('contact');
+  const phone = watch('phone');
   const location = watch('location');
 
   if (isLoading || error) {
@@ -78,7 +79,7 @@ export default function Submit() {
         data: {
           issue: data.issue,
           location: data.location,
-          contact: data.contact,
+          contact: data.phone,
         },
       }).then(async function () {
         await mutate('/api/users/me');
@@ -165,13 +166,13 @@ export default function Submit() {
 
             <p
               className={`${
-                errors.issue || issue?.length > maxLengthIssue
+                errors.issue || issue?.length > maxIssueLength
                   ? 'text-crimson'
                   : 'text-gray-600'
               } text-sm transition-all`}
             >
               {errors.issue?.message ||
-                `${issue?.length || 0}/${maxLengthIssue}`}
+                `${issue?.length || 0}/${maxIssueLength}`}
             </p>
           </div>
           <Input
@@ -190,13 +191,13 @@ export default function Submit() {
             </p>
             <p
               className={`${
-                errors.location || location?.length > maxLengthIssue
+                errors.location || location?.length > maxLocationLength
                   ? 'text-crimson'
                   : 'text-gray-600'
               } text-sm transition-all`}
             >
               {errors.location?.message ||
-                `${location?.length || 0}/${maxLengthLocation}`}
+                `${location?.length || 0}/${maxLocationLength}`}
             </p>
           </div>
 
@@ -212,18 +213,18 @@ export default function Submit() {
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-end">
             <p className="text-md text-gray-600">
-              Contact (if we can&apos;t find you!)
+              Phone (if we can&apos;t find you!)
             </p>
 
             <p
               className={`${
-                errors.contact || contact?.length > maxLengthContact
+                errors.phone || phone?.length > maxPhoneLength
                   ? 'text-crimson'
                   : 'text-gray-600'
               } text-sm transition-all`}
             >
-              {errors.contact?.message ||
-                `${contact?.length || 0}/${maxLengthContact}`}
+              {errors.phone?.message ||
+                `${phone?.length || 0}/${maxPhoneLength}`}
             </p>
           </div>
 
@@ -233,8 +234,8 @@ export default function Submit() {
             variant="outline"
             placeholder="Phone Number"
             errorBorderColor="crimson"
-            {...register('contact')}
-            isInvalid={errors.contact ? true : false}
+            {...register('phone')}
+            isInvalid={errors.phone ? true : false}
           />
         </div>
 

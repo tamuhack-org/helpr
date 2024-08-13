@@ -3,6 +3,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 import { Ticket } from '@prisma/client';
 import { getToken } from 'next-auth/jwt';
+import {
+  maxPhoneLength,
+  maxIssueLength,
+  maxLocationLength,
+} from '../../../lib/common';
 
 /*
  * POST Request: Creates new ticket and assigns it to user
@@ -19,9 +24,6 @@ export default async function handler(
 ) {
   const token = await getToken({ req });
   const { issue, location, contact } = req.body;
-  const maxIssueLength = 80;
-  const maxLocationLength = 60;
-  const maxContactLength = 20;
 
   if (!token) {
     res.status(401);
@@ -62,9 +64,9 @@ export default async function handler(
     return;
   }
 
-  if (contact.length > maxContactLength) {
+  if (contact.length > maxPhoneLength) {
     res.status(400).json({
-      error: 'Contact too long. Max ' + maxContactLength + ' characters',
+      error: 'Contact too long. Max ' + maxPhoneLength + ' characters',
     });
     return;
   }
