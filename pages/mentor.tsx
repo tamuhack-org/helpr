@@ -34,7 +34,11 @@ export default function Home() {
           <div className="w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
             <Navbar page="mentor" />
             <div className="mt-8 w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
-              <Select onChange={handleDropdownChange} bg="white">
+              <Select
+                onChange={handleDropdownChange}
+                bg="white"
+                className="flex flex-col "
+              >
                 <option defaultValue="unresolved" value="unresolved">
                   Active Tickets
                 </option>
