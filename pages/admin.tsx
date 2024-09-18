@@ -13,7 +13,7 @@ export default function Home() {
       <div className="flex flex-row justify-center mx-4 mt-8 md:mt-24">
         <div className="flex flex-col gap-6 justify-center sm:w-auto w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
           <Navbar page="admin" />
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col w-full">
             <div className="flex gap-2">
               <Link
                 href="/dashboard/overview"
