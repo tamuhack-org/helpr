@@ -21,7 +21,10 @@ export default function AdminTable() {
   return (
     <div className="relative block p-4 sm:p-8 bg-white border border-gray-100 shadow-md rounded-xl mt-8 h-[55vh] overflow-scroll">
       {data.users.map((user: User) => (
-        <div className="sm:flex items-center justify-between py-2 text-center border-b-2 ">
+        <div
+          key={user.id}
+          className="sm:flex items-center justify-between py-2 text-center border-b-2 "
+        >
           <p className="sm:w-1/2 sm:mb-0 mb-2 text-left flex-shrink-0 text-sm sm:text-lg">
             {user.email}
           </p>
