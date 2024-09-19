@@ -27,11 +27,11 @@ export default function TicketStream(props: { filter: string }) {
   }
 
   if (ticketError) {
-    return <TextCard text="Loading..." />;
+    return <TextCard text="Error" />;
   }
 
   if (!ticketsData.tickets.length) {
-    return;
+    return <TextCard text="No Tickets" />;
   }
 
   return ticketsData.tickets.map((ticket: Ticket, index: number) => (
