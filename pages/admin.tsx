@@ -4,14 +4,14 @@ import Navbar from '../components/common/Navbar';
 import Banner from '../components/common/Banner';
 import QrReader from '../components/admin/scanner/QrReader';
 import { MdDashboard } from 'react-icons/md';
-import AdminTable from '../components/admin/AdminTable';
+import { AdminTable } from '../components/admin/AdminTable';
 
-export default function Home() {
+const Home = () => {
   return (
     <div className="h-screen py-10">
       <Banner />
       <div className="flex flex-row justify-center mx-4 mt-8 md:mt-24">
-        <div className="flex flex-col gap-6 justify-center sm:w-auto w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
+        <div className="flex flex-col gap-2 justify-center sm:w-auto w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
           <Navbar page="admin" />
           <div className="flex flex-col w-full">
             <div className="flex md:flex-row flex-col gap-2">
@@ -30,4 +30,6 @@ export default function Home() {
       </div>
     </div>
   );
-}
+};
+
+export default Home;

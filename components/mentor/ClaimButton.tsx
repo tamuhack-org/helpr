@@ -6,7 +6,7 @@ import { Ticket } from '@prisma/client';
 import { fetcher } from '../../lib/common';
 import axios from 'axios';
 
-export default function ClaimButton(props: { ticket: Ticket }) {
+export const ClaimButton = ({ ticket }: { ticket: Ticket }) => {
   const { data, isLoading } = useSWR('/api/users/me', fetcher, {});
   const [claimLoading, setClaimLoading] = useState(false);
   const [unclaimLoading, setUnclaimLoading] = useState(false);
@@ -27,7 +27,7 @@ export default function ClaimButton(props: { ticket: Ticket }) {
       method: 'post',
       url: `/api/tickets/${action}`,
       data: {
-        ticketId: props.ticket.id,
+        ticketId: ticket.id,
       },
     })
       .then(async function () {
@@ -58,7 +58,7 @@ export default function ClaimButton(props: { ticket: Ticket }) {
     );
   }
 
-  if (props.ticket.resolvedTime) {
+  if (ticket.resolvedTime) {
     return (
       <div className="flex justify-center mt-6">
         <a className="w-full text-center py-2 bg-gray-400 rounded-lg text-md font-bold text-white">
@@ -70,8 +70,7 @@ export default function ClaimButton(props: { ticket: Ticket }) {
 
   if (
     !unclaimLoading &&
-    (claimLoading ||
-      (props.ticket.claimantId && props.ticket.claimantId == data?.user.id))
+    (claimLoading || (ticket.claimantId && ticket.claimantId == data?.user.id))
   ) {
     return (
       <div className="flex justify-between items-center mt-6">
@@ -100,11 +99,11 @@ export default function ClaimButton(props: { ticket: Ticket }) {
     );
   }
 
-  if (props.ticket.claimantId && !unclaimLoading) {
+  if (ticket.claimantId && !unclaimLoading) {
     return (
       <div className="flex justify-center mt-6">
         <a className="w-full text-center py-2 bg-gray-400 rounded-lg text-md font-bold text-white">
-          Claimed by {props.ticket.claimantName}
+          Claimed by {ticket.claimantName}
         </a>
       </div>
     );
@@ -124,4 +123,4 @@ export default function ClaimButton(props: { ticket: Ticket }) {
       </p>
     </div>
   );
-}
+};

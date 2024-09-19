@@ -3,15 +3,8 @@ import useSWR from 'swr';
 import { fetcher } from '../../lib/common';
 import { getTimeDifferenceString } from '../../lib/common';
 import { Ticket } from '@prisma/client';
-import ClaimButton from '../mentor/ClaimButton';
-
-const TextCard = ({ text }: { text: string }) => {
-  return (
-    <div className="flex justify-center p-8 bg-white border border-gray-100 shadow-md rounded-xl my-8">
-      <p className="text-xl font-bold">{text}</p>
-    </div>
-  );
-};
+import { ClaimButton } from '../mentor/ClaimButton';
+import { TextCard } from '../common/TextCard';
 
 export default function TicketStream(props: { filter: string }) {
   const {
