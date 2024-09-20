@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { fetcher } from '../../lib/common';
 import useSWR from 'swr';
 import { User } from '@prisma/client';
-import AdminStatus from './AdminStatus';
+import { AdminStatus } from './AdminStatus';
 import { Input } from '@chakra-ui/react';
 import Fuse from 'fuse.js';
 import { TextCard } from '../common/TextCard';

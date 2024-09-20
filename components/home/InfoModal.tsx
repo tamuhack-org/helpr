@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { QRCode } from 'react-qrcode-logo';
 
-export default function InfoModal({ email }: { email: string }) {
+export const InfoModal = ({ email }: { email: string }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -45,4 +45,4 @@ export default function InfoModal({ email }: { email: string }) {
       </Modal>
     </div>
   );
-}
+};

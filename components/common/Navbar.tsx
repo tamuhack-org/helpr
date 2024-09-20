@@ -10,10 +10,10 @@ import {
 } from 'react-icons/io5';
 import { signOut } from 'next-auth/react';
 
-export default function Navbar({ page }: { page: string }) {
+export const Navbar = ({ page }: { page: string }) => {
   const session = useSession();
 
-  if (!session.data || !session.data.user || !page) {
+  if (!session?.data?.user || !page) {
     return (
       <div className="flex justify-between w-full my-4">
         <div className="flex">
@@ -78,4 +78,4 @@ export default function Navbar({ page }: { page: string }) {
       </div>
     </div>
   );
-}
+};

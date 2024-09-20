@@ -1,10 +1,10 @@
 import Head from 'next/head';
 
-import Banner from '../components/common/Banner';
-import Navbar from '../components/common/Navbar';
-import Submit from '../components/home/Submit';
+import { Banner } from '../components/common/Banner';
+import { Submit } from '../components/home/Submit';
+import { Navbar } from '../components/common/Navbar';
 
-export default function Home() {
+const Home = () => {
   return (
     <>
       <Head>
@@ -31,4 +31,6 @@ export default function Home() {
       </div>
     </>
   );
-}
+};
+
+export default Home;

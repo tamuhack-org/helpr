@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import Navbar from '../components/common/Navbar';
-import Banner from '../components/common/Banner';
+import { Navbar } from '../components/common/Navbar';
+import { Banner } from '../components/common/Banner';
 import QrReader from '../components/admin/scanner/QrReader';
 import { MdDashboard } from 'react-icons/md';
 import { AdminTable } from '../components/admin/AdminTable';

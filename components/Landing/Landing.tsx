@@ -9,7 +9,7 @@ const backgroundProps: CSS.Properties = {
   backgroundSize: 'cover',
 };
 
-export default function Landing() {
+export const Landing = () => {
   return (
     <div
       className="md:items-center h-screen flex justify-center"
@@ -33,7 +33,7 @@ export default function Landing() {
       </div>
       <div className="absolute flex justify-center bottom-8 w-full text-center">
         <a
-          href="https://tamuhack.com"
+          href="https://tamuhack.org"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -47,4 +47,4 @@ export default function Landing() {
       </div>
     </div>
   );
-}
+};

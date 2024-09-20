@@ -22,10 +22,10 @@ const QrReader = () => {
   const [email, setEmail] = useState('');
   const [user, setUser] = useState<User | null>();
 
-  function resetReader() {
+  const resetReader = () => {
     setEmail('');
     setUser(null);
-  }
+  };
 
   useEffect(() => {
     async function lookupUser(email: string) {

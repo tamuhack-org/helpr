@@ -12,7 +12,7 @@ export const ClaimButton = ({ ticket }: { ticket: Ticket }) => {
   const [unclaimLoading, setUnclaimLoading] = useState(false);
   const toast = useToast();
 
-  async function ticketAction(action: string) {
+  const ticketAction = async (action: string) => {
     if (claimLoading || unclaimLoading) {
       return;
     }
@@ -42,13 +42,9 @@ export const ClaimButton = ({ ticket }: { ticket: Ticket }) => {
       });
     setClaimLoading(false);
     setUnclaimLoading(false);
-  }
+  };
 
-  if (isLoading) {
-    return <p>Loading</p>;
-  }
-
-  if (claimLoading || unclaimLoading) {
+  if (isLoading || claimLoading || unclaimLoading) {
     return (
       <div className="flex justify-center mt-6">
         <a className="w-full text-center py-2 bg-gray-400 border-2 border-gray-400 rounded-lg text-md font-bold text-white">
@@ -70,11 +66,10 @@ export const ClaimButton = ({ ticket }: { ticket: Ticket }) => {
 
   if (
     !unclaimLoading &&
-    (claimLoading || (ticket.claimantId && ticket.claimantId == data?.user.id))
+    (claimLoading || (ticket.claimantId && ticket.claimantId === data?.user.id))
   ) {
     return (
       <div className="flex justify-between items-center mt-6">
-        {/* {loading && <Loading />} */}
         <a
           className={`${
             claimLoading

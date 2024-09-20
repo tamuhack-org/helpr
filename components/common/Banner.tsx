@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Banner() {
+export const Banner = () => {
   return (
     <a
       href="https://hh24.tamuhack.org/"
@@ -12,4 +12,4 @@ export default function Banner() {
       </div>
     </a>
   );
-}
+};

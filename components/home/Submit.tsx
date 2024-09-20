@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Input } from '@chakra-ui/react';
-import InfoModal from './InfoModal';
+import { InfoModal } from './InfoModal';
 import useSWR from 'swr';
 import { fetcher, phoneNumberRegex } from '../../lib/common';
 import { useToast } from '@chakra-ui/react';
@@ -36,7 +36,7 @@ const FormSchema = z.object({
 
 type IFormInput = z.infer<typeof FormSchema>;
 
-export default function Submit() {
+export const Submit = () => {
   const { data, error, isLoading } = useSWR('/api/users/me', fetcher);
   const { mutate } = useSWRConfig();
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -100,7 +100,7 @@ export default function Submit() {
     }
   };
 
-  async function cancelTicket() {
+  const cancelTicket = async () => {
     if (submitLoading) {
       return;
     }
@@ -127,7 +127,7 @@ export default function Submit() {
     } finally {
       setSubmitLoading(false);
     }
-  }
+  };
 
   if (data.user?.ticket) {
     return (
@@ -250,4 +250,4 @@ export default function Submit() {
       </form>
     </div>
   );
-}
+};

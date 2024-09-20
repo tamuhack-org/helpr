@@ -1,72 +1,56 @@
 import { User } from '@prisma/client';
 import Image from 'next/image';
-import React, { useRef, useState } from 'react';
-import {
-  FormControl,
-  FormLabel,
-  Switch,
-  ToastId,
-  useToast,
-} from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { FormControl, FormLabel, Switch, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { mutate } from 'swr';
 
-const UserInfo = (props: { user: User; resetReader: () => void }) => {
+const UserInfo = ({
+  user,
+  resetReader,
+}: {
+  user: User;
+  resetReader: () => void;
+}) => {
   const toast = useToast();
-  const toastIdRef = useRef<ToastId>();
 
-  const [isAdmin, setIsAdmin] = useState(props.user.admin);
-  const [isMentor, setIsMentor] = useState(props.user.mentor);
-
-  function triggerToast(role: string, status: 'success' | 'error') {
-    if (toastIdRef.current) {
-      toast.close(toastIdRef.current);
-    }
-    status === 'success' ? addSuccessToast(role) : addErrorToast(role);
-  }
-
-  function addSuccessToast(role: string) {
-    toastIdRef.current = toast({
-      title: 'Success!',
-      description: `Successfully updated ${props.user.name}'s ${role} status.`,
-      status: 'success',
-    });
-  }
-
-  function addErrorToast(role: string) {
-    toastIdRef.current = toast({
-      title: 'Error!',
-      description: `Failed to update ${props.user.name}'s ${role} status.`,
-      status: 'error',
-    });
-  }
+  const [isAdmin, setIsAdmin] = useState(user.admin);
+  const [isMentor, setIsMentor] = useState(user.mentor);
 
   async function toggleStatus(role: string, currentRole: boolean) {
     if (role != 'mentor' && role != 'admin') return;
 
     await axios
       .post(`/api/users/${role}toggle`, {
-        id: props.user.id,
+        id: user.id,
         currentRole: currentRole,
       })
       .then(async function () {
         await mutate('/api/users/all');
         if (role === 'mentor') setIsMentor((prev) => !prev);
         if (role === 'admin') setIsAdmin((prev) => !prev);
-        triggerToast(role, 'success');
+        toast({
+          title: 'Success!',
+          description: `Successfully updated ${user.name}'s ${role} status.`,
+          status: 'success',
+        });
       })
       .catch(function (error) {
         console.log(error);
-        triggerToast(role, 'error');
+        toast({
+          title: 'Error!',
+          description: `Failed to update ${user.name}'s ${role} status.`,
+          status: 'error',
+        });
       });
   }
 
   return (
     <div className="flex flex-col w-full">
       <div className="flex flex-col items-center w-full gap-4">
-        {props.user.image ? (
+        {user.image ? (
           <Image
-            src={props.user.image}
+            src={user.image}
             alt="user-image"
             className="rounded-full"
             width={96}
@@ -77,8 +61,8 @@ const UserInfo = (props: { user: User; resetReader: () => void }) => {
           <div className="w-12 rounded-full bg-gray-400" />
         )}
         <div className="flex flex-col w-full text-center">
-          <h1 className="font-bold text-lg">{props.user.name}</h1>
-          <p>{props.user.email}</p>
+          <h1 className="font-bold text-lg">{user.name}</h1>
+          <p>{user.email}</p>
           <div className="flex flex-col mt-8 gap-1">
             <FormControl display="flex" justifyContent="space-between">
               <FormLabel>Mentor?</FormLabel>
@@ -96,7 +80,7 @@ const UserInfo = (props: { user: User; resetReader: () => void }) => {
             </FormControl>
           </div>
         </div>
-        <button className="underline" onClick={() => props.resetReader()}>
+        <button className="underline" onClick={() => resetReader()}>
           Scan another user
         </button>
       </div>

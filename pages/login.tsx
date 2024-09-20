@@ -1,5 +1,5 @@
-import Banner from '../components/common/Banner';
-import Landing from '../components/Landing/Landing';
+import { Banner } from '../components/common/Banner';
+import { Landing } from '../components/Landing/Landing';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 
@@ -19,11 +19,13 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   };
 }
 
-export default function Login() {
+const Home = () => {
   return (
     <>
       <Banner />
       <Landing />
     </>
   );
-}
+};
+
+export default Home;

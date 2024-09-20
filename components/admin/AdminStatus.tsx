@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useToast } from '@chakra-ui/react';
 import { mutate } from 'swr';
 
-export default function AdminStatus(props: { user: User }) {
+export const AdminStatus = ({ user }: { user: User }) => {
   const toast = useToast();
 
   //role is either 'mentor' or 'admin'
@@ -14,14 +14,14 @@ export default function AdminStatus(props: { user: User }) {
 
     await axios
       .post(`/api/users/${role}toggle`, {
-        id: props.user.id,
+        id: user.id,
         currentRole: currentRole,
       })
       .then(async function () {
         await mutate('/api/users/all');
         toast({
           title: 'Success!',
-          description: `Successfully updated ${props.user.name}'s ${role} status.`,
+          description: `Successfully updated ${user.name}'s ${role} status.`,
           status: 'success',
         });
       })
@@ -29,7 +29,7 @@ export default function AdminStatus(props: { user: User }) {
         console.log(error);
         toast({
           title: 'Error!',
-          description: `Failed to update ${props.user.name}'s ${role} status.`,
+          description: `Failed to update ${user.name}'s ${role} status.`,
           status: 'error',
         });
       });
@@ -39,9 +39,9 @@ export default function AdminStatus(props: { user: User }) {
     <div>
       <div className="flex items-center flex-shrink-0">
         <a
-          onClick={() => toggleStatus('mentor', props.user.mentor)}
+          onClick={() => toggleStatus('mentor', user.mentor)}
           className={`${
-            props.user.mentor
+            user.mentor
               ? 'bg-blue-500 text-white border-2 border-blue-500'
               : 'border-2 border-gray-300'
           } py-2 px-4 mr-2 rounded-md text-xs sm:text-sm font-medium cursor-pointer`}
@@ -49,9 +49,9 @@ export default function AdminStatus(props: { user: User }) {
           MENTOR
         </a>
         <a
-          onClick={() => toggleStatus('admin', props.user.admin)}
+          onClick={() => toggleStatus('admin', user.admin)}
           className={`${
-            props.user.admin
+            user.admin
               ? 'bg-blue-500 text-white border-2 border-blue-500'
               : 'border-2 border-gray-300'
           } py-2 px-4 rounded-md text-xs sm:text-sm font-medium cursor-pointer`}
@@ -61,4 +61,4 @@ export default function AdminStatus(props: { user: User }) {
       </div>
     </div>
   );
-}
+};

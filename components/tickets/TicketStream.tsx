@@ -6,12 +6,12 @@ import { Ticket } from '@prisma/client';
 import { ClaimButton } from '../mentor/ClaimButton';
 import { TextCard } from '../common/TextCard';
 
-export default function TicketStream(props: { filter: string }) {
+export const TicketStream = ({ filter }: { filter: string }) => {
   const {
     data: ticketsData,
     error: ticketError,
     isLoading: isTicketLoading,
-  } = useSWR(`/api/tickets/${props.filter || 'all'}`, fetcher, {
+  } = useSWR(`/api/tickets/${filter || 'all'}`, fetcher, {
     refreshInterval: 5000,
   });
 
@@ -47,4 +47,4 @@ export default function TicketStream(props: { filter: string }) {
       <ClaimButton ticket={ticket} />
     </div>
   ));
-}
+};

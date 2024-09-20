@@ -1,13 +1,13 @@
 import Head from 'next/head';
 import React, { useState } from 'react';
 
-import Banner from '../components/common/Banner';
-import Navbar from '../components/common/Navbar';
+import { Banner } from '../components/common/Banner';
+import { Navbar } from '../components/common/Navbar';
 import { Select } from '@chakra-ui/react';
 
-import TicketStream from '../components/tickets/TicketStream';
+import { TicketStream } from '../components/tickets/TicketStream';
 
-export default function Home() {
+const Home = () => {
   const [filter, setFilter] = useState('');
 
   const handleDropdownChange = (
@@ -53,4 +53,6 @@ export default function Home() {
       </div>
     </>
   );
-}
+};
+
+export default Home;
