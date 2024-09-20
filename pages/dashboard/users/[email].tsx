@@ -1,25 +1,29 @@
-import React, { ReactElement, useEffect, useState } from 'react';
-import useSWR from 'swr';
-import { Nullable, fetcher } from '../../../lib/common';
-import { useRouter } from 'next/router';
-import { User } from '@prisma/client';
-import { NextPageWithLayout } from '../../_app';
-import DashboardLayout from '../../../components/dashboard/DashboardLayout';
-import { GetServerSideProps } from 'next';
-import { Session, getServerSession } from 'next-auth';
-import prisma from '../../../lib/prisma';
-import authOptions from '../../api/auth/[...nextauth]';
 import { Tag } from '@chakra-ui/react';
+import { User } from '@prisma/client';
+import { GetServerSideProps } from 'next';
+import { getServerSession, Session } from 'next-auth';
+import { useRouter } from 'next/router';
+import { ReactElement, useEffect, useState } from 'react';
+import useSWR from 'swr';
+import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import { MiniResolvedTickets } from '../../../components/dashboard/overview/MiniIncomingTickets';
 import Topics from '../../../components/dashboard/overview/Topics';
-import { MiniTotalTicketsResolved } from '../../../components/dashboard/users/MiniTotalTicketsResolved';
 import { MiniTotalTicketsCreated } from '../../../components/dashboard/users/MiniTotalTicketsCreated';
+import { MiniTotalTicketsResolved } from '../../../components/dashboard/users/MiniTotalTicketsResolved';
+import { fetcher, Nullable } from '../../../lib/common';
+import prisma from '../../../lib/prisma';
+import authOptions from '../../api/auth/[...nextauth]';
+import { NextPageWithLayout } from '../../_app';
 
 const UserInfo: NextPageWithLayout = () => {
   const [user, setUser] = useState<User | null>();
 
   const router = useRouter();
-  const { data, error, isLoading } = useSWR(`/api/users/lookup?email=${router.query.email}`, fetcher, {});
+  const { data, error, isLoading } = useSWR(
+    `/api/users/lookup?email=${router.query.email}`,
+    fetcher,
+    {}
+  );
 
   useEffect(() => {
     if (data) setUser(data.user);
@@ -42,13 +46,9 @@ const UserInfo: NextPageWithLayout = () => {
       <div className="flex flex-col gap-2 mt-8">
         <div className="flex gap-2">
           <MiniTotalTicketsCreated userId={user?.id} />
-          {user?.mentor &&
-            <MiniTotalTicketsResolved email={user?.email} />
-          }
+          {user?.mentor && <MiniTotalTicketsResolved email={user?.email} />}
         </div>
-        {user?.mentor &&
-          <MiniResolvedTickets email={user?.email} />
-        }
+        {user?.mentor && <MiniResolvedTickets email={user?.email} />}
       </div>
       {user?.mentor && (
         <div className="mt-8">
@@ -57,8 +57,8 @@ const UserInfo: NextPageWithLayout = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 //Check if user is authenticated
 //If not, redirect to login page
@@ -105,3 +105,4 @@ UserInfo.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default UserInfo;
+

@@ -1,16 +1,15 @@
-import React from 'react';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-
 import {
   IoHomeOutline,
+  IoLogOutOutline,
   IoMailOutline,
   IoPeopleOutline,
-  IoLogOutOutline,
 } from 'react-icons/io5';
-import { signOut } from 'next-auth/react';
 
-export const Navbar = ({ page }: { page: string }) => {
+export type PageOption = 'home' | 'mentor' | 'admin';
+
+export const Navbar = ({ page }: { page: PageOption }) => {
   const session = useSession();
 
   if (!session?.data?.user || !page) {

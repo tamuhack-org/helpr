@@ -1,9 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import { MdQrCodeScanner } from 'react-icons/md';
-import { QrScanner } from '@yudiel/react-qr-scanner';
-import axios from 'axios';
-import { User } from '@prisma/client';
-import UserInfo from './UserInfo';
 import {
   Modal,
   ModalBody,
@@ -14,6 +8,12 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
+import { User } from '@prisma/client';
+import { QrScanner } from '@yudiel/react-qr-scanner';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { MdQrCodeScanner } from 'react-icons/md';
+import UserInfo from './UserInfo';
 
 const QrReader = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();

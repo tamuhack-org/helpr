@@ -1,22 +1,21 @@
-import React from 'react';
-import axios from 'axios';
-import { Input } from '@chakra-ui/react';
-import { InfoModal } from './InfoModal';
-import useSWR from 'swr';
-import { fetcher, phoneNumberRegex } from '../../lib/common';
-import { useToast } from '@chakra-ui/react';
-import { useState } from 'react';
-import { useSWRConfig } from 'swr';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { z } from 'zod';
+import { Input, useToast } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
+import React, { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import useSWR, { useSWRConfig } from 'swr';
+import { z } from 'zod';
 import {
-  maxPhoneLength,
+  fetcher,
   maxIssueLength,
   maxLocationLength,
+  maxPhoneLength,
+  phoneNumberRegex,
 } from '../../lib/common';
+import { InfoModal } from './InfoModal';
 
-//Using React Hook Form for formsubmission
+//Using React Hook Form for form submission
+//Zod for validation
 
 const FormSchema = z.object({
   issue: z
@@ -82,7 +81,6 @@ export const Submit = () => {
           contact: data.phone,
         },
       }).then(async function () {
-        await mutate('/api/users/me');
         toast({
           title: 'Ticket Submitted',
           description: 'Please wait for a mentor to arrive',
@@ -96,6 +94,7 @@ export const Submit = () => {
         status: 'error',
       });
     } finally {
+      await mutate('/api/users/me');
       setSubmitLoading(false);
     }
   };
