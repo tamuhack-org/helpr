@@ -3,11 +3,7 @@ import { MainLayout } from '../components/common/MainLayout';
 import { Submit } from '../components/home/Submit';
 
 const Home = () => {
-  return (
-    <div className="mx-4">
-      <Submit />
-    </div>
-  );
+  return <Submit />;
 };
 
 Home.getLayout = function getLayout(page: ReactElement) {

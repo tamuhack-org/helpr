@@ -1,3 +1,4 @@
+import { SessionProvider } from 'next-auth/react';
 import Head from 'next/head';
 import { ReactNode } from 'react';
 import { Banner } from './Banner';
@@ -24,16 +25,14 @@ export const MainLayout = ({
       <div className="h-full py-10">
         <Banner />
         <div className="flex justify-center mt-8 md:mt-24">
-          <div className="w-screen sm:w-auto">
-            <div className="flex justify-center mx-4 mb-6 w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
+          <div className="justify-center mx-4 mb-6 w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
+            <SessionProvider>
               <Navbar page={page} />
-              {children}
-            </div>
+            </SessionProvider>
+            {children}
           </div>
         </div>
       </div>
-
-      <main className="sm:ml-64 p-5">{children}</main>
     </>
   );
 };

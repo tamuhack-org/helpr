@@ -14,7 +14,7 @@ const Home = () => {
           className="flex flex-row items-center justify-center text-center py-4 px-8 bg-blue-500 text-white font-bold rounded-xl cursor-pointer w-full gap-3"
         >
           <MdDashboard size={24} />
-          Analytics
+          Dashboard
         </Link>
         <QrReader />
       </div>

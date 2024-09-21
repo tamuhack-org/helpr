@@ -40,8 +40,9 @@ export default async function handler(
     },
   });
 
-  if (!user?.ticket) {
+  if (!user || user?.ticket) {
     res.status(409);
+    res.send({});
     return;
   }
 
