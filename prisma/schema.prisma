@@ -9,6 +9,12 @@ generator client {
   engineType = "binary"
 }
 
+model Event {
+  id           String    @id @default(cuid())
+  isDisabled   Boolean 
+}
+
+
 model Ticket {
   id           String    @id @default(cuid())
   authorName   String

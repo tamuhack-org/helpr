@@ -16,6 +16,10 @@ const Settings: NextPageWithLayout = () => {
       <p className="text-gray-500 mt-1">
         Change how HelpR works for your event.
       </p>
+
+      <div className="mt-8">
+        <p className="text-2xl font-bold">Event Settings</p>
+      </div>
     </div>
   );
 };
