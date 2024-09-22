@@ -37,14 +37,14 @@ export const AdminStatus = ({ user }: { user: User }) => {
 
   return (
     <div>
-      <div className="flex items-center flex-shrink-0">
+      <div className="flex items-center flex-shrink-0 w-full">
         <a
           onClick={() => toggleStatus('mentor', user.mentor)}
           className={`${
             user.mentor
               ? 'bg-blue-500 text-white border-2 border-blue-500'
               : 'border-2 border-gray-300'
-          } py-2 px-4 mr-2 rounded-md text-xs sm:text-sm font-medium cursor-pointer`}
+          } py-2 px-4 mr-2 rounded-md text-xs sm:text-sm font-medium cursor-pointer w-full`}
         >
           MENTOR
         </a>
@@ -54,7 +54,7 @@ export const AdminStatus = ({ user }: { user: User }) => {
             user.admin
               ? 'bg-blue-500 text-white border-2 border-blue-500'
               : 'border-2 border-gray-300'
-          } py-2 px-4 rounded-md text-xs sm:text-sm font-medium cursor-pointer`}
+          } py-2 px-4 rounded-md text-xs sm:text-sm font-medium cursor-pointer w-full`}
         >
           ADMIN
         </a>

@@ -44,7 +44,8 @@ export const AdminTable = () => {
   };
 
   //Return a row for every user that:
-  //
+  //is present in search searchResultIDs (all users if searchResultIDs is null)
+  //is sorted alphabatically on email
   return (
     <>
       <Input
@@ -71,7 +72,7 @@ export const AdminTable = () => {
               </p>
               <AdminStatus user={user} />
             </div>
-          ))}{' '}
+          ))}
       </div>
     </>
   );

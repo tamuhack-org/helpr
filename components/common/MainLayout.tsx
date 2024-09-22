@@ -25,7 +25,7 @@ export const MainLayout = ({
       <div className="h-full py-10">
         <Banner />
         <div className="flex justify-center mt-8 md:mt-24">
-          <div className="justify-center mx-4 mb-6 w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
+          <div className="justify-center mx-4 mb-6 w-[90vw] lg:w-[40vw] 2xl:w-[550px]">
             <SessionProvider>
               <Navbar page={page} />
             </SessionProvider>

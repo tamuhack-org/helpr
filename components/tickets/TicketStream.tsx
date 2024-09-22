@@ -6,7 +6,7 @@ import { ClaimButton } from '../mentor/ClaimButton';
 
 const Ticket = ({ ticket }: { ticket: Ticket }) => {
   return (
-    <div className="relative block p-4 sm:p-8 bg-white border border-gray-100 shadow-md rounded-xl my-8 md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
+    <div className="relative block p-4 sm:p-8 bg-white border border-gray-100 shadow-md rounded-xl my-8 w-full">
       <span className="absolute right-4 top-4 rounded-full px-3 py-1.5 bg-green-100 text-green-600 font-medium text-xs">
         {getTimeDifferenceString(ticket.publishTime)}
       </span>

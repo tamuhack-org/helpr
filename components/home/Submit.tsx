@@ -130,7 +130,7 @@ export const Submit = () => {
 
   if (data.user?.ticket) {
     return (
-      <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
+      <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl w-full">
         <p className="font-bold text-3xl text-gray-700">Ticket Submitted</p>
         <p className="mt-4 text-md text-gray-600">
           {data.user.ticket.claimantId
@@ -150,7 +150,7 @@ export const Submit = () => {
   }
 
   return (
-    <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl md:w-[90vw] lg:w-[35vw] 2xl:w-[500px]">
+    <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl w-full">
       <div className="flex justify-between items-center">
         <p className="font-bold text-3xl text-gray-700">Submit ticket</p>
         <InfoModal email={data.user.email} />
