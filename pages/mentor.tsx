@@ -27,6 +27,7 @@ const Home = () => {
           <option value="all">All Tickets</option>
           <option value="claimedunresolved">Claimed Tickets</option>
           <option value="resolved">Resolved Tickets</option>
+          <option value="mine">My Tickets</option>
         </Select>
       </div>
       <TicketStream filter={filter || 'active'} />
