@@ -20,7 +20,7 @@ export default async function handler(
 
   if (!token) {
     res.status(401);
-    res.send({ ticket: [] });
+    res.send({ tickets: null });
     return;
   }
 
