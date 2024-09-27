@@ -29,7 +29,7 @@ export const TicketStream = ({ filter }: { filter: string }) => {
     data: ticketsData,
     error: ticketError,
     isLoading: isTicketLoading,
-  } = useSWR(`/api/tickets/${filter || 'all'}`, fetcher, {
+  } = useSWR(`/api/tickets/${filter || 'active'}`, fetcher, {
     refreshInterval: 5000,
   });
 

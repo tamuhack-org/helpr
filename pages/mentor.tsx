@@ -21,7 +21,7 @@ const Home = () => {
           bg="white"
           className="flex flex-col "
         >
-          <option defaultValue="unresolved" value="unresolved">
+          <option defaultValue="active" value="active">
             Active Tickets
           </option>
           <option value="all">All Tickets</option>
@@ -29,7 +29,7 @@ const Home = () => {
           <option value="resolved">Resolved Tickets</option>
         </Select>
       </div>
-      <TicketStream filter={filter} />
+      <TicketStream filter={filter || 'active'} />
     </>
   );
 };

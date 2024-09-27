@@ -5,7 +5,7 @@ import { Nullable } from '../../../lib/common';
 import prisma from '../../../lib/prisma';
 
 /*
- * GET Request: Returns all tickets
+ * GET Request: Returns all active tickets (claimed OR unresolved)
  */
 export default async function handler(
   req: NextApiRequest,
@@ -24,11 +24,5 @@ export default async function handler(
     },
   });
 
-  const resolvedTickets = await prisma.resolvedTicket.findMany({
-    orderBy: {
-      publishTime: 'desc',
-    },
-  });
-
-  res.status(200).send({ tickets: [...tickets, ...resolvedTickets] });
+  res.status(200).send({ tickets: tickets });
 }
