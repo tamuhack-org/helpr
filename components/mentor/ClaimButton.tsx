@@ -32,6 +32,7 @@ export const ClaimButton = ({ ticket }: { ticket: Ticket }) => {
     })
       .then(async function () {
         await mutate('/api/tickets/all');
+        await mutate('/api/tickets/active');
       })
       .catch(function (error) {
         console.log(error);
