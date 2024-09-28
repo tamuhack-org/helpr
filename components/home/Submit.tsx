@@ -36,7 +36,9 @@ const FormSchema = z.object({
 type IFormInput = z.infer<typeof FormSchema>;
 
 export const Submit = () => {
-  const { data, error, isLoading } = useSWR('/api/users/me', fetcher);
+  const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {
+    refreshInterval: 5000,
+  });
   const { mutate } = useSWRConfig();
   const [submitLoading, setSubmitLoading] = useState(false);
   const toast = useToast();
@@ -128,13 +130,17 @@ export const Submit = () => {
     }
   };
 
+  console.log(data.user.ticket);
+
   if (data.user?.ticket) {
     return (
       <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl w-full">
         <p className="font-bold text-3xl text-gray-700">Ticket Submitted</p>
         <p className="mt-4 text-md text-gray-600">
           {data.user.ticket.claimantId
-            ? `A mentor has claimed your ticket and is on their way!`
+            ? `${
+                data.user?.ticket?.claimantName || 'A mentor'
+              } has claimed your ticket and is on their way!`
             : 'Your ticket is currently in the queue. A mentor will arrive shortly!'}
         </p>
         <button
