@@ -6,7 +6,13 @@ import { Ticket } from '@prisma/client';
 import { fetcher } from '../../lib/common';
 import axios from 'axios';
 
-export const ClaimButton = ({ ticket }: { ticket: Ticket }) => {
+export const ClaimButton = ({
+  ticket,
+  filter,
+}: {
+  ticket: Ticket;
+  filter: string;
+}) => {
   const { data, isLoading } = useSWR('/api/users/me', fetcher, {});
   const [claimLoading, setClaimLoading] = useState(false);
   const [unclaimLoading, setUnclaimLoading] = useState(false);
@@ -31,8 +37,7 @@ export const ClaimButton = ({ ticket }: { ticket: Ticket }) => {
       },
     })
       .then(async function () {
-        await mutate('/api/tickets/all');
-        await mutate('/api/tickets/active');
+        await mutate('/api/tickets/' + filter);
       })
       .catch(function (error) {
         console.log(error);

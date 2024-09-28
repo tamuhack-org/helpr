@@ -4,7 +4,7 @@ import { fetcher, getTimeDifferenceString } from '../../lib/common';
 import { TextCard } from '../common/TextCard';
 import { ClaimButton } from '../mentor/ClaimButton';
 
-const Ticket = ({ ticket }: { ticket: Ticket }) => {
+const Ticket = ({ ticket, filter }: { ticket: Ticket; filter: string }) => {
   return (
     <div className="relative block p-4 sm:p-8 bg-white border border-gray-100 shadow-md rounded-xl my-8 w-full">
       <span className="absolute right-4 top-4 rounded-full px-3 py-1.5 bg-green-100 text-green-600 font-medium text-xs">
@@ -19,7 +19,7 @@ const Ticket = ({ ticket }: { ticket: Ticket }) => {
         </p>
         <p className="mt-2 text-sm">Located at: {ticket.location}</p>
       </div>
-      <ClaimButton ticket={ticket} />
+      <ClaimButton ticket={ticket} filter={filter} />
     </div>
   );
 };
@@ -46,6 +46,6 @@ export const TicketStream = ({ filter }: { filter: string }) => {
   }
 
   return ticketsData.tickets.map((ticket: Ticket, index: number) => (
-    <Ticket ticket={ticket} key={index}></Ticket>
+    <Ticket ticket={ticket} key={index} filter={filter}></Ticket>
   ));
 };
