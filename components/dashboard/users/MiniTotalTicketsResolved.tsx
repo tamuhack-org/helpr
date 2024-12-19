@@ -16,7 +16,7 @@ export function MiniTotalTicketsResolved({ email }: { email: string }) {
   const totalTicketsResolved = data ? data.tickets.length : 0;
 
   return (
-    <div className="flex flex-shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4 md:w-[150px]">
+    <div className="flex shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4 md:w-[150px]">
       <Stat>
         <StatLabel className="mb-4">Total</StatLabel>
         <Skeleton isLoaded={!isLoading}>

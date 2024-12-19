@@ -67,7 +67,7 @@ export const AdminTable = () => {
               key={user.id}
               className="sm:flex items-center justify-between py-2 text-center border-b-2"
             >
-              <p className="sm:w-1/2 sm:mb-0 mb-2 text-left flex-shrink-0 text-sm sm:text-lg">
+              <p className="sm:w-1/2 sm:mb-0 mb-2 text-left shrink-0 text-sm sm:text-lg">
                 {user.email}
               </p>
               <AdminStatus user={user} />

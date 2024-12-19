@@ -37,7 +37,7 @@ export const AdminStatus = ({ user }: { user: User }) => {
 
   return (
     <div>
-      <div className="flex items-center flex-shrink-0 w-full">
+      <div className="flex items-center shrink-0 w-full">
         <a
           onClick={() => toggleStatus('mentor', user.mentor)}
           className={`${

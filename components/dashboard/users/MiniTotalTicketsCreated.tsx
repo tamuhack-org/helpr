@@ -16,7 +16,7 @@ export function MiniTotalTicketsCreated({ userId }: { userId: string | undefined
   const totalTicketsCreated = data ? data.totalTicketsCreated : 0;
 
   return (
-    <div className="flex flex-shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4 md:w-[150px]">
+    <div className="flex shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4 md:w-[150px]">
       <Stat>
         <StatLabel className="mb-4">Total</StatLabel>
         <Skeleton isLoaded={!isLoading}>

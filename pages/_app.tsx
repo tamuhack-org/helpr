@@ -10,6 +10,14 @@ import { SessionProvider } from 'next-auth/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Analytics } from '@vercel/analytics/react';
 
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
+
+const emotionCache = createCache({
+  key: 'emotion-css-cache',
+  prepend: true, // ensures styles are prepended to the <head>, instead of appended
+});
+
 export type NextPageWithLayout<P = unknown, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
@@ -23,19 +31,21 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const AnyComponent = Component as any; //tried for an hour to fix this type error but I'm giving up now
 
   return getLayout(
-    <ChakraProvider
-      toastOptions={{
-        defaultOptions: {
-          position: 'bottom-right',
-          isClosable: true,
-          duration: 3000,
-        },
-      }}
-    >
-      <SessionProvider session={pageProps.session}>
-        <AnyComponent {...pageProps} />
-        <Analytics />
-      </SessionProvider>
-    </ChakraProvider>
+    <CacheProvider value={emotionCache}>
+      <ChakraProvider
+        toastOptions={{
+          defaultOptions: {
+            position: 'bottom-right',
+            isClosable: true,
+            duration: 3000,
+          },
+        }}
+      >
+        <SessionProvider session={pageProps.session}>
+          <AnyComponent {...pageProps} />
+          <Analytics />
+        </SessionProvider>
+      </ChakraProvider>
+    </CacheProvider>
   );
 }

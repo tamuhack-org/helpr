@@ -247,8 +247,8 @@ export const Submit = () => {
         <button
           type="submit"
           className={`${
-            submitLoading ? 'bg-gray-500' : 'bg-blue-500'
-          } w-full mt-8 py-4 px-8 text-white font-bold rounded-xl`}
+            submitLoading ? '!bg-gray-500' : '!bg-blue-500'
+          } w-full !mt-8 !py-4 !px-8 !text-white !font-bold rounded-xl`}
         >
           {submitLoading ? 'Submitting Ticket' : 'Submit Ticket'}
         </button>

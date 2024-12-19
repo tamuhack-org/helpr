@@ -43,7 +43,7 @@ export default function MiniIncomingTickets() {
   const points = createDataPoints(data.tickets);
 
   return (
-    <div className="flex flex-shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4">
+    <div className="flex shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4">
       <div>
         <p>Incoming</p>
         <p className="mt-8 font-bold text-lg">{data.tickets.length}</p>

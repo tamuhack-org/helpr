@@ -47,7 +47,7 @@ export function MiniIncomingTickets() {
   const points = data ? createDataPoints(data.tickets) : emptyPoints(6);
 
   return (
-    <div className="flex flex-shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4">
+    <div className="flex shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4">
       <div>
         <p>Incoming</p>
         <Skeleton isLoaded={!isLoading}>
@@ -118,7 +118,7 @@ export function MiniResolvedTickets({ email }: { email?: string | undefined }) {
   }
 
   return (
-    <div className="flex flex-shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4">
+    <div className="flex shrink-0 gap-4 border-[1px] border-gray-200 rounded-lg text-sm p-4">
       <div>
         <p>Resolved</p>
         <Skeleton isLoaded={!isLoading}>
