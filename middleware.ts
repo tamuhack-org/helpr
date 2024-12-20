@@ -2,9 +2,6 @@ import { withAuth } from 'next-auth/middleware';
 
 // More on how NextAuth.js middleware works: https://next-auth.js.org/configuration/nextjs#middleware
 
-//paths to run this middleware on
-const authPaths = ['/admin', '/mentor', '/', '/dashboard/:path*'];
-
 //Root level paths that mentors have access to OVER regular users
 //For example, "/" is accessible by mentors, but users can also access it, so we DO NOT include it.
 const mentorPaths = ['/mentor', '/dashboard'];
@@ -24,6 +21,7 @@ export default withAuth({
             email: token.email,
           })
       );
+      console.log(response.body);
 
       const data = await response.json();
 
@@ -45,6 +43,7 @@ export default withAuth({
   },
 });
 
+//Paths to run this middleware on  (all paths that require a user to be signed in)
 export const config = {
-  matcher: authPaths,
+  matcher: ['/admin', '/mentor', '/', '/dashboard/:path*'],
 };
