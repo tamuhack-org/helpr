@@ -10,8 +10,10 @@ generator client {
 }
 
 model Event {
-  id         String  @id @default(cuid())
-  isDisabled Boolean
+  id          String   @id @default(cuid())
+  isDisabled  Boolean
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
 }
 
 model Ticket {
@@ -20,7 +22,6 @@ model Ticket {
   issue        String
   location     String
   contact      String
-  publishTime  DateTime  @default(now())
   isResolved   Boolean   @default(false)
   resolvedTime DateTime?
   isClaimed    Boolean   @default(false)
@@ -29,6 +30,9 @@ model Ticket {
   claimantId   String?   @unique
   author       User      @relation(fields: [authorId], references: [id])
   authorId     String    @unique
+  updatedTime  DateTime  @updatedAt
+
+  publishTime DateTime @default(now())
 
   @@index(fields: [isResolved])
   @@index(fields: [isClaimed])
@@ -76,6 +80,7 @@ model User {
   ticket          Ticket?
   accounts        Account[]
   sessions        Session[]
+  updatedTime     DateTime  @updatedAt
 
   @@index([admin])
   @@index([mentor])
