@@ -29,6 +29,9 @@ model Ticket {
   claimantId   String?   @unique
   author       User      @relation(fields: [authorId], references: [id])
   authorId     String    @unique
+
+  @@index(fields: [isResolved])
+  @@index(fields: [isClaimed])
 }
 
 model Account {
@@ -73,17 +76,10 @@ model User {
   ticket          Ticket?
   accounts        Account[]
   sessions        Session[]
-}
 
-model TopicCacheStatus {
-  id         Int      @id @default(autoincrement())
-  lastAccess DateTime
-}
-
-model TopicFrequency {
-  id        Int    @id @default(autoincrement())
-  topic     String @unique
-  frequency Int
+  @@index([admin])
+  @@index([mentor])
+  @@index([claimedTicketId])
 }
 
 model VerificationToken {
