@@ -1,31 +1,42 @@
 import { withAuth } from 'next-auth/middleware';
 
 // More on how NextAuth.js middleware works: https://next-auth.js.org/configuration/nextjs#middleware
+
+//paths to run this middleware on
+const authPaths = ['/admin', '/mentor', '/', '/dashboard/:path*'];
+
+//Root level paths that mentors have access to OVER regular users
+//For example, "/" is accessible by mentors, but users can also access it, so we DO NOT include it.
+const mentorPaths = ['/mentor', '/dashboard'];
+
 export default withAuth({
   callbacks: {
     async authorized({ req, token }) {
       const { pathname } = req.nextUrl;
-      const roles = { isAdmin: false, isMentor: false };
+
+      if (!token || !token.email) {
+        return false;
+      }
 
       const response = await fetch(
         'https://helpr.tamuhack.org/api/users/getRoles?' +
           new URLSearchParams({
-            email: token?.email || '',
+            email: token.email,
           })
       );
 
       const data = await response.json();
 
-      roles.isMentor = data.isMentor;
-      roles.isAdmin = data.isAdmin;
-
-      if (roles.isAdmin) {
+      if (data.isAdmin) {
         return true;
       }
 
-      if (pathname === '/mentor' || pathname.includes('/dashboard')) {
-        return roles.isMentor;
-      }
+      mentorPaths.forEach((path) => {
+        if (pathname.includes(path)) {
+          return data.isMentor;
+        }
+      });
+
       return !!token;
     },
   },
@@ -35,5 +46,5 @@ export default withAuth({
 });
 
 export const config = {
-  matcher: ['/admin', '/mentor', '/', '/dashboard/:path*'],
+  matcher: authPaths,
 };
