@@ -15,9 +15,15 @@ export default async function handler(
   }
   const { email } = req.query;
 
-  const resolvedTickets = await prisma.resolvedTicket.findMany({
+  const resolvedTickets = await prisma.ticket.findMany({
     where: {
-      claimantEmail: email as string,
+      claimant: {
+        email: email as string,
+      },
+      isResolved: true,
+    },
+    include: {
+      claimant: true,
     },
     orderBy: {
       publishTime: 'desc',

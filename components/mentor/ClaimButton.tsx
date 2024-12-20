@@ -2,15 +2,15 @@ import React from 'react';
 import { useToast } from '@chakra-ui/react';
 import useSWR, { mutate } from 'swr';
 import { useState } from 'react';
-import { Ticket } from '@prisma/client';
 import { fetcher } from '../../lib/common';
 import axios from 'axios';
+import { TicketWithClaimant } from '../common/types';
 
 export const ClaimButton = ({
   ticket,
   filter,
 }: {
-  ticket: Ticket;
+  ticket: TicketWithClaimant;
   filter: string;
 }) => {
   const { data, isLoading } = useSWR('/api/users/me', fetcher, {});
@@ -60,7 +60,7 @@ export const ClaimButton = ({
     );
   }
 
-  if (ticket.resolvedTime) {
+  if (ticket.isResolved) {
     return (
       <div className="flex justify-center mt-6">
         <a className="w-full text-center py-2 bg-gray-400 rounded-lg text-md font-bold text-white">
@@ -104,7 +104,7 @@ export const ClaimButton = ({
     return (
       <div className="flex justify-center mt-6">
         <a className="w-full text-center py-2 bg-gray-400 rounded-lg text-md font-bold text-white">
-          Claimed by {ticket.claimantName}
+          Claimed by {ticket.claimant?.name}
         </a>
       </div>
     );

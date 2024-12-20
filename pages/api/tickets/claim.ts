@@ -54,8 +54,8 @@ export default async function handler(
       id: ticketId,
     },
     data: {
-      claimantName: user.name,
       claimedTime: new Date(),
+      isClaimed: true,
       claimant: {
         connect: {
           id: user.id,

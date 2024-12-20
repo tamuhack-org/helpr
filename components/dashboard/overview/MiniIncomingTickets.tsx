@@ -36,7 +36,8 @@ export function createDataPoints(data: [Ticket], hoursAgo = 6) {
 }
 
 export function MiniIncomingTickets() {
-  const { data, error, isLoading } = useSWR('/api/analytics/tickets/incoming',
+  const { data, error, isLoading } = useSWR(
+    '/api/analytics/tickets/incoming',
     fetcher,
     {}
   );
@@ -95,9 +96,11 @@ export function MiniIncomingTickets() {
   );
 }
 
-export function MiniResolvedTickets({ email }: { email?: string | undefined }) {
+export function MiniResolvedTickets({ id }: { id?: string }) {
   const { data, error, isLoading } = useSWR(
-    email ? `/api/analytics/tickets/mentorresolved?email=${email}` : '/api/tickets/resolved',
+    id
+      ? `/api/analytics/tickets/mentorresolved?email=${id}`
+      : '/api/tickets/resolved',
     fetcher,
     {}
   );
@@ -108,7 +111,7 @@ export function MiniResolvedTickets({ email }: { email?: string | undefined }) {
 
   let points = [];
   if (data) {
-    if (email) {
+    if (id) {
       points = createDataPoints(data.tickets, 24);
     } else {
       points = createDataPoints(data.tickets);
@@ -131,10 +134,10 @@ export function MiniResolvedTickets({ email }: { email?: string | undefined }) {
         </Skeleton>
         <p>Recent Tickets</p>
       </div>
-      <div className={`${email ? 'w-[200px]' : 'w-[100px]'} h-full`}>
+      <div className={`${id ? 'w-[200px]' : 'w-[100px]'} h-full`}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
-            width={email ? 400 : 200}
+            width={id ? 400 : 200}
             height={60}
             data={points}
             margin={{

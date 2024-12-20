@@ -14,19 +14,12 @@ export default async function handler(
     return;
   }
 
-  const resolvedTickets = await prisma.resolvedTicket.findMany({
+  const totalTickets = await prisma.ticket.findMany({
     orderBy: {
       publishTime: 'desc',
     },
   });
 
-  const activeTickets = await prisma.ticket.findMany({
-    orderBy: {
-      publishTime: 'desc',
-    },
-  });
-
-  const totalTickets = activeTickets.concat(resolvedTickets);
   const frequencies: { [token: string]: number } = {};
 
   totalTickets.forEach((ticket) => {

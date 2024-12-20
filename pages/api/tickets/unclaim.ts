@@ -43,7 +43,7 @@ export default async function handler(
     return;
   }
 
-  if (user.claimedTicket?.id != ticket.id) {
+  if (user.claimedTicket?.id !== ticket.id && user.admin === false) {
     res.send({ ticket: null });
     return;
   }
@@ -53,7 +53,7 @@ export default async function handler(
       id: ticketId,
     },
     data: {
-      claimantName: null,
+      isClaimed: false,
       claimedTime: null,
       publishTime: new Date(),
       claimant: {

@@ -16,7 +16,7 @@ export default async function handler(
 
   const { userId } = req.query;
 
-  const unresolvedTickets = await prisma.ticket.findMany({
+  const tickets = await prisma.ticket.findMany({
     where: {
       authorId: userId as string,
     },
@@ -25,19 +25,5 @@ export default async function handler(
     },
   });
 
-  const resolvedTickets = await prisma.resolvedTicket.findMany({
-    where: {
-      authorId: userId as string,
-      NOT: {
-        resolvedTime: null,
-      },
-    },
-    orderBy: {
-      publishTime: 'desc',
-    },
-  });
-
-  const totalTicketsCreated = unresolvedTickets.length + resolvedTickets.length;
-
-  res.status(200).send({ totalTicketsCreated: totalTicketsCreated });
+  res.status(200).send({ totalTicketsCreated: tickets.length });
 }

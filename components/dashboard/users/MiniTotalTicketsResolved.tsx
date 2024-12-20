@@ -1,10 +1,17 @@
 import React from 'react';
 import { fetcher } from '../../../lib/common';
 import useSWR from 'swr';
-import { Skeleton, Stat, StatHelpText, StatLabel, StatNumber } from '@chakra-ui/react';
+import {
+  Skeleton,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+} from '@chakra-ui/react';
 
-export function MiniTotalTicketsResolved({ email }: { email: string }) {
-  const { data, error, isLoading } = useSWR(`/api/analytics/tickets/mentorresolved?email=${email}`,
+export function MiniTotalTicketsResolved({ id }: { id: string }) {
+  const { data, error, isLoading } = useSWR(
+    `/api/analytics/tickets/mentorresolved?id=${id}`,
     fetcher,
     {}
   );

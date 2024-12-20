@@ -21,7 +21,6 @@ export default withAuth({
             email: token.email,
           })
       );
-      console.log(response.body);
 
       const data = await response.json();
 

@@ -2,6 +2,41 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import prisma from '../../../lib/prisma';
 import { getToken } from 'next-auth/jwt';
+import { Ticket } from '@prisma/client';
+import { UserWithClaimedTicket } from '../../../components/common/types';
+
+//If the claimed ticket is resolved by an admin that did not claim the ticket, make the admin the claimant
+//Probably better than leaving the claimant null or assigning it to the previous claimant
+const getUpdatePayload = (user: UserWithClaimedTicket, ticket: Ticket) => {
+  const isClaimant = user.claimedTicket?.id !== ticket.id;
+
+  const adminResolve = {
+    where: { id: ticket.id },
+    data: {
+      isResolved: true,
+      resolvedTime: new Date(),
+    },
+    claimant: {
+      connect: {
+        id: user.id,
+      },
+    },
+  };
+
+  const mentorResolve = {
+    where: { id: ticket.id },
+    data: {
+      isResolved: true,
+      resolvedTime: new Date(),
+    },
+  };
+
+  if (!isClaimant) {
+    return adminResolve;
+  }
+
+  return mentorResolve;
+};
 
 /*
  * POST Request: Resolves ticket
@@ -41,33 +76,15 @@ export default async function handler(
     return;
   }
 
-  if (user.claimedTicket?.id != ticket.id) {
+  if (user.claimedTicket?.id !== ticket.id && user.admin === false) {
     res.send({});
     return;
   }
 
-  await prisma.resolvedTicket.create({
-    data: {
-      authorName: ticket.authorName,
-      issue: ticket.issue,
-      location: ticket.location,
-      contact: ticket.contact,
-      publishTime: ticket.publishTime,
-      claimedTime: ticket.claimedTime,
-      resolvedTime: new Date(),
-      claimantId: ticket.claimantId,
-      claimantName: ticket.claimantName,
-      claimantEmail: user.email,
-      authorId: ticket.authorId,
-    },
-  });
+  const updatePayload = getUpdatePayload(user, ticket);
 
-  await prisma.ticket.delete({
-    where: {
-      id: ticketId,
-    },
-  });
+  await prisma.ticket.update(updatePayload);
 
   res.status(200);
-  res.send({});
+  res.send({ ticket });
 }

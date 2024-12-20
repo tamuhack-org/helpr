@@ -1,10 +1,8 @@
-import { Button, ButtonGroup, Input, InputGroup } from '@chakra-ui/react';
-import { User } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession, Session } from 'next-auth';
-import { useState, type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import DashboardLayout from '../../components/dashboard/DashboardLayout';
-import { fetcher, Nullable } from '../../lib/common';
+import { Nullable } from '../../lib/common';
 import prisma from '../../lib/prisma';
 import authOptions from '../api/auth/[...nextauth]';
 import type { NextPageWithLayout } from '../_app';

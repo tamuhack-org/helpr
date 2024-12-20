@@ -28,10 +28,6 @@ export default async function handler(
     where: {
       email: token?.email || '',
     },
-    include: {
-      claimedTicket: true,
-      ticket: true,
-    },
   });
 
   const tickets = await prisma.ticket.findMany({
@@ -46,14 +42,5 @@ export default async function handler(
     },
   });
 
-  const resolvedTickets = await prisma.resolvedTicket.findMany({
-    where: {
-      claimantId: user?.id,
-    },
-    orderBy: {
-      publishTime: 'desc',
-    },
-  });
-
-  res.status(200).send({ tickets: [...tickets, ...resolvedTickets] });
+  res.status(200).send({ tickets });
 }

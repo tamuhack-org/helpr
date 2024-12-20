@@ -5,7 +5,7 @@ import { Nullable } from '../../../../lib/common';
 import prisma from '../../../../lib/prisma';
 
 /*
- * GET Request: Returns incoming ticket analytics in JSON format
+ * GET Request: Returns active tickets
  */
 export default async function handler(
   req: NextApiRequest,
@@ -15,16 +15,14 @@ export default async function handler(
     return;
   }
 
-  const activeTickets = await prisma.ticket.findMany({
+  const tickets = await prisma.ticket.findMany({
     where: {
-      resolvedTime: null,
+      isResolved: false,
     },
     orderBy: {
       publishTime: 'desc',
     },
   });
 
-  const totalTickets = activeTickets;
-
-  res.status(200).send({ tickets: totalTickets });
+  res.status(200).send({ tickets });
 }

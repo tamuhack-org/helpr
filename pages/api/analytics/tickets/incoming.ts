@@ -15,22 +15,11 @@ export default async function handler(
     return;
   }
 
-  const resolvedTickets = await prisma.resolvedTicket.findMany({
+  const tickets = await prisma.ticket.findMany({
     orderBy: {
       publishTime: 'desc',
     },
   });
 
-  const activeTickets = await prisma.ticket.findMany({
-    where: {
-      resolvedTime: null,
-    },
-    orderBy: {
-      publishTime: 'desc',
-    },
-  });
-
-  const totalTickets = activeTickets.concat(resolvedTickets);
-
-  res.status(200).send({ tickets: totalTickets });
+  res.status(200).send({ tickets });
 }

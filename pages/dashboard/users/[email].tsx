@@ -3,7 +3,7 @@ import { User } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession, Session } from 'next-auth';
 import { useRouter } from 'next/router';
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement } from 'react';
 import useSWR from 'swr';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import { MiniResolvedTickets } from '../../../components/dashboard/overview/MiniIncomingTickets';
@@ -16,8 +16,6 @@ import authOptions from '../../api/auth/[...nextauth]';
 import { NextPageWithLayout } from '../../_app';
 
 const UserInfo: NextPageWithLayout = () => {
-  const [user, setUser] = useState<User | null>();
-
   const router = useRouter();
   const { data, error, isLoading } = useSWR(
     `/api/users/lookup?email=${router.query.email}`,
@@ -25,35 +23,33 @@ const UserInfo: NextPageWithLayout = () => {
     {}
   );
 
-  useEffect(() => {
-    if (data) setUser(data.user);
-  }, [data]);
+  const user: User = data?.user;
 
-  if (isLoading || error) {
+  if (isLoading || error || !user) {
     return <></>;
   }
 
   return (
     <div className="flex flex-col w-full items-start mt-4">
       <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold -mb-3">{user?.name}</h1>
-        <p>{user?.email}</p>
+        <h1 className="text-2xl font-bold -mb-3">{user.name}</h1>
+        <p>{user.email}</p>
         <div className="flex flex-row gap-2">
-          {user?.admin && <Tag>Admin</Tag>}
-          {user?.mentor && <Tag>Mentor</Tag>}
+          {user.admin && <Tag>Admin</Tag>}
+          {user.mentor && <Tag>Mentor</Tag>}
         </div>
       </div>
       <div className="flex flex-col gap-2 mt-8">
         <div className="flex gap-2">
-          <MiniTotalTicketsCreated userId={user?.id} />
-          {user?.mentor && <MiniTotalTicketsResolved email={user?.email} />}
+          <MiniTotalTicketsCreated userId={user.id} />
+          {user.mentor && <MiniTotalTicketsResolved id={user.id} />}
         </div>
-        {user?.mentor && <MiniResolvedTickets email={user?.email} />}
+        {user.mentor && <MiniResolvedTickets id={user.id} />}
       </div>
-      {user?.mentor && (
+      {user.mentor && (
         <div className="mt-8">
           <p className="text-3xl font-bold mb-4">Topics</p>
-          <Topics email={user?.email} />
+          <Topics email={user.email} />
         </div>
       )}
     </div>
@@ -105,4 +101,3 @@ UserInfo.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default UserInfo;
-

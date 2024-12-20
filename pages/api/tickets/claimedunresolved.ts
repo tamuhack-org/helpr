@@ -5,7 +5,7 @@ import { Nullable } from '../../../lib/common';
 import prisma from '../../../lib/prisma';
 
 /*
- * GET Request: Returns all tickets
+ * GET Request: Returns all claimed but unresolved tickets
  */
 export default async function handler(
   req: NextApiRequest,
@@ -17,7 +17,7 @@ export default async function handler(
 
   const tickets = await prisma.ticket.findMany({
     where: {
-      resolvedTime: null,
+      isResolved: false,
       NOT: {
         claimedTime: null,
       },

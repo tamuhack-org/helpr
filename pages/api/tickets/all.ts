@@ -24,11 +24,5 @@ export default async function handler(
     },
   });
 
-  const resolvedTickets = await prisma.resolvedTicket.findMany({
-    orderBy: {
-      publishTime: 'desc',
-    },
-  });
-
-  res.status(200).send({ tickets: [...tickets, ...resolvedTickets] });
+  res.status(200).send({ tickets });
 }
