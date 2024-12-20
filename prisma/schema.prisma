@@ -10,10 +10,9 @@ generator client {
 }
 
 model Event {
-  id           String    @id @default(cuid())
-  isDisabled   Boolean 
+  id         String  @id @default(cuid())
+  isDisabled Boolean
 }
-
 
 model Ticket {
   id           String    @id @default(cuid())
@@ -22,28 +21,14 @@ model Ticket {
   location     String
   contact      String
   publishTime  DateTime  @default(now())
-  claimedTime  DateTime?
+  isResolved   Boolean   @default(false)
   resolvedTime DateTime?
-  claimant     User?     @relation(name: "claim", fields: [claimantId], references: [id])
+  isClaimed    Boolean   @default(false)
+  claimedTime  DateTime?
+  claimant     User?     @relation(name: "claimant", fields: [claimantId], references: [id])
   claimantId   String?   @unique
-  claimantName String?
   author       User      @relation(fields: [authorId], references: [id])
   authorId     String    @unique
-}
-
-model ResolvedTicket {
-  id            String    @id @default(cuid())
-  authorName    String
-  issue         String
-  location      String
-  contact       String
-  publishTime   DateTime  @default(now())
-  claimedTime   DateTime?
-  resolvedTime  DateTime?
-  claimantId    String?
-  claimantName  String?
-  claimantEmail String?
-  authorId      String
 }
 
 model Account {
@@ -83,8 +68,8 @@ model User {
   image           String?
   admin           Boolean   @default(false)
   mentor          Boolean   @default(false)
+  claimedTicket   Ticket?   @relation(name: "claimant")
   claimedTicketId String?
-  claimedTicket   Ticket?   @relation(name: "claim")
   ticket          Ticket?
   accounts        Account[]
   sessions        Session[]
