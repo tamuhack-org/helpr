@@ -9,35 +9,6 @@ generator client {
   engineType = "binary"
 }
 
-model Event {
-  id          String   @id @default(cuid())
-  isDisabled  Boolean
-  createdTime DateTime @default(now())
-  updatedTime DateTime @updatedAt
-}
-
-model Ticket {
-  id           String    @id @default(cuid())
-  authorName   String
-  issue        String
-  location     String
-  contact      String
-  isResolved   Boolean   @default(false)
-  resolvedTime DateTime?
-  isClaimed    Boolean   @default(false)
-  claimedTime  DateTime?
-  claimant     User?     @relation(name: "claimant", fields: [claimantId], references: [id])
-  claimantId   String?   @unique
-  author       User      @relation(fields: [authorId], references: [id])
-  authorId     String    @unique
-  updatedTime  DateTime  @updatedAt
-
-  publishTime DateTime @default(now())
-
-  @@index(fields: [isResolved])
-  @@index(fields: [isClaimed])
-}
-
 model Account {
   id                 String  @id @default(cuid())
   userId             String  @map("user_id")
@@ -67,6 +38,15 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model VerificationToken {
+  id         Int      @id @default(autoincrement())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model User {
   id              String    @id @default(cuid())
   name            String
@@ -87,11 +67,39 @@ model User {
   @@index([claimedTicketId])
 }
 
-model VerificationToken {
-  id         Int      @id @default(autoincrement())
-  identifier String
-  token      String   @unique
-  expires    DateTime
+model Event {
+  id          String   @id @default(cuid())
+  isDisabled  Boolean
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+}
 
-  @@unique([identifier, token])
+model Ticket {
+  id           String    @id @default(cuid())
+  authorName   String
+  issue        String
+  location     String
+  contact      String
+  isResolved   Boolean   @default(false)
+  resolvedTime DateTime?
+  isClaimed    Boolean   @default(false)
+  claimedTime  DateTime?
+  claimant     User?     @relation(name: "claimant", fields: [claimantId], references: [id])
+  claimantId   String?   @unique
+  author       User      @relation(fields: [authorId], references: [id])
+  authorId     String    @unique
+  updatedTime  DateTime  @updatedAt
+
+  publishTime DateTime @default(now())
+
+  @@index(fields: [isResolved])
+  @@index(fields: [isClaimed])
+}
+
+model Settings {
+  id    String @id @default(cuid())
+  key   String
+  value String
+
+  @@index([key])
 }

@@ -3,7 +3,7 @@ import React, { ReactElement, useState } from 'react';
 import { MainLayout } from '../components/common/MainLayout';
 import { TicketStream } from '../components/tickets/TicketStream';
 
-const Home = () => {
+const Mentor = () => {
   const [filter, setFilter] = useState('');
 
   const handleDropdownChange = (
@@ -35,8 +35,8 @@ const Home = () => {
   );
 };
 
-Home.getLayout = function getLayout(page: ReactElement) {
+Mentor.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout page="mentor">{page}</MainLayout>;
 };
 
-export default Home;
+export default Mentor;

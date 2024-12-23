@@ -1,9 +1,13 @@
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import { MainLayout } from '../components/common/MainLayout';
 import { Submit } from '../components/home/Submit';
 
 const Home = () => {
-  return <Submit />;
+  return (
+    <div>
+      <Submit />
+    </div>
+  );
 };
 
 Home.getLayout = function getLayout(page: ReactElement) {

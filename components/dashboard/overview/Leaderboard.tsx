@@ -24,7 +24,6 @@ export default function Leaderboard() {
 
   const frequencyArray: FrequencyItem[] = Object.values(frequency);
   frequencyArray.sort((a, b) => b.frequency - a.frequency);
-  console.log(frequencyArray);
 
   return (
     <div className="inline-block w-full md:w-auto border-[1px] rounded-lg overflow-hidden">

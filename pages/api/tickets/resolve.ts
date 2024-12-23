@@ -7,35 +7,31 @@ import { UserWithClaimedTicket } from '../../../components/common/types';
 
 //If the claimed ticket is resolved by an admin that did not claim the ticket, make the admin the claimant
 //Probably better than leaving the claimant null or assigning it to the previous claimant
-const getUpdatePayload = (user: UserWithClaimedTicket, ticket: Ticket) => {
+const updateTicket = async (user: UserWithClaimedTicket, ticket: Ticket) => {
   const isClaimant = user.claimedTicket?.id !== ticket.id;
 
-  const adminResolve = {
-    where: { id: ticket.id },
-    data: {
-      isResolved: true,
-      resolvedTime: new Date(),
-    },
-    claimant: {
-      connect: {
-        id: user.id,
-      },
-    },
-  };
-
-  const mentorResolve = {
-    where: { id: ticket.id },
-    data: {
-      isResolved: true,
-      resolvedTime: new Date(),
-    },
-  };
-
   if (!isClaimant) {
-    return adminResolve;
+    await prisma.ticket.update({
+      where: { id: ticket.id },
+      data: {
+        isResolved: true,
+        resolvedTime: new Date(),
+        claimant: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    });
   }
 
-  return mentorResolve;
+  await prisma.ticket.update({
+    where: { id: ticket.id },
+    data: {
+      isResolved: true,
+      resolvedTime: new Date(),
+    },
+  });
 };
 
 /*
@@ -81,9 +77,13 @@ export default async function handler(
     return;
   }
 
-  const updatePayload = getUpdatePayload(user, ticket);
-
-  await prisma.ticket.update(updatePayload);
+  try {
+    await updateTicket(user, ticket);
+  } catch (e) {
+    res.status(500);
+    res.send({});
+    return;
+  }
 
   res.status(200);
   res.send({ ticket });

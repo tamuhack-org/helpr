@@ -1,6 +1,7 @@
 import { SessionProvider } from 'next-auth/react';
 import Head from 'next/head';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
+import { useSettings } from '../../lib/settings/settings';
 import { Banner } from './Banner';
 import { Navbar, PageOption } from './Navbar';
 
@@ -11,6 +12,17 @@ export const MainLayout = ({
   children: ReactNode;
   page: PageOption;
 }) => {
+  const { data, error, isLoading } = useSettings();
+
+  useEffect(() => {
+    if (isLoading || error) {
+      return;
+    }
+
+    console.log('Consuming data');
+    console.log(data);
+  }, []);
+
   return (
     <>
       <Head>

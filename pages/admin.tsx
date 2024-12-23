@@ -5,7 +5,7 @@ import { AdminTable } from '../components/admin/AdminTable';
 import QrReader from '../components/admin/scanner/QrReader';
 import { MainLayout } from '../components/common/MainLayout';
 
-const Home = () => {
+const Admin = () => {
   return (
     <div className="w-full">
       <div className="flex md:flex-row flex-col gap-2">
@@ -23,8 +23,8 @@ const Home = () => {
   );
 };
 
-Home.getLayout = function getLayout(page: ReactElement) {
+Admin.getLayout = function getLayout(page: ReactElement) {
   return <MainLayout page="admin">{page}</MainLayout>;
 };
 
-export default Home;
+export default Admin;
