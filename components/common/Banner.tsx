@@ -3,7 +3,7 @@ import React from 'react';
 export const Banner = () => {
   return (
     <a
-      href="https://hh24.tamuhack.org/"
+      href="https://th25.tamuhack.org/"
       target="_blank"
       rel="noopener noreferrer"
     >
