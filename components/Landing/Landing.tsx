@@ -33,6 +33,7 @@ export const Landing = () => {
       </div>
       <div className="absolute flex justify-center bottom-8 w-full text-center">
         <a
+          id="loginButton"
           href="https://tamuhack.org"
           target="_blank"
           rel="noopener noreferrer"

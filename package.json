@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:open": "cypress open",
+    "test:e2e:open": "cypress open",
+    "test:e2e:run": "cypress run"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.4.6",
@@ -43,10 +46,18 @@
     "stopword": "^2.0.8",
     "swr": "^2.0.0",
     "typescript": "4.9.4",
+    "uuidv4": "^6.2.13",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@percy/cli": "^1.20.3",
+    "@percy/cypress": "^3.1.2",
+    "@testing-library/cypress": "^10.0.2",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
     "autoprefixer": "^10.4.13",
+    "cypress": "^14.0.0",
+    "cypress-social-logins": "^1.14.2",
     "eslint": "8.30.0",
     "eslint-config-next": "13.1.1",
     "postcss": "^8.4.20",
