@@ -25,7 +25,7 @@ export default async function handler(
       email: token?.email || '',
     },
     include: {
-      ticket: true,
+      ticket: { include: { claimant: true } },
     },
   });
 

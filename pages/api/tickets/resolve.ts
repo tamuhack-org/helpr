@@ -8,7 +8,7 @@ import { UserWithClaimedTicket } from '../../../components/common/types';
 //If the claimed ticket is resolved by an admin that did not claim the ticket, make the admin the claimant
 //Probably better than leaving the claimant null or assigning it to the previous claimant
 const getUpdatePayload = (user: UserWithClaimedTicket, ticket: Ticket) => {
-  const isClaimant = user.claimedTicket?.id !== ticket.id;
+  const isClaimant = user.claimedTicket?.id !== ticket.claimantId;
 
   const adminResolve = {
     where: { id: ticket.id },

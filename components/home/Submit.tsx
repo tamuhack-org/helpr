@@ -137,9 +137,9 @@ export const Submit = () => {
       <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl w-full">
         <p className="font-bold text-3xl text-gray-700">Ticket Submitted</p>
         <p className="mt-4 text-md text-gray-600">
-          {data.user.ticket.claimantId
+          {data.user.ticket.claimant?.name
             ? `${
-                data.user?.ticket?.claimantName || 'A mentor'
+                data.user.ticket.claimant.name || 'A mentor'
               } has claimed your ticket and is on their way!`
             : 'Your ticket is currently in the queue. A mentor will arrive shortly!'}
         </p>
