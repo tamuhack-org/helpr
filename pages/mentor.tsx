@@ -30,7 +30,7 @@ const Home = () => {
           <option value="mine">My Tickets</option>
         </Select>
       </div>
-      <TicketStream filter={filter || 'active'} />
+      {/* <TicketStream filter={filter || 'active'} /> */}
     </>
   );
 };

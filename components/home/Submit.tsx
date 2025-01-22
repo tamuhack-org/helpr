@@ -130,8 +130,6 @@ export const Submit = () => {
     }
   };
 
-  console.log(data.user.ticket);
-
   if (data.user?.ticket) {
     return (
       <div className="p-8 bg-white border border-gray-100 shadow-md rounded-xl w-full">

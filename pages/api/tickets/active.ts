@@ -27,5 +27,7 @@ export default async function handler(
     },
   });
 
+  console.log(tickets);
+
   res.status(200).send({ tickets: tickets });
 }

@@ -26,8 +26,7 @@ export default async function handler(
       email: token?.email || '',
     },
     include: {
-      claimedTicket: true,
-      ticket: true,
+      claimedTickets: true,
     },
   });
 
@@ -43,7 +42,9 @@ export default async function handler(
     return;
   }
 
-  if (user.claimedTicket || ticket.claimantId) {
+  const isClaimed = user.claimedTickets.some((ticket) => !ticket.isResolved);
+
+  if (isClaimed || ticket.claimantId) {
     res.status(400);
     res.send({ ticket: null });
     return;

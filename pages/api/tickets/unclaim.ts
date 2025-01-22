@@ -25,10 +25,6 @@ export default async function handler(
     where: {
       email: token?.email || '',
     },
-    include: {
-      claimedTicket: true,
-      ticket: true,
-    },
   });
 
   const ticket = await prisma.ticket.findUnique({
@@ -39,11 +35,6 @@ export default async function handler(
 
   if (!user || !ticket || (!user.admin && !user.mentor)) {
     res.status(401);
-    res.send({ ticket: null });
-    return;
-  }
-
-  if (user.claimedTicket?.id !== ticket.id && user.admin === false) {
     res.send({ ticket: null });
     return;
   }

@@ -26,9 +26,6 @@ export default async function handler(
     where: {
       email: token?.email || '',
     },
-    include: {
-      ticket: true,
-    },
   });
 
   if (!user?.admin || user.id === id) {

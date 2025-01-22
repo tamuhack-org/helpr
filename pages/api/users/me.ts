@@ -1,17 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { Nullable } from '../../../lib/common';
-import { User } from '@prisma/client';
 import { getToken, JWT } from 'next-auth/jwt';
 
 import prisma from '../../../lib/prisma';
+import { UserWithTicket } from '../../../components/common/types';
 /*
  * GET Request: Returns current user
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ user: Nullable<User> }>
+  res: NextApiResponse<{ user: any }>
 ) {
+  console.log('HI');
   const token: Nullable<JWT> = await getToken({ req });
 
   if (!token) {
@@ -24,11 +25,18 @@ export default async function handler(
     where: {
       email: token?.email || '',
     },
+  });
+
+  const attachedTicket = await prisma.ticket.findFirst({
+    where: {
+      authorId: user?.id,
+      isResolved: false,
+    },
     include: {
-      ticket: { include: { claimant: true } },
+      claimant: true,
     },
   });
 
   res.status(200);
-  res.send({ user: user });
+  res.send({ user: { ...user, ticket: attachedTicket } });
 }

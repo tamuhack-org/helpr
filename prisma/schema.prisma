@@ -16,28 +16,6 @@ model Event {
   updatedTime DateTime @updatedAt
 }
 
-model Ticket {
-  id           String    @id @default(cuid())
-  authorName   String
-  issue        String
-  location     String
-  contact      String
-  isResolved   Boolean   @default(false)
-  resolvedTime DateTime?
-  isClaimed    Boolean   @default(false)
-  claimedTime  DateTime?
-  claimant     User?     @relation(name: "claimant", fields: [claimantId], references: [id])
-  claimantId   String?   @unique
-  author       User      @relation(fields: [authorId], references: [id])
-  authorId     String    @unique
-  updatedTime  DateTime  @updatedAt
-
-  publishTime DateTime @default(now())
-
-  @@index(fields: [isResolved])
-  @@index(fields: [isClaimed])
-}
-
 model Account {
   id                 String  @id @default(cuid())
   userId             String  @map("user_id")
@@ -75,16 +53,36 @@ model User {
   image           String?
   admin           Boolean   @default(false)
   mentor          Boolean   @default(false)
-  claimedTicket   Ticket?   @relation(name: "claimant")
-  claimedTicketId String?
-  ticket          Ticket?
+  claimedTickets  Ticket[]  @relation(name: "ClaimedTickets")
+  authoredTickets Ticket[]  @relation(name: "AuthoredTickets")
   accounts        Account[]
   sessions        Session[]
   updatedTime     DateTime  @updatedAt
 
   @@index([admin])
   @@index([mentor])
-  @@index([claimedTicketId])
+}
+
+model Ticket {
+  id           String    @id @default(cuid())
+  authorName   String
+  issue        String
+  location     String
+  contact      String
+  isResolved   Boolean   @default(false)
+  resolvedTime DateTime?
+  isClaimed    Boolean   @default(false)
+  claimedTime  DateTime?
+  claimant     User?     @relation(name: "ClaimedTickets", fields: [claimantId], references: [id])
+  claimantId   String?
+  author       User      @relation(name: "AuthoredTickets", fields: [authorId], references: [id])
+  authorId     String
+  updatedTime  DateTime  @updatedAt
+
+  publishTime DateTime @default(now())
+
+  @@index(fields: [isResolved])
+  @@index(fields: [isClaimed])
 }
 
 model VerificationToken {

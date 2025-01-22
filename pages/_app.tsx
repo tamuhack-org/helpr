@@ -20,7 +20,7 @@ type AppPropsWithLayout = AppProps & {
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
-  const AnyComponent = Component; //tried for an hour to fix this type error but I'm giving up now
+  const AnyComponent = Component;
 
   return getLayout(
     <ChakraProvider

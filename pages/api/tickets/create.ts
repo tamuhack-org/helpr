@@ -35,12 +35,16 @@ export default async function handler(
     where: {
       email: token?.email || '',
     },
-    include: {
-      ticket: true,
+  });
+
+  const existingTicket = await prisma.ticket.findFirst({
+    where: {
+      authorId: user?.id,
+      isResolved: false,
     },
   });
 
-  if (!user || user?.ticket) {
+  if (!user || existingTicket) {
     res.status(409);
     res.send({});
     return;
