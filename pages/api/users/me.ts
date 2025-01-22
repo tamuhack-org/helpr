@@ -4,7 +4,7 @@ import { Nullable } from '../../../lib/common';
 import { getToken, JWT } from 'next-auth/jwt';
 
 import prisma from '../../../lib/prisma';
-import { UserWithTicket } from '../../../components/common/types';
+
 /*
  * GET Request: Returns current user
  */
@@ -12,7 +12,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ user: any }>
 ) {
-  console.log('HI');
   const token: Nullable<JWT> = await getToken({ req });
 
   if (!token) {

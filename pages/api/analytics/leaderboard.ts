@@ -35,14 +35,14 @@ export default async function handler(
     [key: string]: { email: string; frequency: number; name: string };
   } = {};
 
-  resolvedTickets.forEach((ticket: Ticket) => {
+  resolvedTickets.forEach((ticket) => {
     if (frequency[String(ticket.claimantId)]) {
       frequency[String(ticket.claimantId)].frequency += 1;
     } else {
-      const claimant = ticket.claimantId;
+      const claimant = ticket.claimant;
       frequency[String(ticket.claimantId)] = {
-        email: claimant || '',
-        name: claimant || '',
+        email: claimant?.email ?? '',
+        name: claimant?.name ?? '',
         frequency: 1,
       };
     }

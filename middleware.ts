@@ -23,7 +23,6 @@ export default withAuth({
       );
 
       const data = await response.json();
-      console.log(data);
 
       if (data.isAdmin) {
         return true;

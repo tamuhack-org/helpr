@@ -24,7 +24,6 @@ export default NextAuth({
       });
       token.admin = user?.admin || false;
       token.mentor = user?.mentor || false;
-      console.log(token);
       return token;
     },
     session: async ({ session, token }) => {
