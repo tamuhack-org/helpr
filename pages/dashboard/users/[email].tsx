@@ -30,7 +30,7 @@ const UserInfo: NextPageWithLayout = () => {
   }
 
   return (
-    <div className="flex flex-col w-full items-start mt-4">
+    <div className="mx-auto w-5xl px-6 md:max-w-5xl mt-8">
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold -mb-3">{user.name}</h1>
         <p>{user.email}</p>

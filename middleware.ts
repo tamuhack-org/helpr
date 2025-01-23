@@ -1,4 +1,5 @@
 import { withAuth } from 'next-auth/middleware';
+import { RoleData } from './components/common/types';
 
 // More on how NextAuth.js middleware works: https://next-auth.js.org/configuration/nextjs#middleware
 
@@ -22,7 +23,12 @@ export default withAuth({
           })
       );
 
-      const data = await response.json();
+      let data: RoleData = { isAdmin: false, isMentor: true };
+      try {
+        data = await response.json();
+      } catch (e) {
+        console.log('Middleware error', e);
+      }
 
       if (data.isAdmin) {
         return true;

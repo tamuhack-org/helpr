@@ -4,6 +4,7 @@ import { Nullable } from '../../../lib/common';
 import { getToken, JWT } from 'next-auth/jwt';
 
 import prisma from '../../../lib/prisma';
+import { UserWithTicketClaimant } from '@/components/common/types';
 
 /*
  * GET Request: Returns current user

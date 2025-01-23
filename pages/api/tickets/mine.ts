@@ -4,6 +4,7 @@ import { Nullable } from '../../../lib/common';
 
 import prisma from '../../../lib/prisma';
 import { getToken } from 'next-auth/jwt';
+import { getActiveEvent } from '../../../lib/eventHelper';
 
 /*
  * GET Request: Returns all tickets associated with the current user
@@ -30,9 +31,18 @@ export default async function handler(
     },
   });
 
+  const activeEvent = await getActiveEvent();
+
+  if (!activeEvent) {
+    res.status(500);
+    res.send({ tickets: null });
+    return;
+  }
+
   const tickets = await prisma.ticket.findMany({
     where: {
       claimantId: user?.id,
+      eventId: activeEvent.id,
     },
     orderBy: {
       publishTime: 'desc',

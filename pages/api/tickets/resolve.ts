@@ -3,11 +3,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 import { getToken } from 'next-auth/jwt';
 import { Ticket } from '@prisma/client';
-import { UserWithTicket } from '../../../components/common/types';
+import { UserWithTicketClaimant } from '../../../components/common/types';
 
 //If the claimed ticket is resolved by an admin that did not claim the ticket, make the admin the claimant
 //Probably better than leaving the claimant null or assigning it to the previous claimant
-const getUpdatePayload = (user: UserWithTicket, ticket: Ticket) => {
+const getUpdatePayload = (user: UserWithTicketClaimant, ticket: Ticket) => {
   const isClaimant = user.id === ticket.claimantId;
 
   const adminResolve = {
@@ -57,9 +57,6 @@ export default async function handler(
   const user = await prisma.user.findUnique({
     where: {
       email: token?.email || '',
-    },
-    include: {
-      claimedTickets: true,
     },
   });
 

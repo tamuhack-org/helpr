@@ -11,7 +11,7 @@ import Topics from '../../components/dashboard/overview/Topics';
 
 const Overview: NextPageWithLayout = () => {
   return (
-    <div className="mt-4">
+    <div className="mx-auto w-5xl px-6 md:max-w-5xl mt-8">
       <p className="text-4xl font-bold">Overview</p>
       <p className="text-gray-500 mt-1">
         Get a quick glimpse of how your mentors are doing.

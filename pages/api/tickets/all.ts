@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Nullable } from '../../../lib/common';
 
 import prisma from '../../../lib/prisma';
+import { getActiveEvent } from '../../../lib/eventHelper';
 
 /*
  * GET Request: Returns all tickets
@@ -15,7 +16,18 @@ export default async function handler(
     return;
   }
 
+  const activeEvent = await getActiveEvent();
+
+  if (!activeEvent) {
+    res.status(500);
+    res.send({ tickets: null });
+    return;
+  }
+
   const tickets = await prisma.ticket.findMany({
+    where: {
+      eventId: activeEvent.id,
+    },
     orderBy: {
       publishTime: 'desc',
     },

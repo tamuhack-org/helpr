@@ -82,7 +82,10 @@ model Ticket {
 
 model Event {
   id          String         @id @default(cuid())
+  name        String
   isActive    Boolean
+  url         String?
+  bannerText  String?
   settings    EventSetting[] @relation(name: "EventSettings")
   tickets     Ticket[]       @relation(name: "EventTickets")
   createdTime DateTime       @default(now())

@@ -9,6 +9,7 @@ import type { NextPage } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Analytics } from '@vercel/analytics/react';
+import { Toaster } from '@/components/ui/toaster';
 
 export type NextPageWithLayout<P = unknown, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -20,7 +21,7 @@ type AppPropsWithLayout = AppProps & {
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page);
-  const AnyComponent = Component;
+  const AnyComponent = Component as any;
 
   return getLayout(
     <ChakraProvider
@@ -34,6 +35,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     >
       <SessionProvider session={pageProps.session}>
         <AnyComponent {...pageProps} />
+        <Toaster />
         <Analytics />
       </SessionProvider>
     </ChakraProvider>

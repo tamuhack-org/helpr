@@ -5,19 +5,154 @@ import DashboardLayout from '../../components/dashboard/DashboardLayout';
 import { Nullable } from '../../lib/common';
 import prisma from '../../lib/prisma';
 import authOptions from '../api/auth/[...nextauth]';
-import type { NextPageWithLayout } from '../_app';
 
-const Settings: NextPageWithLayout = () => {
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { z } from 'zod';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { useToast } from '@/hooks/use-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { mutate } from 'swr';
+import { EventRequests } from '@/lib/helpers/requests/event-requests';
+import useEventStore from '@/stores/useEventStore';
+
+const Settings = () => {
+  const { activeEvent } = useEventStore((state) => state);
+  if (!activeEvent) {
+    return <p>Loading</p>;
+  }
+
   return (
-    <div className="mt-4">
-      <p className="text-4xl font-bold">Admin Settings</p>
-      <p className="text-gray-500 mt-1">
-        Change how HelpR works for your event.
-      </p>
+    <div className="mx-auto w-5xl px-6 md:max-w-5xl mt-8">
+      <p className="font-semibold text-3xl">Event Settings</p>
 
-      <div className="mt-8">
-        <p className="text-2xl font-bold">Event Settings</p>
+      <BasicInformationSection />
+    </div>
+  );
+};
+
+const BasicInformationSection = () => {
+  const { toast } = useToast();
+  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
+  const FormSchema = z.object({
+    name: z
+      .string()
+      .min(2, {
+        message: 'Name must be at least 2 characters.',
+      })
+      .optional(),
+    bannerText: z.string().optional(),
+    url: z.string().optional(),
+  });
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: activeEvent?.name || '',
+      url: activeEvent?.url || '',
+      bannerText: activeEvent?.bannerText || '',
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    const eventPayload = {
+      eventId: activeEvent?.id,
+      name: data.name === activeEvent?.name ? undefined : data.name,
+      bannerText:
+        data.bannerText === activeEvent?.bannerText
+          ? undefined
+          : data.bannerText,
+      url: data.url === activeEvent?.url ? undefined : data.url,
+    };
+
+    const response = await EventRequests.updateEvent(eventPayload);
+
+    const newEvent = await response.json();
+
+    toast({
+      title: 'Updated Event Data',
+      description: 'Your changes will be reflected in the application shortly.',
+    });
+    setActiveEvent(newEvent.event);
+    mutate('/api/events/');
+  };
+
+  return (
+    <div className="flex justify-between mt-4 gap-8 border-b-2 border-gray-200 pb-4">
+      <div className="mt-4 w-1/2">
+        <p className="text-lg font-semibold">General Info</p>
+        <p className="opacity-80">
+          View and update public-facing information about your event.
+        </p>
       </div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6 py-4 w-1/2"
+        >
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Event Name</FormLabel>
+                <FormControl>
+                  <Input placeholder={activeEvent?.name} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="bannerText"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Banner Text</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={activeEvent?.bannerText || 'None'}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+                <FormDescription>
+                  If set, a banner will display your message to participants.
+                </FormDescription>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="url"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Live Site URL:</FormLabel>
+                <FormControl>
+                  <Input placeholder={activeEvent?.url || 'None'} {...field} />
+                </FormControl>
+                <FormMessage />
+                <FormDescription>
+                  If set, the banner will link to a URL.{' '}
+                </FormDescription>
+              </FormItem>
+            )}
+          />
+          <div className="pt-2">
+            <Button type="submit">Save</Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 };

@@ -7,14 +7,16 @@ import {
   maxPhoneLength,
   maxIssueLength,
   maxLocationLength,
+  Nullable,
 } from '../../../lib/common';
+import { getActiveEvent } from '../../../lib/eventHelper';
 
 /*
  * POST Request: Creates new ticket and assigns it to user
  */
 
 type ResponseData = {
-  ticket?: Ticket;
+  ticket?: Nullable<Ticket>;
   error?: string;
 };
 
@@ -76,12 +78,25 @@ export default async function handler(
     return;
   }
 
+  const activeEvent = await getActiveEvent();
+
+  if (!activeEvent) {
+    res.status(500);
+    res.send({ ticket: null });
+    return;
+  }
+
   const ticket = await prisma.ticket.create({
     data: {
       authorName: user.name,
       issue: issue,
       location: location,
       contact: contact,
+      event: {
+        connect: {
+          id: activeEvent.id,
+        },
+      },
       author: {
         connect: {
           id: user.id,
