@@ -9,13 +9,6 @@ generator client {
   engineType = "binary"
 }
 
-model Event {
-  id          String   @id @default(cuid())
-  isDisabled  Boolean
-  createdTime DateTime @default(now())
-  updatedTime DateTime @updatedAt
-}
-
 model Account {
   id                 String  @id @default(cuid())
   userId             String  @map("user_id")
@@ -77,12 +70,33 @@ model Ticket {
   claimantId   String?
   author       User      @relation(name: "AuthoredTickets", fields: [authorId], references: [id])
   authorId     String
-  updatedTime  DateTime  @updatedAt
+  event        Event     @relation(name: "EventTickets", fields: [eventId], references: [id])
+  eventId      String
 
+  updatedTime DateTime @updatedAt
   publishTime DateTime @default(now())
 
   @@index(fields: [isResolved])
   @@index(fields: [isClaimed])
+}
+
+model Event {
+  id          String         @id @default(cuid())
+  isActive    Boolean
+  settings    EventSetting[] @relation(name: "EventSettings")
+  tickets     Ticket[]       @relation(name: "EventTickets")
+  createdTime DateTime       @default(now())
+  updatedTime DateTime       @updatedAt
+}
+
+model EventSetting {
+  id          String   @id @default(cuid())
+  event       Event    @relation(name: "EventSettings", fields: [eventId], references: [id])
+  eventId     String
+  key         String
+  value       String
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
 }
 
 model VerificationToken {
