@@ -4,6 +4,8 @@ import { Nullable } from '../../../lib/common';
 import prisma from '../../../lib/prisma';
 import { Ticket } from '@prisma/client';
 import { getToken } from 'next-auth/jwt';
+import { getActiveEvent } from '@/lib/eventHelper';
+import { isMentor } from '@/lib/helpers/permission-helper';
 
 /*
  * POST Request: Claims Ticket
@@ -21,12 +23,21 @@ export default async function handler(
     return;
   }
 
+  const activeEvent = await getActiveEvent();
+
+  if (!activeEvent) {
+    res.status(500);
+    res.send({ ticket: null });
+    return;
+  }
+
   const user = await prisma.user.findUnique({
     where: {
       email: token?.email || '',
     },
     include: {
       claimedTickets: true,
+      roles: true,
     },
   });
 
@@ -36,13 +47,23 @@ export default async function handler(
     },
   });
 
-  if (!user || !ticket || (!user.admin && !user.mentor)) {
+  if (!user || !ticket) {
+    res.status(400);
+    res.send({ ticket: null });
+    return;
+  }
+
+  const hasMentorRole = await isMentor(user);
+
+  if (!user.admin && !hasMentorRole) {
     res.status(401);
     res.send({ ticket: null });
     return;
   }
 
-  const isClaimed = user.claimedTickets.some((ticket) => !ticket.isResolved);
+  const isClaimed = user.claimedTickets?.some(
+    (ticket: Ticket) => !ticket.isResolved
+  );
 
   if (isClaimed || ticket.claimantId) {
     res.status(400);

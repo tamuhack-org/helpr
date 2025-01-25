@@ -4,6 +4,7 @@ import { Nullable } from '../../../lib/common';
 import prisma from '../../../lib/prisma';
 import { Ticket } from '@prisma/client';
 import { getToken } from 'next-auth/jwt';
+import { isMentor } from '@/lib/helpers/permission-helper';
 
 /*
  * POST Request: Unclaims ticket
@@ -25,6 +26,9 @@ export default async function handler(
     where: {
       email: token?.email || '',
     },
+    include: {
+      roles: true,
+    },
   });
 
   const ticket = await prisma.ticket.findUnique({
@@ -33,12 +37,19 @@ export default async function handler(
     },
   });
 
-  if (!user || !ticket || (!user.admin && !user.mentor)) {
-    res.status(401);
+  if (!user || !ticket) {
+    res.status(400);
     res.send({ ticket: null });
     return;
   }
 
+  const hasMentorRole = await isMentor(user);
+
+  if (!user.admin && !hasMentorRole) {
+    res.status(401);
+    res.send({ ticket: null });
+    return;
+  }
   await prisma.ticket.update({
     where: {
       id: ticketId,

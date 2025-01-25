@@ -1,9 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import prisma from '../../../lib/prisma';
+import { Nullable } from '../../../lib/common';
 import { getToken } from 'next-auth/jwt';
 import { Ticket } from '@prisma/client';
 import { UserWithTicketClaimant } from '../../../components/common/types';
+import { isMentor } from '@/lib/helpers/permission-helper';
 
 //If the claimed ticket is resolved by an admin that did not claim the ticket, make the admin the claimant
 //Probably better than leaving the claimant null or assigning it to the previous claimant
@@ -58,6 +60,9 @@ export default async function handler(
     where: {
       email: token?.email || '',
     },
+    include: {
+      roles: true,
+    },
   });
 
   const ticket = await prisma.ticket.findUnique({
@@ -67,9 +72,17 @@ export default async function handler(
     include: { claimant: true },
   });
 
-  if (!user || !ticket || (!user.admin && !user.mentor)) {
+  if (!user || !ticket) {
+    res.status(400);
+    res.send({ ticket: null });
+    return;
+  }
+
+  const hasMentorRole = await isMentor(user);
+
+  if (!user.admin && !hasMentorRole) {
     res.status(401);
-    res.send({});
+    res.send({ ticket: null });
     return;
   }
 

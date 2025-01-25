@@ -1,3 +1,4 @@
+import { getActiveEvent } from '@/lib/eventHelper';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 
@@ -17,14 +18,23 @@ export default async function handler(
     return;
   }
 
+  const activeEvent = await getActiveEvent();
+
   const user = await prisma.user.findUnique({
     where: {
       email: email as string,
     },
+    include: {
+      roles: true,
+    },
   });
 
+  const currentRole = user?.roles?.find(
+    (role) => role.eventId === activeEvent?.id
+  );
+
   const isAdmin = user?.admin ?? false;
-  const isMentor = user?.mentor ?? false;
+  const isMentor = currentRole?.mentor ?? false;
 
   res.status(200);
   res.send({ isAdmin, isMentor });

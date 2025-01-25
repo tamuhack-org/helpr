@@ -1,9 +1,13 @@
-import { Ticket } from '@prisma/client';
+import { EventRoles, Ticket } from '@prisma/client';
 import { User } from '@prisma/client';
 import { Nullable } from '../../lib/common';
 
 export interface UserWithTicketClaimant extends User {
   ticket?: Nullable<TicketWithClaimant>;
+}
+
+export interface UserWithRoles extends User {
+  roles: EventRoles[];
 }
 
 export interface TicketWithClaimant extends Ticket {

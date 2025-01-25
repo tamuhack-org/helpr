@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { Nullable } from '../../../lib/common';
-import { User } from '@prisma/client';
+import { EventRoles, User } from '@prisma/client';
 import { getToken, JWT } from 'next-auth/jwt';
 
 import prisma from '../../../lib/prisma';
+import { getActiveEvent } from '@/lib/eventHelper';
 
 /*
  * GET Request: Returns all users
@@ -33,12 +34,32 @@ export default async function handler(
     return;
   }
 
+  const activeEvent = await getActiveEvent();
+
+  if (!activeEvent) {
+    res.status(500);
+    res.send({ users: [] });
+    return;
+  }
+
   const users = await prisma.user.findMany({
     orderBy: {
       name: 'asc',
     },
+    include: {
+      roles: true,
+    },
+  });
+
+  const updatedUsers = users.map((user) => {
+    const role = user.roles?.find(
+      (role: EventRoles) => role.eventId === activeEvent.id
+    );
+
+    user.mentor = role?.mentor ?? false;
+    return user;
   });
 
   res.status(200);
-  res.send({ users: users });
+  res.send({ users: updatedUsers });
 }

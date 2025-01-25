@@ -1,10 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { Nullable } from '../../../lib/common';
-import { User } from '@prisma/client';
+import { EventRoles, User } from '@prisma/client';
 import { getToken, JWT } from 'next-auth/jwt';
 
 import prisma from '../../../lib/prisma';
+import users from '@/pages/dashboard/users';
+import { isMentor } from '@/lib/helpers/permission-helper';
 
 /*
  * GET Request: Returns user info given email
@@ -28,8 +30,20 @@ export default async function handler(
     where: {
       email: email as string,
     },
+    include: {
+      roles: true,
+    },
   });
 
+  if (!user) {
+    res.status(401);
+    res.send({ user: null });
+    return;
+  }
+
+  const hasMentorRole = await isMentor(user);
+  const updatedUser = { ...user, mentor: hasMentorRole };
+
   res.status(200);
-  res.send({ user: user });
+  res.send({ user: updatedUser });
 }

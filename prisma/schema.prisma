@@ -39,18 +39,19 @@ model Session {
 }
 
 model User {
-  id              String    @id @default(cuid())
+  id              String       @id @default(cuid())
   name            String
-  email           String    @unique
+  email           String       @unique
   emailVerified   DateTime?
   image           String?
-  admin           Boolean   @default(false)
-  mentor          Boolean   @default(false)
-  claimedTickets  Ticket[]  @relation(name: "ClaimedTickets")
-  authoredTickets Ticket[]  @relation(name: "AuthoredTickets")
+  admin           Boolean      @default(false)
+  mentor          Boolean      @default(false)
+  roles           EventRoles[]
+  claimedTickets  Ticket[]     @relation(name: "ClaimedTickets")
+  authoredTickets Ticket[]     @relation(name: "AuthoredTickets")
   accounts        Account[]
   sessions        Session[]
-  updatedTime     DateTime  @updatedAt
+  updatedTime     DateTime     @updatedAt
 
   @@index([admin])
   @@index([mentor])
@@ -87,6 +88,7 @@ model Event {
   url         String?
   bannerText  String?
   settings    EventSetting[] @relation(name: "EventSettings")
+  roles       EventRoles[]   @relation(name: "EventRoles")
   tickets     Ticket[]       @relation(name: "EventTickets")
   createdTime DateTime       @default(now())
   updatedTime DateTime       @updatedAt
@@ -100,6 +102,19 @@ model EventSetting {
   value       String
   createdTime DateTime @default(now())
   updatedTime DateTime @updatedAt
+}
+
+//Admins should persist over events, but not mentors
+model EventRoles {
+  event       Event    @relation(name: "EventRoles", fields: [eventId], references: [id])
+  eventId     String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mentor      Boolean  @default(false)
+  createdTime DateTime @default(now())
+  updatedTime DateTime @updatedAt
+
+  @@id([eventId, userId])
 }
 
 model VerificationToken {

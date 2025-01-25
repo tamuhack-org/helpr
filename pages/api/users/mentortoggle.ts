@@ -5,9 +5,10 @@ import { User } from '@prisma/client';
 import { getToken, JWT } from 'next-auth/jwt';
 
 import prisma from '../../../lib/prisma';
+import { getActiveEvent } from '@/lib/eventHelper';
 
 /*
- * POST Request: Toggles admin status of a user
+ * POST Request: Toggles mentor status of a user
  */
 export default async function handler(
   req: NextApiRequest,
@@ -25,24 +26,41 @@ export default async function handler(
   const user = await prisma.user.findUnique({
     where: {
       email: token?.email || '',
+      admin: true,
     },
   });
 
-  if (!user?.admin || user.id === id) {
+  if (!user) {
     res.status(401);
     res.send({ user: null });
     return;
   }
 
-  const updatedUser = await prisma.user.update({
+  const activeEvent = await getActiveEvent();
+
+  if (!activeEvent) {
+    res.status(500);
+    res.send({ user: null });
+    return;
+  }
+
+  await prisma.eventRoles.upsert({
     where: {
-      id: id,
+      eventId_userId: {
+        userId: id,
+        eventId: activeEvent.id,
+      },
     },
-    data: {
+    update: {
+      mentor: !currentRole,
+    },
+    create: {
+      userId: id,
+      eventId: activeEvent.id,
       mentor: !currentRole,
     },
   });
 
   res.status(200);
-  res.send({ user: updatedUser });
+  res.send({ user: null });
 }
