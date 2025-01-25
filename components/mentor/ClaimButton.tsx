@@ -36,7 +36,14 @@ export const ClaimButton = ({
         ticketId: ticket.id,
       },
     })
-      .then(async function () {
+      .then(async (response) => {
+        const err = response.data.error;
+        if (err) {
+          toast({
+            title: err ?? 'Error',
+            status: 'error',
+          });
+        }
         await mutate('/api/tickets/' + filter);
       })
       .catch(function (error) {

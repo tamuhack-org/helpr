@@ -12,7 +12,7 @@ import { isMentor } from '@/lib/helpers/permission-helper';
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ ticket: Nullable<Ticket> }>
+  res: NextApiResponse<{ ticket: Nullable<Ticket>; error?: string }>
 ) {
   const token = await getToken({ req });
   const { ticketId } = req.body;
@@ -66,8 +66,8 @@ export default async function handler(
   );
 
   if (isClaimed || ticket.claimantId) {
-    res.status(400);
-    res.send({ ticket: null });
+    res.status(200);
+    res.send({ ticket: null, error: 'You already have a ticket claimed' });
     return;
   }
 
