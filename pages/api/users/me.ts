@@ -4,7 +4,7 @@ import { Nullable } from '../../../lib/common';
 import { getToken, JWT } from 'next-auth/jwt';
 
 import prisma from '../../../lib/prisma';
-import { UserWithTicketClaimant } from '@/components/common/types';
+import { isMentor } from '@/lib/helpers/permission-helper';
 
 /*
  * GET Request: Returns current user
@@ -25,7 +25,18 @@ export default async function handler(
     where: {
       email: token?.email || '',
     },
+    include: {
+      roles: true,
+    },
   });
+
+  if (!user) {
+    res.status(401);
+    res.send({ user: null });
+    return;
+  }
+
+  const hasMentorRole = await isMentor(user);
 
   const attachedTicket = await prisma.ticket.findFirst({
     where: {
@@ -37,6 +48,12 @@ export default async function handler(
     },
   });
 
+  const updatedUser = {
+    ...user,
+    mentor: hasMentorRole,
+    ticket: attachedTicket,
+  };
+
   res.status(200);
-  res.send({ user: { ...user, ticket: attachedTicket } });
+  res.send({ user: updatedUser });
 }
