@@ -71,7 +71,7 @@ export const ClaimButton = ({
     return (
       <div className="flex justify-center mt-6">
         <a className="w-full text-center py-2 bg-gray-400 rounded-lg text-md font-bold text-white">
-          Resolved
+          Resolved by {ticket.claimant?.name}
         </a>
       </div>
     );
