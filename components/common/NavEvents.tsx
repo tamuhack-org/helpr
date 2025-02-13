@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  ChevronsUpDown,
-  Droplets,
-  Ellipsis,
-  GalleryVerticalEnd,
-  Plus,
-} from 'lucide-react';
+import { ChevronsUpDown, Ellipsis, GalleryVerticalEnd } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -13,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {

@@ -36,12 +36,6 @@ export default async function handler(
 
   const activeEvent = await getActiveEvent();
 
-  if (!activeEvent) {
-    res.status(500);
-    res.send({ users: [] });
-    return;
-  }
-
   const users = await prisma.user.findMany({
     orderBy: {
       name: 'asc',
@@ -53,7 +47,7 @@ export default async function handler(
 
   const updatedUsers = users.map((user) => {
     const role = user.roles?.find(
-      (role: EventRoles) => role.eventId === activeEvent.id
+      (role: EventRoles) => role.eventId === activeEvent?.id
     );
 
     user.mentor = role?.mentor ?? false;

@@ -4,7 +4,6 @@ import { Nullable } from '../../../lib/common';
 import { getToken, JWT } from 'next-auth/jwt';
 
 import prisma from '../../../lib/prisma';
-import { Ticket } from '@prisma/client';
 
 /*
  * GET Request: Returns ranked list of users

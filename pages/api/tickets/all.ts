@@ -18,15 +18,9 @@ export default async function handler(
 
   const activeEvent = await getActiveEvent();
 
-  if (!activeEvent) {
-    res.status(500);
-    res.send({ tickets: null });
-    return;
-  }
-
   const tickets = await prisma.ticket.findMany({
     where: {
-      eventId: activeEvent.id,
+      eventId: activeEvent?.id,
     },
     orderBy: {
       publishTime: 'desc',

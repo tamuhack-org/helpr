@@ -1,12 +1,5 @@
 import * as React from 'react';
-import {
-  BookOpen,
-  ChartLineIcon,
-  Dog,
-  Mail,
-  Settings2,
-  Users,
-} from 'lucide-react';
+import { ChartLineIcon, Dog, Mail, Settings2, Users } from 'lucide-react';
 
 import { NavMain } from './NavMain';
 import { NavUser } from './NavUser';

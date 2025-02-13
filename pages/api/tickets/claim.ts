@@ -4,7 +4,6 @@ import { Nullable } from '../../../lib/common';
 import prisma from '../../../lib/prisma';
 import { Ticket } from '@prisma/client';
 import { getToken } from 'next-auth/jwt';
-import { getActiveEvent } from '@/lib/eventHelper';
 import { isMentor } from '@/lib/helpers/permission-helper';
 
 /*
@@ -19,14 +18,6 @@ export default async function handler(
 
   if (!token) {
     res.status(401);
-    res.send({ ticket: null });
-    return;
-  }
-
-  const activeEvent = await getActiveEvent();
-
-  if (!activeEvent) {
-    res.status(500);
     res.send({ ticket: null });
     return;
   }

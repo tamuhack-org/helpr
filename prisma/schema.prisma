@@ -55,6 +55,7 @@ model User {
 
   @@index([admin])
   @@index([mentor])
+  @@index([email])
 }
 
 model Ticket {
@@ -71,11 +72,10 @@ model Ticket {
   claimantId   String?
   author       User      @relation(name: "AuthoredTickets", fields: [authorId], references: [id])
   authorId     String
-  event        Event     @relation(name: "EventTickets", fields: [eventId], references: [id])
-  eventId      String
-
-  updatedTime DateTime @updatedAt
-  publishTime DateTime @default(now())
+  event        Event?    @relation(name: "EventTickets", fields: [eventId], references: [id])
+  eventId      String?
+  updatedTime  DateTime  @updatedAt
+  publishTime  DateTime  @default(now())
 
   @@index(fields: [isResolved])
   @@index(fields: [isClaimed])

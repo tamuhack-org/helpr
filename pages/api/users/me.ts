@@ -11,7 +11,7 @@ import { isMentor } from '@/lib/helpers/permission-helper';
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ user: any }>
+  res: NextApiResponse
 ) {
   const token: Nullable<JWT> = await getToken({ req });
 

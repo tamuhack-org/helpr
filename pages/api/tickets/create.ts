@@ -79,29 +79,18 @@ export default async function handler(
   }
 
   const activeEvent = await getActiveEvent();
-
-  if (!activeEvent) {
-    res.status(500);
-    res.send({ ticket: null });
-    return;
-  }
-
   const ticket = await prisma.ticket.create({
     data: {
       authorName: user.name,
-      issue: issue,
-      location: location,
-      contact: contact,
-      event: {
-        connect: {
-          id: activeEvent.id,
-        },
-      },
+      issue,
+      location,
+      contact,
       author: {
         connect: {
           id: user.id,
         },
       },
+      ...(activeEvent && { event: { connect: { id: activeEvent.id } } }),
     },
   });
 

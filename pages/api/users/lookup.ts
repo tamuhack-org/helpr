@@ -1,11 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { Nullable } from '../../../lib/common';
-import { EventRoles, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { getToken, JWT } from 'next-auth/jwt';
 
 import prisma from '../../../lib/prisma';
-import users from '@/pages/dashboard/users';
 import { isMentor } from '@/lib/helpers/permission-helper';
 
 /*

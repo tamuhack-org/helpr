@@ -16,11 +16,5 @@ export default async function handler(
 
   const activeEvent = await getActiveEvent();
 
-  if (!activeEvent) {
-    res.status(500);
-    res.send({ event: null });
-    return;
-  }
-
   res.status(200).send({ event: activeEvent });
 }

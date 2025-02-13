@@ -33,6 +33,7 @@ export default async function handler(
     (role) => role.eventId === activeEvent?.id
   );
 
+  console.log(user);
   const isAdmin = user?.admin ?? false;
   const isMentor = currentRole?.mentor ?? false;
 

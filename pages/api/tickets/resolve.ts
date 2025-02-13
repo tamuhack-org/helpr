@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import prisma from '../../../lib/prisma';
-import { Nullable } from '../../../lib/common';
 import { getToken } from 'next-auth/jwt';
 import { Ticket } from '@prisma/client';
 import { UserWithTicketClaimant } from '../../../components/common/types';
