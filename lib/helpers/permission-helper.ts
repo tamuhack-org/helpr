@@ -5,8 +5,9 @@ import { getActiveEvent } from '../eventHelper';
 export const isMentor = async (user: UserWithRoles) => {
   const activeEvent = await getActiveEvent();
 
+  //If there is no active event, then there cannot be non-admin mentors
   if (!activeEvent) {
-    return user.mentor ?? false;
+    return user.admin;
   }
 
   const activerole = user.roles?.find(

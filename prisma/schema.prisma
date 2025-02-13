@@ -45,7 +45,6 @@ model User {
   emailVerified   DateTime?
   image           String?
   admin           Boolean      @default(false)
-  mentor          Boolean      @default(false)
   roles           EventRoles[]
   claimedTickets  Ticket[]     @relation(name: "ClaimedTickets")
   authoredTickets Ticket[]     @relation(name: "AuthoredTickets")
@@ -54,7 +53,6 @@ model User {
   updatedTime     DateTime     @updatedAt
 
   @@index([admin])
-  @@index([mentor])
   @@index([email])
 }
 
