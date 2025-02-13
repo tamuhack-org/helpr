@@ -13,8 +13,3 @@ export interface UserWithRoles extends User {
 export interface TicketWithClaimant extends Ticket {
   claimant?: User;
 }
-
-export interface RoleData {
-  isAdmin: boolean;
-  isMentor: boolean;
-}

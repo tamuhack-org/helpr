@@ -80,7 +80,7 @@ export function NavEvents({}: {}) {
             </DropdownMenuLabel>
             {events?.map((event: Event, index: number) => (
               <DropdownMenuItem
-                key={event.name}
+                key={event.name + index}
                 onClick={() => {
                   mutate('/api/events/');
 
