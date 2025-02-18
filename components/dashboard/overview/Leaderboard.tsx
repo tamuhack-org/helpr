@@ -50,7 +50,7 @@ export default function Leaderboard() {
                 <td className="px-6 py-4 text-center">{index + 1}</td>
                 <th
                   scope="row"
-                  className="pr-6 py-4 min-w-[200px] max-w-[200px] overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  className="pr-6 py-4 min-w-[200px] max-w-[200px] overflow-x-auto font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
                   {key.name}{' '}
                 </th>
