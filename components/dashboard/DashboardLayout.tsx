@@ -18,8 +18,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Head>
-        <title>Relay</title>
-        <meta name="description" content="Jumpstart your email campaigns" />
+        <title>HelpR</title>
+        <meta
+          name="description"
+          content="One-stop-shop for help and mentoring"
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -27,7 +30,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <SidebarProvider>
           <AppSidebar />
           <div className="w-full h-screen">
-            <SidebarInset className="h-screen">
+            <SidebarInset className="h-screen bg-white">
               <header className="w-full flex h-16 shrink-0 items-center gap-2 border-b px-4">
                 <SidebarTrigger className="-ml-1" />
                 <Separator orientation="vertical" className="mr-2 h-4" />

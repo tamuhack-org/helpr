@@ -24,23 +24,28 @@ import useEventStore from '@/stores/useEventStore';
 
 export function NavEvents({}: {}) {
   const { activeEvent, setActiveEvent } = useEventStore((state) => state);
-  const { data, isLoading, error } = useSWR('/api/events/', fetcher);
+  const { data } = useSWR('/api/events/', fetcher);
 
   const router = useRouter();
   const { isMobile } = useSidebar();
 
-  if (!isLoading && !error && data?.events) {
-    //Takes care of the case where the active event is deleted server-side
-    const hasActiveEvent = data.events.some(
+  if (data?.events) {
+    //Takes care of the case where the active event is updated server-side
+    //Terrible naming convention, but serverActiveEvent is the Event that matches the Zustand store activeEvent
+    const serverActiveEvent = data.events.find(
       (event: Event) => event.id === activeEvent?.id
     );
 
-    if (!hasActiveEvent) {
+    if (!serverActiveEvent) {
       if (data.events.length > 0) {
         setActiveEvent(data.events[0]);
       } else {
         router.push('/dashboard/events');
       }
+    }
+
+    if (serverActiveEvent !== activeEvent) {
+      setActiveEvent(serverActiveEvent);
     }
   }
 

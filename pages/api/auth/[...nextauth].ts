@@ -57,7 +57,6 @@ export default NextAuth({
       session.user.admin = user?.admin || false;
       session.user.mentor = hasMentorRole;
 
-      console.log(user);
       return session;
     },
   },

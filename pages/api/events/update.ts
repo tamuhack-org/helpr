@@ -6,7 +6,7 @@ import { getToken } from 'next-auth/jwt';
 import { Nullable } from '@/lib/common';
 
 /*
- * POST Request: Updates project
+ * POST Request: Updates Event
  */
 
 type ResponseData = {
@@ -40,6 +40,17 @@ export default async function handler(
   }
 
   const { eventId, name, isActive, url, bannerText } = req.body;
+
+  if (isActive) {
+    await prisma.event.updateMany({
+      where: {
+        isActive: true,
+      },
+      data: {
+        isActive: false,
+      },
+    });
+  }
 
   const event = await prisma.event.update({
     where: {

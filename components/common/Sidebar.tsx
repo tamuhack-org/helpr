@@ -31,7 +31,7 @@ const data = {
       icon: Settings2,
       items: [
         {
-          title: 'General',
+          title: 'Event',
           url: '/dashboard/settings',
         },
       ],
