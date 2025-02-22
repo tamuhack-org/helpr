@@ -36,7 +36,7 @@ export const DangerEventSettingsBlock = () => {
     return <p>Loading</p>;
   }
 
-  const description = activeEvent?.isActive
+  const activateDescription = activeEvent?.isActive
     ? 'Deactive this event. New incoming tickets will not be assigned to an event unless another event is actived'
     : 'Activate this event. The current active event will be deactivated and new tickets will be assigned to this event.';
 
@@ -45,7 +45,7 @@ export const DangerEventSettingsBlock = () => {
       <SettingsButtonRow
         title={`${activeEvent?.isActive ? 'Deactivate' : 'Activate'} Event`}
         buttonText={`${activeEvent?.isActive ? 'Deactivate' : 'Activate'}`}
-        description={description}
+        description={activateDescription}
         onSubmit={toggleActivation}
       />
     </div>
