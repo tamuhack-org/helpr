@@ -46,7 +46,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                   </BreadcrumbList>
                 </Breadcrumb>
               </header>
-              <div className="w-full h-full overflow-scroll">{children}</div>
+              <div className="w-full h-full overflow-x-auto">{children}</div>
             </SidebarInset>
           </div>
         </SidebarProvider>

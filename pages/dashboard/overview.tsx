@@ -16,7 +16,7 @@ const Overview: NextPageWithLayout = () => {
       <p className="text-gray-500 mt-1">
         Get a quick glimpse of how your mentors are doing.
       </p>
-      <div className="flex overflow-y-scroll mt-8 gap-2">
+      <div className="flex overflow-y-auto mt-8 gap-2">
         <MiniIncomingTickets />
         <MiniResolvedTickets />
       </div>
@@ -24,7 +24,7 @@ const Overview: NextPageWithLayout = () => {
         <p className="text-3xl font-bold mb-4">Leaderboard</p>
         <Leaderboard />
       </div>
-      <div className="mt-8">
+      <div className="mt-8 mb-8">
         <p className="text-3xl font-bold mb-4">Topics</p>
         <Topics />
       </div>
