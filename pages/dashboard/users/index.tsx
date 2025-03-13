@@ -129,7 +129,7 @@ const Users: NextPageWithLayout = () => {
                         <td className="px-6 py-4 text-center">{index + 1}</td>
                         <td
                           scope="row"
-                          className={` py-4 overflow-scroll font-medium text-gray-900 whitespace-nowrap dark:text-white ${styles.hideScrollbar}`}
+                          className={` py-4 overflow-x-auto font-medium text-gray-900 whitespace-nowrap dark:text-white ${styles.hideScrollbar} max-w-[250px]`}
                         >
                           {user.name}
                         </td>
