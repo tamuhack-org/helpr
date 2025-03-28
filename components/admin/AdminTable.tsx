@@ -53,7 +53,7 @@ export const AdminTable = () => {
         className="mt-4 mb-2"
         onChange={(e) => handleSearch(e)}
       ></Input>
-      <div className="relative block px-4 sm:p-8 bg-white border border-gray-100 shadow-md rounded-xl h-[55vh] overflow-scroll">
+      <div className="relative block px-4 sm:p-8 bg-white border border-gray-100 shadow-md rounded-xl h-[55vh] overflow-y-scroll overflow-x-auto">
         {data.users
           .filter(
             (user: User) =>
