@@ -33,11 +33,11 @@ export default withAuth({
         return true;
       }
 
-      mentorPaths.forEach((path) => {
+      for (const path of mentorPaths) {
         if (pathname.includes(path)) {
           return data.isMentor;
         }
-      });
+      }
 
       return !!token;
     },
