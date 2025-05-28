@@ -41,7 +41,7 @@ export function MiniIncomingTickets() {
   const { activeEvent, setActiveEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
     activeEvent?.id
-      ? `/api/analytics/tickets/incoming?eventId=${activeEvent?.id}`
+      ? `/api/analytics/tickets/incoming?eventId=${activeEvent.id}`
       : '/api/analytics/tickets/incoming',
     fetcher,
     {}
@@ -102,10 +102,15 @@ export function MiniIncomingTickets() {
 }
 
 export function MiniResolvedTickets({ id }: { id?: string }) {
+  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
     id
-      ? `/api/analytics/tickets/mentorresolved?email=${id}`
-      : '/api/tickets/resolved',
+      ? activeEvent?.id
+        ? `/api/analytics/tickets/mentorresolved?email=${id}&eventId=${activeEvent.id}`
+        : `/api/analytics/tickets/mentorresolved?email=${id}`
+      : activeEvent?.id
+        ? `/api/tickets/resolved?eventId=${activeEvent.id}`
+        : '/api/tickets/resolved',
     fetcher,
     {}
   );
