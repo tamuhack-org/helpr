@@ -38,7 +38,7 @@ export function createDataPoints(data: [Ticket], hoursAgo = 6) {
 }
 
 export function MiniIncomingTickets() {
-  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
     activeEvent?.id
       ? `/api/analytics/tickets/incoming?eventId=${activeEvent.id}`
@@ -102,7 +102,7 @@ export function MiniIncomingTickets() {
 }
 
 export function MiniResolvedTickets({ id }: { id?: string }) {
-  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
     id
       ? activeEvent?.id

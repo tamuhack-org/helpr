@@ -12,7 +12,7 @@ import {
 import useEventStore from '@/stores/useEventStore';
 
 export function MiniTotalTicketsResolved({ id }: { id: string }) {
-  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
     activeEvent?.id
       ? `/api/analytics/tickets/mentorresolved?id=${id}&eventId=${activeEvent.id}`

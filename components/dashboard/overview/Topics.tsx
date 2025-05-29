@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import useEventStore from '@/stores/useEventStore';
 
 export default function Topics({ email }: { email?: string | undefined }) {
-  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
     email
       ? activeEvent?.id

@@ -26,7 +26,7 @@ const Users: NextPageWithLayout = () => {
   const [showOnlyMentors, setShowOnlyMentors] = useState<boolean>(false);
   const [showOnlyAdmins, setShowOnlyAdmins] = useState<boolean>(false);
 
-  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
+  const { activeEvent } = useEventStore((state) => state);
 
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>

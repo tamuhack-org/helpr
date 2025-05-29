@@ -11,7 +11,7 @@ interface FrequencyItem {
 }
 
 export default function Leaderboard() {
-  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
     activeEvent?.id
       ? `/api/analytics/leaderboard?eventId=${activeEvent.id}`

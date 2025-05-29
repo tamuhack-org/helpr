@@ -18,7 +18,7 @@ import { UserWithRoles } from '@/components/common/types';
 import useEventStore from '@/stores/useEventStore';
 
 const UserInfo: NextPageWithLayout = () => {
-  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
+  const { activeEvent } = useEventStore((state) => state);
   const router = useRouter();
   const { data, error, isLoading } = useSWR(
     `/api/users/lookup?email=${router.query.email}`,

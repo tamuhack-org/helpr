@@ -16,7 +16,7 @@ export function MiniTotalTicketsCreated({
 }: {
   userId: string | undefined;
 }) {
-  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
     activeEvent?.id
       ? `/api/analytics/tickets/usercreated?userId=${userId}&eventId=${activeEvent.id}`
