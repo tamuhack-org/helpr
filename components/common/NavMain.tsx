@@ -32,12 +32,12 @@ type NavItem = {
   }[];
 };
 
-function RenderParentItem(item: NavItem) {
+const Dropdown = ({ item, key }: { item: NavItem; key: string }) => {
   const { categories, setCategories } = useNavStore((state) => state);
 
   if (!item.items) {
     return (
-      <SidebarMenuButton key={item.title} asChild>
+      <SidebarMenuButton key={key} asChild>
         <Link href={item.url}>
           {item.icon && <item.icon />}
           <span>{item.title}</span>
@@ -47,12 +47,12 @@ function RenderParentItem(item: NavItem) {
   }
 
   if (!categories.length) {
-    return;
+    return null;
   }
 
   return (
     <Collapsible
-      key={item.title}
+      key={key}
       asChild
       className="group/collapsible"
       defaultOpen={
@@ -107,7 +107,7 @@ function RenderParentItem(item: NavItem) {
       </SidebarMenuItem>
     </Collapsible>
   );
-}
+};
 
 export function NavMain({ items }: { items: NavItem[] }) {
   return (
@@ -120,7 +120,11 @@ export function NavMain({ items }: { items: NavItem[] }) {
       </SidebarMenuButton>
       <div className="spacer my-1" />
       <SidebarGroupLabel>Application</SidebarGroupLabel>
-      <SidebarMenu>{items.map((item) => RenderParentItem(item))}</SidebarMenu>
+      <SidebarMenu>
+        {items.map((item) => (
+          <Dropdown key={item.title} item={item} />
+        ))}
+      </SidebarMenu>
     </SidebarGroup>
   );
 }
