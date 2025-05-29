@@ -15,6 +15,9 @@ import useSWR from 'swr';
 import MiniNumberDisplay from '../../../components/dashboard/users/MiniNumberDisplay';
 import styles from '../../../styles/Home.module.css';
 import type { NextPageWithLayout } from '../../_app';
+import { UserWithRoles } from '@/components/common/types';
+
+import useEventStore from '@/stores/useEventStore';
 
 const Users: NextPageWithLayout = () => {
   const { data, error, isLoading } = useSWR('/api/users/all', fetcher, {});
@@ -22,6 +25,8 @@ const Users: NextPageWithLayout = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showOnlyMentors, setShowOnlyMentors] = useState<boolean>(false);
   const [showOnlyAdmins, setShowOnlyAdmins] = useState<boolean>(false);
+
+  const { activeEvent, setActiveEvent } = useEventStore((state) => state);
 
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -34,8 +39,14 @@ const Users: NextPageWithLayout = () => {
     window.location.href = `/dashboard/users/${email}`;
   };
 
-  const searchFilter = (user: User) => {
-    if (showOnlyMentors && !user.mentor) return false;
+  const searchFilter = (user: UserWithRoles) => {
+    if (
+      showOnlyMentors &&
+      !user.roles.some(
+        (role) => role.mentor && role.eventId === activeEvent?.id
+      )
+    )
+      return false;
     if (showOnlyAdmins && !user.admin) return false;
     return (
       user.name.toLowerCase().includes(searchQuery) ||
@@ -47,16 +58,17 @@ const Users: NextPageWithLayout = () => {
     return <></>;
   }
 
+  const numMentors = data.users.filter((user: UserWithRoles) =>
+    user.roles.some((role) => role.mentor && role.eventId === activeEvent?.id)
+  ).length;
+
   return (
     <div className="mx-auto w-5xl px-6 md:max-w-5xl mt-8">
       <p className="text-4xl font-bold">Users</p>
       <p className="text-gray-500 mt-1">View and manage your users.</p>
       <div className="flex flex-row gap-4 justify-start items-center mt-8 w-full">
         <MiniNumberDisplay role="Users" number={data.users.length} />
-        <MiniNumberDisplay
-          role="Mentors"
-          number={data.users.filter((user: User) => user.mentor).length}
-        />
+        <MiniNumberDisplay role="Mentors" number={numMentors} />
         <MiniNumberDisplay
           role="Admins"
           number={data.users.filter((user: User) => user.admin).length}
@@ -109,7 +121,7 @@ const Users: NextPageWithLayout = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.users.filter((user: User) => searchFilter(user))
+                {data.users.filter((user: UserWithRoles) => searchFilter(user))
                   .length === 0 ? (
                   <tr className="dark:bg-gray-800 dark:border-gray-700 w-full">
                     <td className="px-6 py-4 text-center" />
@@ -119,8 +131,8 @@ const Users: NextPageWithLayout = () => {
                   </tr>
                 ) : (
                   data.users
-                    .filter((user: User) => searchFilter(user))
-                    .map((user: User, index: number) => (
+                    .filter((user: UserWithRoles) => searchFilter(user))
+                    .map((user: UserWithRoles, index: number) => (
                       <tr
                         key={index}
                         className="dark:bg-gray-800 dark:border-gray-700 w-full cursor-pointer hover:bg-gray-100"
@@ -137,7 +149,10 @@ const Users: NextPageWithLayout = () => {
                           {user.email}
                         </td>
                         <td className="px-6 py-4 font-medium text-gray-900">
-                          {user.mentor && <MdCheck />}
+                          {user.roles.some(
+                            (role) =>
+                              role.mentor && role.eventId === activeEvent?.id
+                          ) && <MdCheck />}
                         </td>
                         <td className="px-6 py-4 font-medium text-gray-900">
                           {user.admin && <MdCheck />}
