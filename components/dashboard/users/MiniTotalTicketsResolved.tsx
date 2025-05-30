@@ -9,9 +9,14 @@ import {
   StatNumber,
 } from '@chakra-ui/react';
 
+import useEventStore from '@/stores/useEventStore';
+
 export function MiniTotalTicketsResolved({ id }: { id: string }) {
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
-    `/api/analytics/tickets/mentorresolved?id=${id}`,
+    activeEvent?.id
+      ? `/api/analytics/tickets/mentorresolved?id=${id}&eventId=${activeEvent.id}`
+      : `/api/analytics/tickets/mentorresolved?id=${id}`,
     fetcher,
     {}
   );

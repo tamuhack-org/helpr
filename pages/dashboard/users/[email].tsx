@@ -14,8 +14,11 @@ import { fetcher, Nullable } from '../../../lib/common';
 import prisma from '../../../lib/prisma';
 import authOptions from '../../api/auth/[...nextauth]';
 import { NextPageWithLayout } from '../../_app';
+import { UserWithRoles } from '@/components/common/types';
+import useEventStore from '@/stores/useEventStore';
 
 const UserInfo: NextPageWithLayout = () => {
+  const { activeEvent } = useEventStore((state) => state);
   const router = useRouter();
   const { data, error, isLoading } = useSWR(
     `/api/users/lookup?email=${router.query.email}`,
@@ -23,7 +26,7 @@ const UserInfo: NextPageWithLayout = () => {
     {}
   );
 
-  const user: User = data?.user;
+  const user: UserWithRoles = data?.user;
 
   if (isLoading || error || !user) {
     return <></>;
@@ -36,7 +39,9 @@ const UserInfo: NextPageWithLayout = () => {
         <p>{user.email}</p>
         <div className="flex flex-row gap-2">
           {user.admin && <Tag>Admin</Tag>}
-          {user.mentor && <Tag>Mentor</Tag>}
+          {user.roles.some(
+            (role) => role.mentor && role.eventId === activeEvent?.id
+          ) && <Tag>Mentor</Tag>}
         </div>
       </div>
       <div className="flex flex-col gap-2 mt-8">
