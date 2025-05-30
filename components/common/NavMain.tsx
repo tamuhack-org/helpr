@@ -19,7 +19,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import useNavStore from '@/stores/useNavStore';
+import useNavStore, { Category } from '@/stores/useNavStore';
 
 type NavItem = {
   title: string;
@@ -32,9 +32,17 @@ type NavItem = {
   }[];
 };
 
-const Dropdown = ({ item, key }: { item: NavItem; key: string }) => {
-  const { categories, setCategories } = useNavStore((state) => state);
-
+const Dropdown = ({
+  item,
+  key,
+  categories,
+  setCategories,
+}: {
+  item: NavItem;
+  key: string;
+  categories: Category[];
+  setCategories: (categories: Category[]) => void;
+}) => {
   if (!item.items) {
     return (
       <SidebarMenuButton key={key} asChild>
@@ -110,6 +118,8 @@ const Dropdown = ({ item, key }: { item: NavItem; key: string }) => {
 };
 
 export function NavMain({ items }: { items: NavItem[] }) {
+  const { categories, setCategories } = useNavStore((state) => state);
+
   return (
     <SidebarGroup>
       <SidebarMenuButton asChild>
@@ -122,7 +132,12 @@ export function NavMain({ items }: { items: NavItem[] }) {
       <SidebarGroupLabel>Application</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <Dropdown key={item.title} item={item} />
+          <Dropdown
+            key={item.title}
+            item={item}
+            categories={categories}
+            setCategories={setCategories}
+          />
         ))}
       </SidebarMenu>
     </SidebarGroup>

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type Category = {
+export type Category = {
   name: string;
   isOpen: boolean;
 };
