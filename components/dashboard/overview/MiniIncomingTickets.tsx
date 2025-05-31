@@ -5,6 +5,8 @@ import useSWR from 'swr';
 import { Ticket } from '@prisma/client';
 import { Skeleton } from '@chakra-ui/react';
 
+import useEventStore from '@/stores/useEventStore';
+
 function emptyPoints(count: number) {
   return Array.from({ length: count }, () => ({ Tickets: 0 }));
 }
@@ -36,8 +38,11 @@ export function createDataPoints(data: [Ticket], hoursAgo = 6) {
 }
 
 export function MiniIncomingTickets() {
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
-    '/api/analytics/tickets/incoming',
+    activeEvent?.id
+      ? `/api/analytics/tickets/incoming?eventId=${activeEvent.id}`
+      : '/api/analytics/tickets/incoming',
     fetcher,
     {}
   );
@@ -97,10 +102,15 @@ export function MiniIncomingTickets() {
 }
 
 export function MiniResolvedTickets({ id }: { id?: string }) {
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
     id
-      ? `/api/analytics/tickets/mentorresolved?email=${id}`
-      : '/api/tickets/resolved',
+      ? activeEvent?.id
+        ? `/api/analytics/tickets/mentorresolved?email=${id}&eventId=${activeEvent.id}`
+        : `/api/analytics/tickets/mentorresolved?email=${id}`
+      : activeEvent?.id
+        ? `/api/tickets/resolved?eventId=${activeEvent.id}`
+        : '/api/tickets/resolved',
     fetcher,
     {}
   );
