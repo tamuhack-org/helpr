@@ -40,7 +40,7 @@
     "framer-motion": "^8.0.2",
     "fuse.js": "^7.0.0",
     "lucide-react": "^0.473.0",
-    "next": "^14.2.5",
+    "next": "^15.3.3",
     "next-auth": "^4.18.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
