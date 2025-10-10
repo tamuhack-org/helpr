@@ -15,10 +15,12 @@ export default async function handler(
   }
 
   const { userId } = req.query;
+  const eventId = req.query.eventId;
 
   const tickets = await prisma.ticket.findMany({
     where: {
       authorId: userId as string,
+      eventId: eventId as string,
     },
     orderBy: {
       publishTime: 'desc',

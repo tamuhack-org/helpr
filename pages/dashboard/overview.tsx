@@ -24,7 +24,7 @@ const Overview: NextPageWithLayout = () => {
         <p className="text-3xl font-bold mb-4">Leaderboard</p>
         <Leaderboard />
       </div>
-      <div className="mt-8">
+      <div className="mt-8 mb-8">
         <p className="text-3xl font-bold mb-4">Topics</p>
         <Topics />
       </div>

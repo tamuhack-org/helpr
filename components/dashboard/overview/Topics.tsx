@@ -1,10 +1,18 @@
 import React from 'react';
 import { fetcher } from '../../../lib/common';
 import useSWR from 'swr';
+import useEventStore from '@/stores/useEventStore';
 
 export default function Topics({ email }: { email?: string | undefined }) {
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
-    email ? `/api/analytics/tickets/mentortopics?email=${email}` : '/api/analytics/tickets/topics',
+    email
+      ? activeEvent?.id
+        ? `/api/analytics/tickets/mentortopics?email=${email}&eventId=${activeEvent.id}`
+        : `/api/analytics/tickets/mentortopics?email=${email}`
+      : activeEvent?.id
+        ? `/api/analytics/tickets/topics?eventId=${activeEvent.id}`
+        : '/api/analytics/tickets/topics',
     fetcher,
     {}
   );
@@ -23,15 +31,17 @@ export default function Topics({ email }: { email?: string | undefined }) {
 
   return (
     <div className="flex gap-2 flex-wrap lg:w-[500px] max-h-[200px] overflow-y-scroll">
-      {topics.filter((topic) => topic[1] > 1).map((topic) => (
-        <div
-          key={topic[0]}
-          className="flex gap-1 border-2 rounded-md p-1 bg-gray-200"
-        >
-          <p className="font-semibold">{topic[0]}</p>
-          <p>{topic[1]}</p>
-        </div>
-      ))}
+      {topics
+        .filter((topic) => topic[1] > 1)
+        .map((topic) => (
+          <div
+            key={topic[0]}
+            className="flex gap-1 border-2 rounded-md p-1 bg-gray-200"
+          >
+            <p className="font-semibold">{topic[0]}</p>
+            <p>{topic[1]}</p>
+          </div>
+        ))}
     </div>
   );
 }

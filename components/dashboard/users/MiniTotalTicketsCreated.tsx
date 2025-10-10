@@ -1,10 +1,26 @@
 import React from 'react';
 import { fetcher } from '../../../lib/common';
 import useSWR from 'swr';
-import { Skeleton, Stat, StatHelpText, StatLabel, StatNumber } from '@chakra-ui/react';
+import {
+  Skeleton,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+} from '@chakra-ui/react';
 
-export function MiniTotalTicketsCreated({ userId }: { userId: string | undefined }) {
-  const { data, error, isLoading } = useSWR(`/api/analytics/tickets/usercreated?userId=${userId}`,
+import useEventStore from '@/stores/useEventStore';
+
+export function MiniTotalTicketsCreated({
+  userId,
+}: {
+  userId: string | undefined;
+}) {
+  const { activeEvent } = useEventStore((state) => state);
+  const { data, error, isLoading } = useSWR(
+    activeEvent?.id
+      ? `/api/analytics/tickets/usercreated?userId=${userId}&eventId=${activeEvent.id}`
+      : `/api/analytics/tickets/usercreated?userId=${userId}`,
     fetcher,
     {}
   );

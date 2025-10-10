@@ -3,6 +3,7 @@ import { fetcher } from '../../../lib/common';
 import useSWR from 'swr';
 import Link from 'next/link';
 
+import useEventStore from '@/stores/useEventStore';
 interface FrequencyItem {
   name: string;
   email: string;
@@ -10,8 +11,11 @@ interface FrequencyItem {
 }
 
 export default function Leaderboard() {
+  const { activeEvent } = useEventStore((state) => state);
   const { data, error, isLoading } = useSWR(
-    '/api/analytics/leaderboard',
+    activeEvent?.id
+      ? `/api/analytics/leaderboard?eventId=${activeEvent.id}`
+      : '/api/analytics/leaderboard',
     fetcher,
     {}
   );
