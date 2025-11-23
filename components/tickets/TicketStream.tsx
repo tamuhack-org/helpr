@@ -1,6 +1,6 @@
 import { Ticket } from '@prisma/client';
-import useSWR from 'swr';
-import { fetcher, getTimeDifferenceString } from '../../lib/common';
+import { useState, useEffect } from 'react';
+import { getTimeDifferenceString } from '../../lib/common';
 import { TextCard } from '../common/TextCard';
 import { ClaimButton } from '../mentor/ClaimButton';
 
@@ -25,27 +25,82 @@ const Ticket = ({ ticket, filter }: { ticket: Ticket; filter: string }) => {
 };
 
 export const TicketStream = ({ filter }: { filter: string }) => {
-  const {
-    data: ticketsData,
-    error: ticketError,
-    isLoading: isTicketLoading,
-  } = useSWR(`/api/tickets/${filter || 'active'}`, fetcher, {
-    refreshInterval: 5000,
-  });
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (isTicketLoading) {
+  useEffect(() => {
+    console.log('STARTING SSE connection to:', `/api/tickets/${filter || 'active'}`);
+    const eventSource = new EventSource(`/api/tickets/${filter || 'active'}`);
+
+    eventSource.onopen = () => {
+      console.log('SSE connection opened');
+    };
+
+    eventSource.onmessage = (event) => {
+      try {
+        console.log('SSE message received:', event.data);
+        
+        // Skip heartbeat messages
+        if (event.data.trim() === '') {
+          return;
+        }
+
+        const data = JSON.parse(event.data);
+        if (data.error) {
+          console.error('Server error:', data.error);
+          setError(data.error);
+        } else if (data.tickets) {
+          console.log('Received tickets:', data.tickets.length);
+          setTickets(data.tickets);
+          setError(null);
+        }
+        setIsLoading(false);
+      } catch (err) {
+        console.error('Error parsing SSE data:', err, 'Raw data:', event.data);
+        // Don't set error for heartbeat or empty messages
+        if (event.data.trim() !== '') {
+          setError('Failed to parse server data');
+        }
+        setIsLoading(false);
+      }
+    };
+
+    eventSource.onerror = (event) => {
+      console.error('SSE error:', event);
+      console.error('EventSource readyState:', eventSource.readyState);
+      
+      // Only set error if the connection is permanently closed
+      if (eventSource.readyState === EventSource.CLOSED) {
+        setError('Connection error');
+        setIsLoading(false);
+      } else {
+        console.log('SSE connection will automatically retry...');
+      }
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [filter]);
+
+  if (isLoading) {
     return <TextCard text="Loading..." />;
   }
 
-  if (ticketError) {
+  if (error) {
     return <TextCard text="Error" />;
   }
 
-  if (!ticketsData.tickets.length) {
+  if (!tickets.length) {
     return <TextCard text="No Tickets" />;
   }
 
-  return ticketsData.tickets.map((ticket: Ticket, index: number) => (
-    <Ticket ticket={ticket} key={index} filter={filter}></Ticket>
-  ));
+  return (
+    <>
+      {tickets.map((ticket: Ticket, index: number) => (
+        <Ticket ticket={ticket} key={index} filter={filter}></Ticket>
+      ))}
+    </>
+  );
 };

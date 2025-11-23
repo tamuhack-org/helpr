@@ -5,6 +5,7 @@ import prisma from '../../../lib/prisma';
 import { Ticket } from '@prisma/client';
 import { getToken } from 'next-auth/jwt';
 import { isMentor } from '@/lib/helpers/permission-helper';
+import { ticketEvents, TICKET_EVENTS } from '../../../lib/ticketEvents';
 
 /*
  * POST Request: Claims Ticket
@@ -57,12 +58,13 @@ export default async function handler(
   );
 
   if (isClaimed || ticket.claimantId) {
+    console.log(user.claimedTickets.filter((ticket) => !ticket.isResolved));
     res.status(200);
     res.send({ ticket: null, error: 'You already have a ticket claimed' });
     return;
   }
 
-  await prisma.ticket.update({
+  const updatedTicket = await prisma.ticket.update({
     where: {
       id: ticketId,
     },
@@ -75,8 +77,14 @@ export default async function handler(
         },
       },
     },
+    include: {
+      claimant: true,
+    },
   });
 
+  // Emit ticket claimed event
+  ticketEvents.emit(TICKET_EVENTS.CLAIMED, updatedTicket);
+
   res.status(200);
-  res.send({ ticket: ticket });
+  res.send({ ticket: updatedTicket });
 }

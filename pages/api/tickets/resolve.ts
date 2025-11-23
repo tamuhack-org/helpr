@@ -5,6 +5,7 @@ import { getToken } from 'next-auth/jwt';
 import { Ticket } from '@prisma/client';
 import { UserWithTicketClaimant } from '../../../components/common/types';
 import { isMentor } from '@/lib/helpers/permission-helper';
+import { ticketEvents, TICKET_EVENTS } from '../../../lib/ticketEvents';
 
 //If the claimed ticket is resolved by an admin that did not claim the ticket, make the admin the claimant
 //Probably better than leaving the claimant null or assigning it to the previous claimant
@@ -96,8 +97,16 @@ export default async function handler(
   }
 
   const updatePayload = getUpdatePayload(user, ticket);
-  await prisma.ticket.update(updatePayload);
+  const resolvedTicket = await prisma.ticket.update({
+    ...updatePayload,
+    include: {
+      claimant: true,
+    },
+  });
+
+  // Emit ticket resolved event
+  ticketEvents.emit(TICKET_EVENTS.RESOLVED, resolvedTicket);
 
   res.status(200);
-  res.send({ ticket });
+  res.send({ ticket: resolvedTicket });
 }

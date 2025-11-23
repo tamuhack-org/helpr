@@ -10,6 +10,7 @@ import {
   Nullable,
 } from '../../../lib/common';
 import { getActiveEvent } from '../../../lib/eventHelper';
+import { ticketEvents, TICKET_EVENTS, getActiveConnections } from '../../../lib/ticketEvents';
 
 /*
  * POST Request: Creates new ticket and assigns it to user
@@ -93,6 +94,9 @@ export default async function handler(
       ...(activeEvent && { event: { connect: { id: activeEvent.id } } }),
     },
   });
+
+  // Emit ticket created event
+  ticketEvents.emit(TICKET_EVENTS.CREATED, ticket);
 
   res.status(200).send({ ticket: ticket });
 }

@@ -5,6 +5,7 @@ import prisma from '../../../lib/prisma';
 import { Ticket } from '@prisma/client';
 import { getToken } from 'next-auth/jwt';
 import { isMentor } from '@/lib/helpers/permission-helper';
+import { ticketEvents, TICKET_EVENTS } from '../../../lib/ticketEvents';
 
 /*
  * POST Request: Unclaims ticket
@@ -50,7 +51,7 @@ export default async function handler(
     res.send({ ticket: null });
     return;
   }
-  await prisma.ticket.update({
+  const unclaimedTicket = await prisma.ticket.update({
     where: {
       id: ticketId,
     },
@@ -62,8 +63,14 @@ export default async function handler(
         disconnect: true,
       },
     },
+    include: {
+      claimant: true,
+    },
   });
 
+  // Emit ticket unclaimed event
+  ticketEvents.emit(TICKET_EVENTS.UNCLAIMED, unclaimedTicket);
+
   res.status(200);
-  res.send({ ticket: ticket });
+  res.send({ ticket: unclaimedTicket });
 }
