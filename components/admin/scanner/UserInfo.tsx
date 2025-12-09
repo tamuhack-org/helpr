@@ -1,7 +1,8 @@
 import { User } from '@prisma/client';
 import Image from 'next/image';
 import React, { useState } from 'react';
-import { FormControl, FormLabel, Switch, useToast } from '@chakra-ui/react';
+import { FormControl, FormLabel, Switch } from '@chakra-ui/react';
+import { useToast } from '@/hooks/use-toast';
 import axios from 'axios';
 import { mutate } from 'swr';
 
@@ -12,7 +13,7 @@ const UserInfo = ({
   user: User;
   resetReader: () => void;
 }) => {
-  const toast = useToast();
+  const { toast } = useToast();
 
   const [isAdmin, setIsAdmin] = useState(user.admin);
   const [isMentor, setIsMentor] = useState(user.mentor);
@@ -32,7 +33,6 @@ const UserInfo = ({
         toast({
           title: 'Success!',
           description: `Successfully updated ${user.name}'s ${role} status.`,
-          status: 'success',
         });
       })
       .catch(function (error) {
@@ -40,7 +40,6 @@ const UserInfo = ({
         toast({
           title: 'Error!',
           description: `Failed to update ${user.name}'s ${role} status.`,
-          status: 'error',
         });
       });
   }

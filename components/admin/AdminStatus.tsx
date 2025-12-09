@@ -1,11 +1,11 @@
 import React from 'react';
 import { User } from '@prisma/client';
 import axios from 'axios';
-import { useToast } from '@chakra-ui/react';
+import { useToast } from '@/hooks/use-toast';
 import { mutate } from 'swr';
 
 export const AdminStatus = ({ user }: { user: User }) => {
-  const toast = useToast();
+  const { toast } = useToast();
 
   //role is either 'mentor' or 'admin'
   //currentRole is the current status of the role
@@ -22,7 +22,6 @@ export const AdminStatus = ({ user }: { user: User }) => {
         toast({
           title: 'Success!',
           description: `Successfully updated ${user.name}'s ${role} status.`,
-          status: 'success',
         });
       })
       .catch(function (error) {
@@ -30,7 +29,6 @@ export const AdminStatus = ({ user }: { user: User }) => {
         toast({
           title: 'Error!',
           description: `Failed to update ${user.name}'s ${role} status.`,
-          status: 'error',
         });
       });
   }

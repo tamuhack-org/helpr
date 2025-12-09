@@ -1,4 +1,4 @@
-import { Ticket } from '@prisma/client';
+import type { Ticket } from '@prisma/client';
 import useSWR from 'swr';
 import { fetcher, getTimeDifferenceString } from '../../lib/common';
 import { TextCard } from '../common/TextCard';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useToast } from '@chakra-ui/react';
+import { useToast } from '@/hooks/use-toast';
 import useSWR, { mutate } from 'swr';
 import { useState } from 'react';
 import { fetcher } from '../../lib/common';
@@ -16,7 +16,7 @@ export const ClaimButton = ({
   const { data, isLoading } = useSWR('/api/users/me', fetcher, {});
   const [claimLoading, setClaimLoading] = useState(false);
   const [unclaimLoading, setUnclaimLoading] = useState(false);
-  const toast = useToast();
+  const { toast } = useToast();
 
   const ticketAction = async (action: string) => {
     if (claimLoading || unclaimLoading) {
@@ -41,7 +41,6 @@ export const ClaimButton = ({
         if (err) {
           toast({
             title: err ?? 'Error',
-            status: 'error',
           });
         }
         await mutate('/api/tickets/' + filter);
@@ -50,7 +49,6 @@ export const ClaimButton = ({
         console.log(error);
         toast({
           title: 'Error',
-          status: 'error',
         });
       });
     setClaimLoading(false);

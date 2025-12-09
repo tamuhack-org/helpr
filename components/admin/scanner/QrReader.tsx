@@ -6,10 +6,10 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
-  useToast,
 } from '@chakra-ui/react';
+import { useToast } from '@/hooks/use-toast';
 import { User } from '@prisma/client';
-import { QrScanner } from '@yudiel/react-qr-scanner';
+import { Scanner } from '@yudiel/react-qr-scanner';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { MdQrCodeScanner } from 'react-icons/md';
@@ -17,7 +17,7 @@ import UserInfo from './UserInfo';
 
 const QrReader = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const toast = useToast();
+  const { toast } = useToast();
 
   const [email, setEmail] = useState('');
   const [user, setUser] = useState<User | null>();
@@ -36,7 +36,6 @@ const QrReader = () => {
             toast({
               title: 'User not found!',
               description: `Failed to find user with email ${email}.`,
-              status: 'error',
             });
             resetReader();
           } else {
@@ -48,7 +47,6 @@ const QrReader = () => {
           toast({
             title: 'Error!',
             description: `Failed to look up user.`,
-            status: 'error',
           });
         });
     }
@@ -80,9 +78,13 @@ const QrReader = () => {
               {user ? (
                 <UserInfo user={user} resetReader={resetReader} />
               ) : (
-                <QrScanner
-                  onDecode={(result) => setEmail(result)}
-                  onError={(error) => console.log(error?.message)}
+                <Scanner
+                  onScan={(detectedCodes) => {
+                    if (detectedCodes.length > 0) {
+                      setEmail(detectedCodes[0].rawValue);
+                    }
+                  }}
+                  onError={(error) => console.log(error)}
                 />
               )}
             </div>

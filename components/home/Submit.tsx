@@ -1,4 +1,5 @@
-import { Input, useToast } from '@chakra-ui/react';
+import { Input } from '@chakra-ui/react';
+import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import React, { useState } from 'react';
@@ -41,7 +42,7 @@ export const Submit = () => {
   });
   const { mutate } = useSWRConfig();
   const [submitLoading, setSubmitLoading] = useState(false);
-  const toast = useToast();
+  const { toast } = useToast();
   const {
     register,
     handleSubmit,
@@ -86,14 +87,12 @@ export const Submit = () => {
         toast({
           title: 'Ticket Submitted',
           description: 'Please wait for a mentor to arrive',
-          status: 'success',
         });
       });
     } catch (e) {
       toast({
         title: 'Error',
         description: 'An unexpected error occured!',
-        status: 'error',
       });
     } finally {
       await mutate('/api/users/me');
@@ -123,7 +122,6 @@ export const Submit = () => {
       toast({
         title: 'Error',
         description: error.message,
-        status: 'error',
       });
     } finally {
       setSubmitLoading(false);
