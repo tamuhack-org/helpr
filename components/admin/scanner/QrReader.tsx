@@ -8,7 +8,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useToast } from '@/hooks/use-toast';
-import { User } from '@prisma/client';
+import { User } from '@/generated/prisma/client';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import axios from 'axios';
 import { useEffect, useState } from 'react';

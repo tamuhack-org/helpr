@@ -1,5 +1,5 @@
 import { Tag } from '@chakra-ui/react';
-import { User } from '@prisma/client';
+import { User } from '@/generated/prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession, Session } from 'next-auth';
 import { useRouter } from 'next/router';

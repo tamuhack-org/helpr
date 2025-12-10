@@ -18,7 +18,7 @@ import {
 import Link from 'next/link';
 import { fetcher } from '@/lib/common';
 import useSWR, { mutate } from 'swr';
-import { Event } from '@prisma/client';
+import { Event } from '@/generated/prisma/client';
 import { useRouter } from 'next/router';
 import useEventStore from '@/stores/useEventStore';
 

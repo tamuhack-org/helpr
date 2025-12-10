@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User } from '@/generated/prisma/client';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { FormControl, FormLabel, Switch } from '@chakra-ui/react';

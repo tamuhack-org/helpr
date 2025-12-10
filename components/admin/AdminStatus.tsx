@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from '@prisma/client';
+import { User } from '@/generated/prisma/client';
 import axios from 'axios';
 import { useToast } from '@/hooks/use-toast';
 import { mutate } from 'swr';

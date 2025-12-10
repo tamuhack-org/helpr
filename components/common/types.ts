@@ -1,5 +1,5 @@
-import { EventRoles, Ticket } from '@prisma/client';
-import { User } from '@prisma/client';
+import { EventRoles, Ticket } from '@/generated/prisma/client';
+import { User } from '@/generated/prisma/client';
 import { Nullable } from '../../lib/common';
 
 export interface UserWithTicketClaimant extends User {

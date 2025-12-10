@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import prisma from '../../../lib/prisma';
-import { Ticket } from '@prisma/client';
+import { Ticket } from '@/generated/prisma/client';
 import { getToken } from 'next-auth/jwt';
 import {
   maxPhoneLength,

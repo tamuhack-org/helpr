@@ -8,7 +8,7 @@ import authOptions from '../../api/auth/[...nextauth]';
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 
 import { Button, ButtonGroup, Input, InputGroup } from '@chakra-ui/react';
-import { User } from '@prisma/client';
+import { User } from '@/generated/prisma/client';
 import { useState, type ReactElement } from 'react';
 import { MdCheck } from 'react-icons/md';
 import useSWR from 'swr';

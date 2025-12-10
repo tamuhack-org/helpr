@@ -1,4 +1,4 @@
-import { Event } from '@prisma/client';
+import { Event } from '@/generated/prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Nullable } from '../../../lib/common';
 

@@ -1,4 +1,4 @@
-import { Event } from '@prisma/client';
+import { Event } from '@/generated/prisma/client';
 
 const base = '/api/events/';
 

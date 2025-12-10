@@ -1,11 +1,11 @@
-// schema.prisma
-datasource db {
-  provider = "postgresql"
+generator client {
+  provider            = "prisma-client"
+  output              = "../generated/prisma"
+  importFileExtension = "ts"
 }
 
-generator client {
-  provider   = "prisma-client-js"
-  engineType = "binary"
+datasource db {
+  provider = "postgresql"
 }
 
 model Account {
@@ -23,8 +23,7 @@ model Account {
   session_state      String?
   oauth_token_secret String?
   oauth_token        String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -44,13 +43,13 @@ model User {
   emailVerified   DateTime?
   image           String?
   admin           Boolean      @default(false)
-  mentor          Boolean      @default(false)
-  roles           EventRoles[]
-  claimedTickets  Ticket[]     @relation(name: "ClaimedTickets")
-  authoredTickets Ticket[]     @relation(name: "AuthoredTickets")
-  accounts        Account[]
-  sessions        Session[]
   updatedTime     DateTime     @updatedAt
+  mentor          Boolean      @default(false)
+  accounts        Account[]
+  roles           EventRoles[]
+  sessions        Session[]
+  authoredTickets Ticket[]     @relation("AuthoredTickets")
+  claimedTickets  Ticket[]     @relation("ClaimedTickets")
 
   @@index([admin])
   @@index([email])
@@ -62,55 +61,54 @@ model Ticket {
   issue        String
   location     String
   contact      String
-  isResolved   Boolean   @default(false)
-  resolvedTime DateTime?
-  isClaimed    Boolean   @default(false)
-  claimedTime  DateTime?
-  claimant     User?     @relation(name: "ClaimedTickets", fields: [claimantId], references: [id])
-  claimantId   String?
-  author       User      @relation(name: "AuthoredTickets", fields: [authorId], references: [id])
-  authorId     String
-  event        Event?    @relation(name: "EventTickets", fields: [eventId], references: [id])
-  eventId      String?
-  updatedTime  DateTime  @updatedAt
   publishTime  DateTime  @default(now())
+  claimedTime  DateTime?
+  resolvedTime DateTime?
+  claimantId   String?
+  authorId     String
+  isResolved   Boolean   @default(false)
+  isClaimed    Boolean   @default(false)
+  updatedTime  DateTime  @updatedAt
+  eventId      String?
+  author       User      @relation("AuthoredTickets", fields: [authorId], references: [id])
+  claimant     User?     @relation("ClaimedTickets", fields: [claimantId], references: [id])
+  event        Event?    @relation("EventTickets", fields: [eventId], references: [id])
 
-  @@index(fields: [isResolved])
-  @@index(fields: [isClaimed])
+  @@index([isResolved])
+  @@index([isClaimed])
 }
 
 model Event {
   id          String         @id @default(cuid())
-  name        String
-  isActive    Boolean
-  url         String?
-  bannerText  String?
-  settings    EventSetting[] @relation(name: "EventSettings")
-  roles       EventRoles[]   @relation(name: "EventRoles")
-  tickets     Ticket[]       @relation(name: "EventTickets")
   createdTime DateTime       @default(now())
   updatedTime DateTime       @updatedAt
+  isActive    Boolean
+  name        String
+  url         String?
+  bannerText  String?
+  roles       EventRoles[]   @relation("EventRoles")
+  settings    EventSetting[] @relation("EventSettings")
+  tickets     Ticket[]       @relation("EventTickets")
 }
 
 model EventSetting {
   id          String   @id @default(cuid())
-  event       Event    @relation(name: "EventSettings", fields: [eventId], references: [id])
   eventId     String
   key         String
   value       String
   createdTime DateTime @default(now())
   updatedTime DateTime @updatedAt
+  event       Event    @relation("EventSettings", fields: [eventId], references: [id])
 }
 
-//Admins should persist over events, but not mentors
 model EventRoles {
-  event       Event    @relation(name: "EventRoles", fields: [eventId], references: [id])
   eventId     String
   userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   mentor      Boolean  @default(false)
   createdTime DateTime @default(now())
   updatedTime DateTime @updatedAt
+  event       Event    @relation("EventRoles", fields: [eventId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([eventId, userId])
 }

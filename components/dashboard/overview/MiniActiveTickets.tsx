@@ -2,7 +2,7 @@ import React from 'react';
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
 import { fetcher } from '../../../lib/common';
 import useSWR from 'swr';
-import { Ticket } from '@prisma/client';
+import { Ticket } from '@/generated/prisma/client';
 
 function createDataPoints(data: [Ticket]) {
   const times = data.map((ticket) => new Date(ticket.publishTime));

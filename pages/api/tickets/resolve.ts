@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import prisma from '../../../lib/prisma';
 import { getToken } from 'next-auth/jwt';
-import { Ticket } from '@prisma/client';
+import { Ticket } from '@/generated/prisma/client';
 import { UserWithTicketClaimant } from '../../../components/common/types';
 import { isMentor } from '@/lib/helpers/permission-helper';
 

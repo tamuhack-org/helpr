@@ -2,7 +2,7 @@ import React from 'react';
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
 import { fetcher } from '../../../lib/common';
 import useSWR from 'swr';
-import { Ticket } from '@prisma/client';
+import { Ticket } from '@/generated/prisma/client';
 import { Skeleton } from '@chakra-ui/react';
 
 import useEventStore from '@/stores/useEventStore';

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Event } from '@prisma/client';
+import { Event } from '@/generated/prisma/client';
 import { persist } from 'zustand/middleware';
 
 type State = {
