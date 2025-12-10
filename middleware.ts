@@ -15,16 +15,22 @@ export default withAuth({
         return false;
       }
 
-      const response = await fetch(
-        'https://helpr.tamuhack.org/api/users/getRoles?' +
-          new URLSearchParams({
-            email: token.email,
-          })
-      );
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
+      const url = new URL('/api/users/getRoles', baseUrl);
+      url.searchParams.set('email', token.email);
+
+      const response = await fetch(url.toString());
 
       let data = { isAdmin: false, isMentor: true };
       try {
-        data = await response.json();
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`API Error (${response.status}):`, errorText);
+        } else {
+          data = await response.json();
+        }
       } catch (e) {
         console.log('Middleware error', e);
       }
