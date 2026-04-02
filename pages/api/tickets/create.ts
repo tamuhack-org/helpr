@@ -94,6 +94,7 @@ export default async function handler(
     },
   });
 
+  //This code is purely for testing!
   console.log("TICKET SUBMITTED HERE!");
   const discordUrl = `${process.env.DISCORD_HTTP_ENDPOINT}/helpr/ping-mentor`;
   console.log(discordUrl);
@@ -112,6 +113,7 @@ export default async function handler(
     body: JSON.stringify(data)
   }
   fetch(discordUrl, options).then(() => console.log("Yay!")).catch((err) => console.log(err));
+  //End teseting
 
   res.status(200).send({ ticket: ticket });
 }
