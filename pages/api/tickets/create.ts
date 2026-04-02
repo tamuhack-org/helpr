@@ -98,12 +98,11 @@ export default async function handler(
   const discordUrl = `${process.env.DISCORD_HTTP_ENDPOINT}/helpr/ping-mentor`;
   console.log(discordUrl);
   const data = {
-    "name": "Jashith R",
-    "email": "jashith.r1@gmail.com",
-    "location": "commons",
-    "phone_number": "32432432",
-    "created_at": "2026-04-02T00:17:05.554Z",
-    "issue": "wow this bot is so cool! Can the person who created it teach me coding!"
+    "name": user.name,
+    "email": token.email,
+    "location": location,
+    "phone_number": contact,
+    "issue": issue
   }
   const options = {
     method: "POST",
