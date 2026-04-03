@@ -10,6 +10,7 @@ import {
   Nullable,
 } from '../../../lib/common';
 import { getActiveEvent } from '../../../lib/eventHelper';
+import axios
 
 /*
  * POST Request: Creates new ticket and assigns it to user
@@ -24,6 +25,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
+
+  async function discordPing(userName: string, email: string | null | undefined){
+    const discordUrl = `${process.env.DISCORD_HTTP_ENDPOINT}/helpr/ping-mentor`;
+    const data = {
+      "name": userName,
+      "email": email,
+      "location": location,
+      "phone_number": contact,
+      "issue": issue
+    }
+    await axios
+    .post(discordUrl, data)
+    .then(() => console.log("Mentors pinged on discord!"))
+    .catch((err) => console.log(err))
+  }
+
   const token = await getToken({ req });
   const { issue, location, contact } = req.body;
 
@@ -94,26 +111,7 @@ export default async function handler(
     },
   });
 
-  //This code is purely for testing!
-  console.log("TICKET SUBMITTED HERE!");
-  const discordUrl = `${process.env.DISCORD_HTTP_ENDPOINT}/helpr/ping-mentor`;
-  console.log(discordUrl);
-  const data = {
-    "name": user.name,
-    "email": token.email,
-    "location": location,
-    "phone_number": contact,
-    "issue": issue
-  }
-  const options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data)
-  }
-  fetch(discordUrl, options).then(() => console.log("Yay!")).catch((err) => console.log(err));
-  //End teseting
+  discordPing(user.name, token.email);
 
   res.status(200).send({ ticket: ticket });
 }
