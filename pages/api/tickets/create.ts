@@ -10,7 +10,7 @@ import {
   Nullable,
 } from '../../../lib/common';
 import { getActiveEvent } from '../../../lib/eventHelper';
-import axios
+import axios from 'axios';
 
 /*
  * POST Request: Creates new ticket and assigns it to user
