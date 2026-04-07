@@ -11,6 +11,7 @@ import {
 } from '../../../lib/common';
 import { getActiveEvent } from '../../../lib/eventHelper';
 import axios from 'axios';
+import crypto from 'crypto';
 
 /*
  * POST Request: Creates new ticket and assigns it to user
@@ -35,8 +36,22 @@ export default async function handler(
       "phone_number": contact,
       "issue": issue
     }
+
+    const secret = process.env.HMAC_SECRET;
+    if(!secret){
+      console.error("Missing HMAC secret!");
+      return;
+    }
+    const timestamp = Date.now().toString();
+    const bodyString = JSON.stringify(data);
+    const signature = crypto.createHmac('sha256', secret).update(timestamp + bodyString).digest('hex');
+    const headers = {
+      'X-Authorization-Content-HMAC': signature,
+      'X-Authorization-Timestamp': timestamp,
+    };
+
     await axios
-    .post(discordUrl, data)
+    .post(discordUrl, data, {headers: headers})
     .then(() => console.log("Mentors pinged on discord!"))
     .catch((err) => console.log(err))
   }
