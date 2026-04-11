@@ -27,7 +27,7 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
 
-  async function discordPing(userName: string, email: string | null | undefined, ticketId: string){
+  async function discordPing(userName: string, email: string, ticketId: string){
     const discordUrl = `${process.env.DISCORD_HTTP_ENDPOINT}/helpr/ping-mentor`;
     const data = {
       "name": userName,
@@ -66,7 +66,7 @@ export default async function handler(
 
   const user = await prisma.user.findUnique({
     where: {
-      email: token?.email || '',
+      email: token.email || '',
     },
   });
 
@@ -125,7 +125,7 @@ export default async function handler(
     },
   });
 
-  discordPing(user.name, token.email, ticket.id);
+  discordPing(user.name, token.email!, ticket.id);
 
   res.status(200).send({ ticket: ticket });
 }
