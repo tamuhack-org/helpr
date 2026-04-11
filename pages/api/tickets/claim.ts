@@ -13,10 +13,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ ticket: Nullable<Ticket>; error?: string }>
 ) {
-  const token = await getToken({ req });
   const { ticketId } = req.body;
 
-  if (!token) {
+  async function getAuthenticatedUserEmail() {
+    //check browser for token 
+    const token = await getToken({ req });
+    if (token?.email) return token.email;
+
+    //check if request is coming from authenticated discord application
+    //discord check goes here
+
+    return null //if neither then not authenticated
+  }
+
+  const email = await getAuthenticatedUserEmail();
+
+  if (!email) {
     res.status(401);
     res.send({ ticket: null });
     return;
@@ -24,7 +36,7 @@ export default async function handler(
 
   const user = await prisma.user.findUnique({
     where: {
-      email: token?.email || '',
+      email: email || '',
     },
     include: {
       claimedTickets: true,
