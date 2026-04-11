@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import axios from 'axios';
 
 import prisma from '../../../lib/prisma';
 import { Ticket } from '@/generated/prisma/client';
@@ -10,8 +11,7 @@ import {
   Nullable,
 } from '../../../lib/common';
 import { getActiveEvent } from '../../../lib/eventHelper';
-import axios from 'axios';
-import crypto from 'crypto';
+import createHMAC from '@/lib/createHMAC';
 
 /*
  * POST Request: Creates new ticket and assigns it to user
@@ -37,17 +37,15 @@ export default async function handler(
       "issue": issue
     }
 
-    const secret = process.env.HMAC_SECRET;
-    if(!secret){
-      console.error("Missing HMAC secret!");
-      return;
+    const hmacDetails = createHMAC(data);
+    if(!hmacDetails){
+      res.status(500);
+      res.send({error: "Failed to create HMAC signature"})
     }
-    const timestamp = Date.now().toString();
-    const bodyString = JSON.stringify(data);
-    const signature = crypto.createHmac('sha256', secret).update(timestamp + bodyString).digest('hex');
+
     const headers = {
-      'X-Authorization-Content-HMAC': signature,
-      'X-Authorization-Timestamp': timestamp,
+      'X-Authorization-Content-HMAC': hmacDetails?.signature,
+      'X-Authorization-Timestamp': hmacDetails?.timestamp,
     };
 
     await axios
