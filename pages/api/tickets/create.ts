@@ -28,7 +28,10 @@ export default async function handler(
 ) {
 
   async function discordPing(userName: string, email: string, ticketId: string){
-    const discordUrl = `${process.env.DISCORD_HTTP_ENDPOINT}/helpr/ping-mentor`;
+    const discordUrl = process.env.DISCORD_HTTP_ENDPOINT;
+    if(!discordUrl) return;
+
+    const discordPingPath = `${discordUrl}/helpr/ping-mentor`;
     const data = {
       "name": userName,
       "email": email,
@@ -50,7 +53,7 @@ export default async function handler(
     };
 
     await axios
-    .post(discordUrl, data, {headers: headers})
+    .post(discordPingPath, data, {headers: headers})
     .then(() => console.log("Mentors pinged on discord!"))
     .catch((err) => console.log(err))
   }
