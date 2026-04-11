@@ -41,6 +41,7 @@ model User {
   name            String
   email           String       @unique
   emailVerified   DateTime?
+  discordID       String?      @unique
   image           String?
   admin           Boolean      @default(false)
   updatedTime     DateTime     @updatedAt
