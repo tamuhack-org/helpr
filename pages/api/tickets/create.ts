@@ -49,8 +49,8 @@ export default async function handler(
     }
 
     const headers = {
-      'X-Authorization-Content-HMAC': hmacDetails?.signature,
-      'X-Authorization-Timestamp': hmacDetails?.timestamp,
+      'x-authorization-content-hmac': hmacDetails?.signature,
+      'x-authorization-timestamp': hmacDetails?.timestamp,
     };
 
     await axios
