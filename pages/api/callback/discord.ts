@@ -5,7 +5,7 @@ import axios from 'axios';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   //make sure secrets exist
-  const discordClientId = process.env.DISCORD_CLIENT_ID;
+  const discordClientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
   const discordClientSecret = process.env.DISCORD_CLIENT_SECRET;
   if(!discordClientId || !discordClientSecret){
     res.status(500).json({error: "discord developer application client ID and client secret must be present in .env"});
@@ -31,8 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const tokenResponse = await axios.post(
       'https://discord.com/api/oauth2/token',
       new URLSearchParams({
-        client_id: process.env.DISCORD_CLIENT_ID!,
-        client_secret: process.env.DISCORD_CLIENT_SECRET!,
+        client_id: discordClientId,
+        client_secret: discordClientSecret,
         grant_type: 'authorization_code',
         code: code as string,
         redirect_uri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/callback/discord`,
