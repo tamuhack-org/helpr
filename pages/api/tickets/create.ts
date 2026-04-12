@@ -27,18 +27,19 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
 
-  async function discordPing(userName: string, email: string, ticketId: string){
-    const discordUrl = process.env.DISCORD_HTTP_ENDPOINT;
+  async function discordPing(userName: string, email: string, userId: string, ticketId: string){
+    const discordUrl = process.env.BUZZ_URL;
     if(!discordUrl) return;
 
     const discordPingPath = `${discordUrl}/helpr/ping-mentor`;
     const data = {
       "name": userName,
       "email": email,
+      "userId": userId,
       "location": location,
       "phone_number": contact,
       "issue": issue,
-      "id": ticketId,
+      "ticketId": ticketId,
     }
 
     const hmacDetails = createHMAC(data);
@@ -128,7 +129,7 @@ export default async function handler(
     },
   });
 
-  discordPing(user.name, token.email!, ticket.id);
+  discordPing(user.name, token.email!, user.id, ticket.id);
 
   res.status(200).send({ ticket: ticket });
 }
