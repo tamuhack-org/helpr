@@ -7,7 +7,7 @@ export default function verifyHMAC(data: object, reqHMAC: {signature: String, ti
       return false;
     }
 
-    if(!reqHMAC.signature || reqHMAC.timestamp){
+    if(!reqHMAC.signature || !reqHMAC.timestamp){
         console.error("Missing required request HMAC signature or timestamp");
         return false;
     }
@@ -21,5 +21,10 @@ export default function verifyHMAC(data: object, reqHMAC: {signature: String, ti
 
     const bodyString = JSON.stringify(data);
     const signature = crypto.createHmac('sha256', secret).update(reqHMAC.timestamp + bodyString).digest('hex');
-    return reqHMAC.signature == signature;
+    const verified = reqHMAC.signature == signature; 
+    if(!verified){
+      console.error("HMAC signatures do not match");
+    }
+
+    return verified;
 }

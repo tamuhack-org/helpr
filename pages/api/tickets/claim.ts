@@ -5,6 +5,7 @@ import prisma from '../../../lib/prisma';
 import { Ticket } from '@/generated/prisma/client';
 import { getToken } from 'next-auth/jwt';
 import { isMentor } from '@/lib/helpers/permission-helper';
+import verifyHMAC from '@/lib/verifyHMAC';
 
 /*
  * POST Request: Claims Ticket
@@ -28,13 +29,23 @@ export default async function handler(
         discordId: discordId || '',
       },
     });
-
-    //TODO: redirect if discordId hasn't been linked
-    if(!user){
+    if(!user || !discordId){
       res.status(400);
       res.send({ ticket: null });
       return null;
     }
+
+    //unauthorized request
+    const reqHmacSignature = req.headers['x-authorization-content-hmac'];
+    const reqHmacTimestamp = req.headers['x-authorization-timestamp'];
+    const hmacMatch = verifyHMAC(req.body, {signature: reqHmacSignature as string, timestamp: reqHmacTimestamp as string});
+    if(!hmacMatch){
+      res.status(401);
+      res.send({ ticket: null });
+      return null;
+    }
+
+    //TODO: redirect if discordId hasn't been linked
 
     return user.email;
   }
