@@ -20,10 +20,23 @@ export default async function handler(
     const token = await getToken({ req });
     if (token?.email) return token.email;
 
-    //check if request is coming from authenticated discord application
-    //discord check goes here
+    //TODO: hella redundancy here with db calls
+    //TODO: add hmac check
+    const { discordId } = req.body;
+    const user = await prisma.user.findFirst({
+      where: {
+        discordId: discordId || '',
+      },
+    });
 
-    return null //if neither then not authenticated
+    //TODO: redirect if discordId hasn't been linked
+    if(!user){
+      res.status(400);
+      res.send({ ticket: null });
+      return null;
+    }
+
+    return user.email;
   }
 
   const email = await getAuthenticatedUserEmail();

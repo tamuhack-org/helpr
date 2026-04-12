@@ -59,6 +59,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
+    //TODO: handle collisions
+    //I haven't set discordId column to unique because it doesn't allow multiple nulls
     await prisma.user.update({
       where: { id: user.id },
       data: { discordId: discordId },
