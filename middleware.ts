@@ -4,6 +4,7 @@ import { withAuth } from 'next-auth/middleware';
 
 //Root level paths that mentors have access to OVER regular users
 //For example, "/" is accessible by mentors, but users can also access it, so we DO NOT include it.
+//TODO make /link a mentor only path
 const mentorPaths = ['/mentor', '/dashboard'];
 
 export default withAuth({

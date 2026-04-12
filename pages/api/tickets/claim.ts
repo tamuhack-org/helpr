@@ -12,7 +12,7 @@ import verifyHMAC from '@/lib/verifyHMAC';
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ ticket: Nullable<Ticket>; error?: string }>
+  res: NextApiResponse<{ ticket: Nullable<Ticket>; code?: string; error?: string }>
 ) {
   const { ticketId } = req.body;
 
@@ -30,8 +30,9 @@ export default async function handler(
       },
     });
     if(!user || !discordId){
-      res.status(400);
-      res.send({ ticket: null });
+      //user not found
+      res.status(401);
+      res.send({ ticket: null, code: "DISCORD_NOT_LINKED "});
       return null;
     }
 
@@ -40,12 +41,9 @@ export default async function handler(
     const reqHmacTimestamp = req.headers['x-authorization-timestamp'];
     const hmacMatch = verifyHMAC(req.body, {signature: reqHmacSignature as string, timestamp: reqHmacTimestamp as string});
     if(!hmacMatch){
-      res.status(401);
-      res.send({ ticket: null });
+      res.status(400);
       return null;
     }
-
-    //TODO: redirect if discordId hasn't been linked
 
     return user.email;
   }
@@ -53,7 +51,7 @@ export default async function handler(
   const email = await getAuthenticatedUserEmail();
 
   if (!email) {
-    res.status(401);
+    res.status(400);
     res.send({ ticket: null });
     return;
   }
