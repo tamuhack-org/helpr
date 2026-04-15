@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const discordId = userResponse.data.id;
 
-    //seems redundant to get email then id
+    //TODO seems redundant to get email then id
     //but thats how we did it before so im just sticking to it
     const user = await prisma.user.findUnique({
       where: {
