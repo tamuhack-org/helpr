@@ -97,6 +97,7 @@ export default async function handler(
   );
 
   if (isClaimed || ticket.claimantId) {
+    //TODO this should not return a 200, this is not a success
     res.status(200);
     res.send({ ticket: null, error: 'You already have a ticket claimed' });
     return;
