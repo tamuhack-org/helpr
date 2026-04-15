@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 
+//TODO Maybe data should be raw buffer?
 export default function verifyHMAC(data: object, reqHMAC: {signature: String, timestamp: String}){
     const secret = process.env.HMAC_SECRET;
     if(!secret){
