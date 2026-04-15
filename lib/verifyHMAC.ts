@@ -21,8 +21,16 @@ export default function verifyHMAC(data: object, reqHMAC: {signature: String, ti
 
     const bodyString = JSON.stringify(data);
     const signature = crypto.createHmac('sha256', secret).update(reqHMAC.timestamp + bodyString).digest('hex');
-    //TODO use something more secure than string comparison
-    const verified = reqHMAC.signature === signature;
+
+    const a = Buffer.from(reqHMAC.signature, 'hex');
+    const b = Buffer.from(signature, 'hex');
+    //timingSafeEqual throws error if buffers are different length so check first
+    if(a.length !== b.length){
+      console.error("HMAC signatures do not match");
+      return false;
+    }
+    const verified = crypto.timingSafeEqual(a, b);
+
     if(!verified){
       console.error("HMAC signatures do not match");
     }
