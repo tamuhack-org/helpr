@@ -44,13 +44,13 @@ export default async function handler(
 
     const hmacDetails = createHMAC(data);
     if(!hmacDetails){
-      res.status(500);
-      res.send({error: "Failed to create HMAC signature"})
+      console.error("HMAC creation failed");
+      return;
     }
 
     const headers = {
-      'x-authorization-content-hmac': hmacDetails?.signature,
-      'x-authorization-timestamp': hmacDetails?.timestamp,
+      'x-authorization-content-hmac': hmacDetails.signature,
+      'x-authorization-timestamp': hmacDetails.timestamp,
     };
 
     await axios
