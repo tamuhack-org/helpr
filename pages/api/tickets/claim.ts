@@ -22,7 +22,6 @@ export default async function handler(
     if (token?.email) return token.email;
 
     //TODO: hella redundancy here with db calls
-    //TODO: add hmac check
     const { discordId } = req.body;
     if(!discordId){
       res.status(400);
