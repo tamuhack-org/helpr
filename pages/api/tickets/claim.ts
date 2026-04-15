@@ -47,6 +47,7 @@ export default async function handler(
     const hmacMatch = verifyHMAC(req.body, {signature: reqHmacSignature as string, timestamp: reqHmacTimestamp as string});
     if(!hmacMatch){
       res.status(400);
+      res.send({ ticket: null });
       return null;
     }
 
