@@ -7,12 +7,16 @@ import { getToken } from 'next-auth/jwt';
 import { isMentor } from '@/lib/helpers/permission-helper';
 import verifyHMAC from '@/lib/verifyHMAC';
 
+enum BuzzCode {
+  DiscordNotLinked = "DISCORD_NOT_LINKED"
+}
+
 /*
  * POST Request: Claims Ticket
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ ticket: Nullable<Ticket>; code?: string; error?: string }>
+  res: NextApiResponse<{ ticket: Nullable<Ticket>; code?: BuzzCode; error?: string }>
 ) {
   const { ticketId } = req.body;
 
@@ -37,7 +41,7 @@ export default async function handler(
     if(!user){
       //user not found
       res.status(401);
-      res.send({ ticket: null, code: "DISCORD_NOT_LINKED"});
+      res.send({ ticket: null, code: BuzzCode.DiscordNotLinked });
       return null;
     }
 
