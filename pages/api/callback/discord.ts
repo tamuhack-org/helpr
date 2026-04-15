@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    //TODO: handle collisions
+    //TODO handle collisions: allow user to choose which helpr account is associated with the discord ID
     //I haven't set discordId column to unique because it doesn't allow multiple nulls
     await prisma.user.update({
       where: { id: user.id },
@@ -67,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     //TODO: redirect to a success page?
-    res.redirect('/');
+    res.redirect('/mentor');
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to link Discord account' });

@@ -24,19 +24,24 @@ export default async function handler(
     //TODO: hella redundancy here with db calls
     //TODO: add hmac check
     const { discordId } = req.body;
+    if(!discordId){
+      res.status(400);
+      res.send({ ticket: null });
+      return null;
+    }
+
     const user = await prisma.user.findFirst({
       where: {
         discordId: discordId || '',
       },
     });
-    if(!user || !discordId){
+    if(!user){
       //user not found
       res.status(401);
       res.send({ ticket: null, code: "DISCORD_NOT_LINKED"});
       return null;
     }
 
-    //unauthorized request
     const reqHmacSignature = req.headers['x-authorization-content-hmac'];
     const reqHmacTimestamp = req.headers['x-authorization-timestamp'];
     const hmacMatch = verifyHMAC(req.body, {signature: reqHmacSignature as string, timestamp: reqHmacTimestamp as string});
