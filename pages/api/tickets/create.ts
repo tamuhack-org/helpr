@@ -28,10 +28,10 @@ export default async function handler(
 ) {
 
   async function discordPing(userName: string, email: string, userId: string, ticketId: string){
-    const discordUrl = process.env.BUZZ_URL;
-    if(!discordUrl) return;
+    const buzzUrl = process.env.BUZZ_URL;
+    if(!buzzUrl) return;
 
-    const discordPingPath = `${discordUrl}/helpr/ping-mentor`;
+    const buzzPingPath = `${buzzUrl}/helpr/ping-mentor`;
     const data = {
       "name": userName,
       "email": email,
@@ -54,7 +54,7 @@ export default async function handler(
     };
 
     await axios
-    .post(discordPingPath, data, {headers: headers})
+    .post(buzzPingPath, data, {headers: headers})
     .then(() => console.log("Mentors pinged on discord!"))
     .catch((err) => console.log(err))
   }
@@ -70,7 +70,7 @@ export default async function handler(
 
   const user = await prisma.user.findUnique({
     where: {
-      email: token.email || '',
+      email: token?.email || '',
     },
   });
 
