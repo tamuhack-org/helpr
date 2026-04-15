@@ -35,7 +35,7 @@ export default async function handler(
 
     const user = await prisma.user.findFirst({
       where: {
-        discordId: discordId || '',
+        discordId: discordId,
       },
     });
     if(!user){
