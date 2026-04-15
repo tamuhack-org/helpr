@@ -32,7 +32,7 @@ export default async function handler(
     if(!user || !discordId){
       //user not found
       res.status(401);
-      res.send({ ticket: null, code: "DISCORD_NOT_LINKED "});
+      res.send({ ticket: null, code: "DISCORD_NOT_LINKED"});
       return null;
     }
 
