@@ -4,7 +4,7 @@ import { withAuth } from 'next-auth/middleware';
 
 //Root level paths that mentors have access to OVER regular users
 //For example, "/" is accessible by mentors, but users can also access it, so we DO NOT include it.
-const mentorPaths = ['/mentor', '/dashboard'];
+const mentorPaths = ['/mentor', '/dashboard', '/link'];
 
 export default withAuth({
   callbacks: {
@@ -55,5 +55,5 @@ export default withAuth({
 
 //Paths to run this middleware on  (all paths that require a user to be signed in)
 export const config = {
-  matcher: ['/admin', '/mentor', '/', '/dashboard/:path*'],
+  matcher: ['/admin', '/mentor', '/', '/dashboard/:path*', '/link/:path*'],
 };

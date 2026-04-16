@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import axios from 'axios';
 
 import prisma from '../../../lib/prisma';
 import { Ticket } from '@/generated/prisma/client';
@@ -10,6 +11,7 @@ import {
   Nullable,
 } from '../../../lib/common';
 import { getActiveEvent } from '../../../lib/eventHelper';
+import createHMAC from '@/lib/createHMAC';
 
 /*
  * POST Request: Creates new ticket and assigns it to user
@@ -24,6 +26,39 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
+
+  async function discordPing(userName: string, email: string, userId: string, ticketId: string){
+    const buzzUrl = process.env.BUZZ_URL;
+    if(!buzzUrl) return;
+
+    const buzzPingPath = `${buzzUrl}/helpr/ping-mentor`;
+    const data = {
+      "name": userName,
+      "email": email,
+      "userId": userId,
+      "location": location,
+      "phone_number": contact,
+      "issue": issue,
+      "ticketId": ticketId,
+    }
+
+    const hmacDetails = createHMAC(data);
+    if(!hmacDetails){
+      console.error("HMAC creation failed");
+      return;
+    }
+
+    const headers = {
+      'x-authorization-content-hmac': hmacDetails.signature,
+      'x-authorization-timestamp': hmacDetails.timestamp,
+    };
+
+    await axios
+    .post(buzzPingPath, data, {headers: headers})
+    .then(() => console.log("Mentors pinged on discord!"))
+    .catch((err) => console.log(err))
+  }
+
   const token = await getToken({ req });
   const { issue, location, contact } = req.body;
 
@@ -93,6 +128,8 @@ export default async function handler(
       ...(activeEvent && { event: { connect: { id: activeEvent.id } } }),
     },
   });
+
+  discordPing(user.name, token.email!, user.id, ticket.id);
 
   res.status(200).send({ ticket: ticket });
 }
