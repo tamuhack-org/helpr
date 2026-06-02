@@ -6,6 +6,7 @@ import {
   FormControl,
   FormDescription,
 } from '@/components/ui/form';
+import { settingsNameToFieldName } from '@/lib/enum';
 import { Input } from '@/components/ui/input';
 
 export const SettingsInputForm = ({
@@ -22,7 +23,7 @@ export const SettingsInputForm = ({
   return (
     <FormField
       control={form.control}
-      name="bannerText"
+      name={ settingsNameToFieldName[name] }
       render={({ field }) => (
         <FormItem>
           <FormLabel>{name}</FormLabel>
