@@ -18,7 +18,10 @@ const POLL_MS = 2000;
 
 // Vercel kills long functions; close cleanly and let EventSource reconnect.
 const MAX_STREAM_MS = 50_000;
-export const maxDuration = 60;
+
+// Pages Router functions read the duration off the config export, not a
+// named `maxDuration` export.
+export const config = { maxDuration: 60 };
 
 export default async function handler(
   req: NextApiRequest,
@@ -43,8 +46,13 @@ export default async function handler(
   res.write('retry: 3000\n\n');
 
   let closed = false;
-  req.on('close', () => {
+  let wake: (() => void) | undefined;
+
+  // `res` is the connection-bound stream; `req` completes as soon as the
+  // client finished sending the (empty) request body.
+  res.on('close', () => {
     closed = true;
+    wake?.();
   });
 
   const deadline = Date.now() + MAX_STREAM_MS;
@@ -69,13 +77,18 @@ export default async function handler(
         res.write(`data: ${current}\n\n`);
       }
     } catch (error) {
+      // End the stream instead of writing a comment: an SSE comment is
+      // invisible to EventSource, so the client would keep believing it is
+      // connected and would never fall back to polling.
       console.error('Error reading ticket state for SSE:', error);
-      res.write(': error\n\n');
+      break;
     }
 
     const { promise, resolve } = Promise.withResolvers<void>();
-    setTimeout(resolve, POLL_MS);
+    wake = resolve;
+    const timer = setTimeout(resolve, POLL_MS);
     await promise;
+    clearTimeout(timer);
   }
 
   res.end();
