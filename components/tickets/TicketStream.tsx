@@ -1,4 +1,6 @@
 import type { Ticket } from '@/generated/prisma/client';
+import { useTicketStream } from '@/hooks/use-ticket-stream';
+import { MdLink, MdLinkOff } from 'react-icons/md';
 import useSWR from 'swr';
 import { fetcher, getTimeDifferenceString } from '../../lib/common';
 import { TextCard } from '../common/TextCard';
@@ -24,13 +26,20 @@ const Ticket = ({ ticket, filter }: { ticket: Ticket; filter: string }) => {
   );
 };
 
-export const TicketStream = ({ filter }: { filter: string }) => {
+const Tickets = ({
+  filter,
+  connected,
+}: {
+  filter: string;
+  connected: boolean;
+}) => {
   const {
     data: ticketsData,
     error: ticketError,
     isLoading: isTicketLoading,
   } = useSWR(`/api/tickets/${filter || 'active'}`, fetcher, {
-    refreshInterval: 5000,
+    // The stream is the fast path; polling only covers a dropped connection.
+    refreshInterval: connected ? 0 : 5000,
   });
 
   if (isTicketLoading) {
@@ -48,4 +57,29 @@ export const TicketStream = ({ filter }: { filter: string }) => {
   return ticketsData.tickets.map((ticket: Ticket, index: number) => (
     <Ticket ticket={ticket} key={index} filter={filter}></Ticket>
   ));
+};
+
+export const TicketStream = ({ filter }: { filter: string }) => {
+  const connected = useTicketStream();
+
+  return (
+    <>
+      <div className="flex justify-end pt-3 -mb-4">
+        {connected ? (
+          <MdLink
+            className="text-green-500"
+            title="Live updates connected"
+            aria-label="Live updates connected"
+          />
+        ) : (
+          <MdLinkOff
+            className="text-gray-400"
+            title="Live updates disconnected, falling back to refresh"
+            aria-label="Live updates disconnected"
+          />
+        )}
+      </div>
+      <Tickets filter={filter} connected={connected} />
+    </>
+  );
 };
