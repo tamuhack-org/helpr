@@ -1,6 +1,7 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
+import { getActiveEvent } from '../../../lib/eventHelper';
 import prisma from '../../../lib/prisma';
 
 /*
@@ -19,60 +20,33 @@ const POLL_MS = 2000;
 // Vercel kills long functions; close cleanly and let EventSource reconnect.
 const MAX_STREAM_MS = 50_000;
 
-// Postgres cancels the read itself, so a blocked database returns a real error
-// and frees the pooled connection instead of leaving a statement behind. Sent
-// per transaction with SET LOCAL rather than as a pool-wide startup parameter:
-// the blast radius stays on this endpoint and it survives a transaction-pooling
-// proxy, which can reject unknown startup parameters.
-const QUERY_TIMEOUT_MS = 4000;
-
-// Prisma aborts a transaction on its own clock too, and that path reports an
-// expired transaction without Postgres ever cancelling the statement. Keep it
-// strictly slower so the database is always the one that gives up first.
-const TRANSACTION_TIMEOUT_MS = 8000;
-
 // Pages Router functions read the duration off the config export, not a named
 // `maxDuration` export.
 export const config = { maxDuration: 60 };
 
-type Fingerprint = { tickets: number; changed: Date | null };
-
-// Every stream on this instance shares one in-flight read. Ten mentors cost one
-// query per tick instead of ten, and an unreachable database can only ever hold
-// a single query, so reconnects cannot pile them up in the pool.
-let inflight: Promise<Fingerprint> | null = null;
+// Every stream on this instance shares one in-flight read: ten mentors cost one
+// query per tick instead of ten, and a wedged database can only ever hold a
+// single hung query, so reconnects cannot pile them up in the pool. The client
+// heartbeat watchdog drops the UI to polling within 8s of a stall.
+let inflight: Promise<string> | null = null;
 
 const readFingerprint = () => {
-  inflight ??= prisma
-    .$transaction(
-      async (tx) => {
-        await tx.$executeRawUnsafe(
-          `SET LOCAL statement_timeout = ${QUERY_TIMEOUT_MS}`
-        );
+  inflight ??= (async () => {
+    const activeEvent = await getActiveEvent();
 
-        // One statement, so the active event and its tickets come from the same
-        // snapshot. The `NOT EXISTS` branch mirrors /api/tickets/*, which fall
-        // back to every ticket when no event is active.
-        const [fingerprint] = await tx.$queryRaw<Fingerprint[]>`
-          WITH active AS (
-            SELECT id FROM "Event"
-            WHERE "isActive"
-            ORDER BY "createdTime" DESC
-            LIMIT 1
-          )
-          SELECT count(*)::int AS tickets, max("updatedTime") AS changed
-          FROM "Ticket"
-          WHERE "eventId" = (SELECT id FROM active)
-             OR NOT EXISTS (SELECT 1 FROM active)
-        `;
-
-        return fingerprint;
-      },
-      { timeout: TRANSACTION_TIMEOUT_MS }
-    )
-    .finally(() => {
-      inflight = null;
+    // `eventId: undefined` drops the filter, so with no active event this
+    // counts every ticket, exactly like the /api/tickets/* list endpoints.
+    const { _count, _max } = await prisma.ticket.aggregate({
+      where: { eventId: activeEvent?.id },
+      _count: { _all: true },
+      _max: { updatedTime: true },
     });
+
+    // tickets count catches inserts and deletes, max(updatedTime) edits.
+    return `${_count._all}:${_max.updatedTime?.getTime() ?? 0}`;
+  })().finally(() => {
+    inflight = null;
+  });
 
   return inflight;
 };
@@ -114,12 +88,7 @@ export default async function handler(
 
   while (!disconnected.signal.aborted && Date.now() < deadline) {
     try {
-      const fingerprint = await readFingerprint();
-
-      // Count catches inserts and deletes, max(updatedTime) catches edits.
-      const current = `${fingerprint.tickets}:${
-        fingerprint.changed?.getTime() ?? 0
-      }`;
+      const current = await readFingerprint();
 
       if (current === last) {
         // A named event, not an SSE comment: the client has to be able to see
@@ -131,9 +100,7 @@ export default async function handler(
       }
     } catch (error) {
       // Close the stream rather than keep it open in a broken state: a client
-      // that still holds an open connection trusts it and stops polling. The
-      // client reconnects, and its heartbeat watchdog covers the window where
-      // an unreachable database answers neither us nor Postgres' own timeout.
+      // that still holds an open connection trusts it and stops polling.
       console.error('Error reading ticket state for SSE:', error);
       break;
     }
