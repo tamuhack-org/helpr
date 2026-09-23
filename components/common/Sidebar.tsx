@@ -27,14 +27,8 @@ const data = {
     },
     {
       title: 'Settings',
-      url: '#',
+      url: '/dashboard/settings',
       icon: Settings2,
-      items: [
-        {
-          title: 'Event',
-          url: '/dashboard/settings',
-        },
-      ],
     },
   ],
   recents: [
