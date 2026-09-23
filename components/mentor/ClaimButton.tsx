@@ -47,8 +47,10 @@ export const ClaimButton = ({
       })
       .catch(function (error) {
         console.log(error);
+        const errorData = error.response.data;
         toast({
           title: 'Error',
+          description: errorData.shouldShowError? errorData.error: '',
         });
       });
     setClaimLoading(false);
