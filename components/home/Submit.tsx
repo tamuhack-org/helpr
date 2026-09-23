@@ -5,6 +5,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import useSWR, { useSWRConfig } from 'swr';
+import { useTicketStream } from '@/hooks/use-ticket-stream';
 import { z } from 'zod';
 import {
   fetcher,
@@ -37,8 +38,10 @@ const FormSchema = z.object({
 type IFormInput = z.infer<typeof FormSchema>;
 
 export const Submit = () => {
+  const connected = useTicketStream();
   const { data, error, isLoading } = useSWR('/api/users/me', fetcher, {
-    refreshInterval: 5000,
+    // The stream is the fast path; polling only covers a dropped connection.
+    refreshInterval: connected ? 0 : 5000,
   });
   const { mutate } = useSWRConfig();
   const [submitLoading, setSubmitLoading] = useState(false);
