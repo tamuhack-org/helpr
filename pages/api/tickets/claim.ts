@@ -100,9 +100,17 @@ export default async function handler(
     (ticket: Ticket) => !ticket.isResolved
   );
 
-  if (isClaimed || ticket.claimantId) {
+  //a ticket has already been claimed by this mentor
+  if (isClaimed) {
     res.status(409);
     res.send({ ticket: null, error: 'You already have a ticket claimed', shouldShowError: true, code: BuzzCode.HasExistingTicket });
+    return;
+  }
+
+  //this ticket has already been assigned
+  if (ticket.claimantId) {
+    res.status(403);
+    res.send({ ticket: null, error: 'Someone has already claimed this ticket', shouldShowError: true });
     return;
   }
 
