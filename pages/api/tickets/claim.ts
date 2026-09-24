@@ -8,7 +8,8 @@ import { isMentor } from '@/lib/helpers/permission-helper';
 import verifyHMAC from '@/lib/verifyHMAC';
 
 enum BuzzCode {
-  DiscordNotLinked = "DISCORD_NOT_LINKED"
+  DiscordNotLinked = "DISCORD_NOT_LINKED",
+  HasExistingTicket = "HAS_EXISTING_TICKET",
 }
 
 /*
@@ -16,7 +17,7 @@ enum BuzzCode {
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ ticket: Nullable<Ticket>; code?: BuzzCode; error?: string }>
+  res: NextApiResponse<{ ticket: Nullable<Ticket>; code?: BuzzCode; error?: string, shouldShowError?: boolean }>
 ) {
   const { ticketId } = req.body;
 
@@ -27,7 +28,7 @@ export default async function handler(
 
     //TODO: hella redundancy here with db calls
     const { discordId } = req.body;
-    if(!discordId){
+    if (!discordId) {
       res.status(400);
       res.send({ ticket: null });
       return null;
@@ -38,7 +39,7 @@ export default async function handler(
         discordId: discordId,
       },
     });
-    if(!user){
+    if (!user) {
       //user not found
       res.status(401);
       res.send({ ticket: null, code: BuzzCode.DiscordNotLinked });
@@ -47,8 +48,8 @@ export default async function handler(
 
     const reqHmacSignature = req.headers['x-authorization-content-hmac'];
     const reqHmacTimestamp = req.headers['x-authorization-timestamp'];
-    const hmacMatch = verifyHMAC(req.body, {signature: reqHmacSignature as string, timestamp: reqHmacTimestamp as string});
-    if(!hmacMatch){
+    const hmacMatch = verifyHMAC(req.body, { signature: reqHmacSignature as string, timestamp: reqHmacTimestamp as string });
+    if (!hmacMatch) {
       res.status(400);
       res.send({ ticket: null });
       return null;
@@ -99,9 +100,17 @@ export default async function handler(
     (ticket: Ticket) => !ticket.isResolved
   );
 
-  if (isClaimed || ticket.claimantId) {
+  //a ticket has already been claimed by this mentor
+  if (isClaimed) {
     res.status(409);
-    res.send({ ticket: null, error: 'You already have a ticket claimed' });
+    res.send({ ticket: null, error: 'You already have a ticket claimed', shouldShowError: true, code: BuzzCode.HasExistingTicket });
+    return;
+  }
+
+  //this ticket has already been assigned
+  if (ticket.claimantId) {
+    res.status(403);
+    res.send({ ticket: null, error: 'Someone has already claimed this ticket', shouldShowError: true });
     return;
   }
 
