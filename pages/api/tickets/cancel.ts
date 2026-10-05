@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import prisma from '../../../lib/prisma';
 import { getToken } from 'next-auth/jwt';
+import { notifyTicketChange } from '@/lib/ticketChanges';
 
 /*
  * POST Request: Deletes ticket and disassociates it with user.
@@ -24,6 +25,7 @@ export default async function handler(
       id: ticketId,
     },
   });
+  notifyTicketChange();
 
   res.status(200);
   res.send({});

@@ -12,6 +12,7 @@ import {
 } from '../../../lib/common';
 import { getActiveEvent } from '../../../lib/eventHelper';
 import createHMAC from '@/lib/createHMAC';
+import { notifyTicketChange } from '@/lib/ticketChanges';
 
 /*
  * POST Request: Creates new ticket and assigns it to user
@@ -128,6 +129,7 @@ export default async function handler(
       ...(activeEvent && { event: { connect: { id: activeEvent.id } } }),
     },
   });
+  notifyTicketChange();
 
   discordPing(user.name, token.email!, user.id, ticket.id);
 

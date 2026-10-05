@@ -1,17 +1,10 @@
 import { useSyncExternalStore } from 'react';
 import { mutate } from 'swr';
 
-const STREAM_URL = '/api/tickets/stream';
-
-// The server closes each stream before the serverless duration limit, so a
-// reconnect every ~50s is normal. Ride it out before reporting a drop.
-const DROP_GRACE_MS = 5000;
-
-// The server emits a change or a heartbeat every 2s. A socket that stays open
-// while the other end has gone quiet (sleeping laptop, dropped NAT mapping,
-// wedged database) is the failure that silently stops updates, so treat four
-// missed beats as dead rather than trusting the connection.
-const HEARTBEAT_TIMEOUT_MS = 8000;
+// The server heartbeats every 10s. A socket that stays open after the other end
+// went quiet (sleeping laptop, dropped NAT mapping) is the failure that silently
+// stops updates, so three missed beats count as dead.
+const HEARTBEAT_TIMEOUT_MS = 30_000;
 
 // One stream per tab, shared by every component that asks for it, kept in a
 // module-level store so `useSyncExternalStore` can hand out a tear-free
@@ -21,8 +14,7 @@ const listeners = new Set<() => void>();
 let source: EventSource | null = null;
 let subscribers = 0;
 let connected = false;
-let dropTimer: number | undefined;
-let heartbeatTimer: number | undefined;
+let watchdog: number | undefined;
 
 const publish = (next: boolean) => {
   if (connected === next) {
@@ -34,42 +26,40 @@ const publish = (next: boolean) => {
 };
 
 const closeStream = () => {
-  window.clearTimeout(dropTimer);
-  window.clearTimeout(heartbeatTimer);
-  dropTimer = undefined;
-  heartbeatTimer = undefined;
+  window.clearTimeout(watchdog);
   source?.close();
   source = null;
   publish(false);
 };
 
 const openStream = () => {
-  // A hidden tab has nothing to render and would still hold the server in its
-  // polling loop, so it stays closed until the tab comes back.
+  // A hidden tab has nothing to render; it reconnects, and catches up, when it
+  // comes back.
   if (source || document.visibilityState === 'hidden') {
     return;
   }
 
-  const stream = new EventSource(STREAM_URL);
-
-  const awaitNextBeat = () => {
-    window.clearTimeout(heartbeatTimer);
-    heartbeatTimer = window.setTimeout(() => {
-      // Already late, so no grace period here: drop to polling and start over
-      // on a fresh connection.
+  const armWatchdog = () => {
+    window.clearTimeout(watchdog);
+    watchdog = window.setTimeout(() => {
       closeStream();
       openStream();
     }, HEARTBEAT_TIMEOUT_MS);
   };
 
-  // Deliberately not keyed off `onopen`: the server opens the stream before it
-  // knows whether the database answers, so only a delivered event proves the
-  // connection is live.
-  stream.onmessage = () => {
-    window.clearTimeout(dropTimer);
-    dropTimer = undefined;
-    awaitNextBeat();
+  const beat = () => {
+    armWatchdog();
     publish(true);
+  };
+
+  source = new EventSource('/api/tickets/stream');
+  source.addEventListener('ping', beat);
+
+  // The server sends a message on connect and on every ticket write, so each
+  // one is a cue to revalidate; the first also catches up on anything missed
+  // while disconnected.
+  source.onmessage = () => {
+    beat();
     mutate(
       (key) =>
         typeof key === 'string' &&
@@ -77,22 +67,12 @@ const openStream = () => {
     );
   };
 
-  // Heartbeats prove liveness without touching any cache.
-  stream.addEventListener('ping', awaitNextBeat);
+  // EventSource reconnects by itself, or stays closed after a 401 until the
+  // watchdog reopens it. Either way polling covers the gap until the next
+  // message proves the stream is live.
+  source.onerror = () => publish(false);
 
-  stream.onerror = () => {
-    // Never restart the timer: a stream that keeps failing retries every 3s,
-    // and rescheduling on each retry would starve the timeout forever. The
-    // clock runs from the first failure until an event actually arrives.
-    if (dropTimer !== undefined) {
-      return;
-    }
-
-    dropTimer = window.setTimeout(() => publish(false), DROP_GRACE_MS);
-  };
-
-  source = stream;
-  awaitNextBeat();
+  armWatchdog();
 };
 
 const handleVisibilityChange = () => {
@@ -101,8 +81,6 @@ const handleVisibilityChange = () => {
     return;
   }
 
-  // Every fresh connection is answered with the current ticket fingerprint, so
-  // reopening also catches up on whatever changed while the tab was hidden.
   openStream();
 };
 
