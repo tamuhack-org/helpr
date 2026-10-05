@@ -26,6 +26,8 @@ Our goal was to keep the software as easy to use as possible for both participan
 
 Deploy to Vercel with only a few clicks. Vercel will ask for information about the necessary environment variables.
 
+Live ticket updates are pushed over `/api/tickets/stream`, which relies on the app running as a single long-lived process (as on Railway). On Vercel that endpoint returns 503 and the pages fall back to polling every 5 seconds. To get push updates on a multi-instance host, replace the two functions in `lib/ticketChanges.ts` with a shared bus (Postgres `NOTIFY` or Redis).
+
 # Running HelpR Locally
 
 Note for TAMUhack devs: Pushing to the staging branch allows for Vercel previews to work with Next Auth. Normal branches with random links do not have permission from Google auth to sign users in.

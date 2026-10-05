@@ -21,6 +21,15 @@ export default async function handler(
     return;
   }
 
+  // The bus in lib/ticketChanges is in-process, and Vercel spreads requests
+  // over many short-lived instances, so a stream there would stay green and
+  // never hear a write. A non-200 fails the EventSource and the pages keep
+  // their 5s polling instead.
+  if (process.env.VERCEL) {
+    res.status(503).end();
+    return;
+  }
+
   if (!(await getToken({ req }))) {
     res.status(401).end();
     return;

@@ -67,9 +67,9 @@ const openStream = () => {
     );
   };
 
-  // EventSource reconnects by itself, or stays closed after a 401 until the
-  // watchdog reopens it. Either way polling covers the gap until the next
-  // message proves the stream is live.
+  // EventSource reconnects by itself, or stays closed after a non-200 (401, or
+  // the 503 on Vercel) until the watchdog reopens it. Either way polling covers
+  // the gap until the next message proves the stream is live.
   source.onerror = () => publish(false);
 
   armWatchdog();
