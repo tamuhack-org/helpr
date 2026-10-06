@@ -6,6 +6,7 @@ import { Ticket } from '@/generated/prisma/client';
 import { getToken } from 'next-auth/jwt';
 import { isMentor } from '@/lib/helpers/permission-helper';
 import verifyHMAC from '@/lib/verifyHMAC';
+import { notifyTicketChange } from '@/lib/ticketChanges';
 
 enum BuzzCode {
   DiscordNotLinked = "DISCORD_NOT_LINKED",
@@ -128,6 +129,7 @@ export default async function handler(
       },
     },
   });
+  notifyTicketChange();
 
   res.status(200);
   res.send({ ticket: ticket });
