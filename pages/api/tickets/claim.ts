@@ -10,6 +10,7 @@ import verifyHMAC from '@/lib/verifyHMAC';
 enum BuzzCode {
   DiscordNotLinked = "DISCORD_NOT_LINKED",
   HasExistingTicket = "HAS_EXISTING_TICKET",
+  AlreadyClaimedTicket = "TICKET_ALREADY_CLAIMED",
 }
 
 /*
@@ -110,7 +111,7 @@ export default async function handler(
   //this ticket has already been assigned
   if (ticket.claimantId) {
     res.status(403);
-    res.send({ ticket: null, error: 'Someone has already claimed this ticket', shouldShowError: true });
+    res.send({ ticket: null, error: 'Someone has already claimed this ticket', shouldShowError: true, code: BuzzCode.AlreadyClaimedTicket });
     return;
   }
 
