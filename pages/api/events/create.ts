@@ -4,6 +4,7 @@ import prisma from '../../../lib/prisma';
 import { Event } from '@/generated/prisma/client';
 import { getToken } from 'next-auth/jwt';
 import { Nullable } from '../../../lib/common';
+import { notifyTicketChange } from '@/lib/ticketChanges';
 
 /*
  * POST Request: Creates new event
@@ -38,6 +39,8 @@ export default async function handler(
   const event = await prisma.event.create({
     data: { name: name, isActive: true },
   });
+  // A new event is active immediately, so every client's ticket list changes.
+  notifyTicketChange();
 
   res.status(200).send({ event: event });
 }

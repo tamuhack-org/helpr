@@ -4,6 +4,7 @@ import { Event } from '@/generated/prisma/client';
 import prisma from '../../../lib/prisma';
 import { getToken } from 'next-auth/jwt';
 import { Nullable } from '@/lib/common';
+import { notifyTicketChange } from '@/lib/ticketChanges';
 
 /*
  * POST Request: Updates Event
@@ -63,6 +64,8 @@ export default async function handler(
       bannerText,
     },
   });
+  // Switching the active event changes which tickets every client sees.
+  notifyTicketChange();
 
   res.status(200).send({ event });
 }
