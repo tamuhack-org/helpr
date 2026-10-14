@@ -54,7 +54,7 @@ export default async function handler(
     };
 
     try {
-      const buzzResponse = await axios.post(buzzPingPath, data, { headers: headers });
+      const buzzResponse = await axios.post(buzzPingPath, data, { headers, timeout: 5000 });
       if (!buzzResponse || buzzResponse.status !== 200) return;
 
       return buzzResponse.data.message_info;
@@ -136,15 +136,19 @@ export default async function handler(
 
   const discordMessageInfo = await discordPing(user.name, token.email!, user.id, ticket.id);
   if (discordMessageInfo) {
-    ticket = await prisma.ticket.update({
-      where: {
-        id: ticket.id,
-      },
-      data: {
-        discordMessageId: discordMessageInfo.message_id,
-        discordChannelId: discordMessageInfo.channel_id,
-      }
-    })
+    try {
+      ticket = await prisma.ticket.update({
+        where: {
+          id: ticket.id,
+        },
+        data: {
+          discordMessageId: discordMessageInfo.message_id,
+          discordChannelId: discordMessageInfo.channel_id,
+        }
+      });
+    } catch (err) {
+      console.error("Failed to update ticket with discord message identifiers");
+    }
   }
 
   res.status(200).send({ ticket: ticket });
