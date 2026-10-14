@@ -119,7 +119,7 @@ export default async function handler(
   }
 
   const activeEvent = await getActiveEvent();
-  const ticket = await prisma.ticket.create({
+  let ticket = await prisma.ticket.create({
     data: {
       authorName: user.name,
       issue,
@@ -135,15 +135,17 @@ export default async function handler(
   });
 
   const discordMessageInfo = await discordPing(user.name, token.email!, user.id, ticket.id);
-  if(discordMessageInfo) await prisma.ticket.update({
-    where: {
-      id: ticket.id,
-    },
-    data: {
-      discordMessageId: discordMessageInfo.message_id,
-      discordChannelId: discordMessageInfo.channel_id,
-    }
-  })
+  if (discordMessageInfo) {
+    ticket = await prisma.ticket.update({
+      where: {
+        id: ticket.id,
+      },
+      data: {
+        discordMessageId: discordMessageInfo.message_id,
+        discordChannelId: discordMessageInfo.channel_id,
+      }
+    })
+  }
 
   res.status(200).send({ ticket: ticket });
 }
