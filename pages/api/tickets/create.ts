@@ -27,9 +27,9 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
 
-  async function discordPing(userName: string, email: string, userId: string, ticketId: string){
+  async function discordPing(userName: string, email: string, userId: string, ticketId: string) {
     const buzzUrl = process.env.BUZZ_URL;
-    if(!buzzUrl) return;
+    if (!buzzUrl) return;
 
     const buzzPingPath = `${buzzUrl}/helpr/ping-mentor`;
     const data = {
@@ -43,7 +43,7 @@ export default async function handler(
     }
 
     const hmacDetails = createHMAC(data);
-    if(!hmacDetails){
+    if (!hmacDetails) {
       console.error("HMAC creation failed");
       return;
     }
@@ -53,10 +53,15 @@ export default async function handler(
       'x-authorization-timestamp': hmacDetails.timestamp,
     };
 
-    await axios
-    .post(buzzPingPath, data, {headers: headers})
-    .then(() => console.log("Mentors pinged on discord!"))
-    .catch((err) => console.log(err))
+    try {
+      const buzzResponse = await axios.post(buzzPingPath, data, { headers: headers });
+      if (!buzzResponse || buzzResponse.status !== 200) return;
+
+      return buzzResponse.data.messageInfo;
+    } catch (err) {
+      console.error("Failed to ping mentors on discord: ", err);
+      return;
+    }
   }
 
   const token = await getToken({ req });
@@ -129,7 +134,16 @@ export default async function handler(
     },
   });
 
-  discordPing(user.name, token.email!, user.id, ticket.id);
+  const discordMessageInfo = await discordPing(user.name, token.email!, user.id, ticket.id);
+  if(discordMessageInfo) await prisma.ticket.update({
+    where: {
+      id: ticket.id,
+    },
+    data: {
+      discordMessageId: discordMessageInfo.message_id,
+      discordChannelId: discordMessageInfo.channel_id,
+    }
+  })
 
   res.status(200).send({ ticket: ticket });
 }
