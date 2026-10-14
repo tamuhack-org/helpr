@@ -27,19 +27,25 @@ export default async function handler(
   res: NextApiResponse<ResponseData>
 ) {
 
-  async function discordPing(userName: string, email: string, userId: string, ticketId: string) {
+  async function discordPing(userName: string, email: string, userId: string, ticketId: string, isMentor: boolean, discordId: string | null) {
     const buzzUrl = process.env.BUZZ_URL;
     if (!buzzUrl) return;
 
     const buzzPingPath = `${buzzUrl}/helpr/ping-mentor`;
-    const data = {
+    const user = {
       "name": userName,
       "email": email,
-      "userId": userId,
+      "user_id": userId,
+      "is_mentor": isMentor,
+      "discord_id": discordId
+    }
+    const data = {
+      "author": user,
       "location": location,
       "phone_number": contact,
       "issue": issue,
-      "ticketId": ticketId,
+      "ticket_id": ticketId,
+      "resolved": false
     }
 
     const hmacDetails = createHMAC(data);
@@ -134,7 +140,7 @@ export default async function handler(
     },
   });
 
-  const discordMessageInfo = await discordPing(user.name, token.email!, user.id, ticket.id);
+  const discordMessageInfo = await discordPing(user.name, token.email!, user.id, ticket.id, user.mentor, user.discordId);
   if (discordMessageInfo) {
     try {
       ticket = await prisma.ticket.update({
