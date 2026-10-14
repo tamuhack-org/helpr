@@ -13,12 +13,18 @@ enum BuzzCode {
   AlreadyClaimedTicket = "TICKET_ALREADY_CLAIMED",
 }
 
+interface Claimant {
+  id: string,
+  name: string,
+  discordId: string | null
+}
+
 /*
  * POST Request: Claims Ticket
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ ticket: Nullable<Ticket>; code?: BuzzCode; error?: string, shouldShowError?: boolean }>
+  res: NextApiResponse<{ ticket: Nullable<Ticket>; claimant?: Claimant; code?: BuzzCode; error?: string, shouldShowError?: boolean }>
 ) {
   const { ticketId } = req.body;
 
@@ -130,6 +136,12 @@ export default async function handler(
     },
   });
 
+  const claimant: Claimant = {
+    id: user.id,
+    name: user.name,
+    discordId: user.discordId
+  }
+
   res.status(200);
-  res.send({ ticket: ticket });
+  res.send({ ticket: ticket, claimant: claimant });
 }
