@@ -57,7 +57,7 @@ export default async function handler(
       const buzzResponse = await axios.post(buzzPingPath, data, { headers: headers });
       if (!buzzResponse || buzzResponse.status !== 200) return;
 
-      return buzzResponse.data.messageInfo;
+      return buzzResponse.data.message_info;
     } catch (err) {
       console.error("Failed to ping mentors on discord: ", err);
       return;
