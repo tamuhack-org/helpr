@@ -121,7 +121,7 @@ export default async function handler(
     return;
   }
 
-  await prisma.ticket.update({
+  const updatedTicket = await prisma.ticket.update({
     where: {
       id: ticketId,
     },
@@ -134,6 +134,11 @@ export default async function handler(
         },
       },
     },
+    //buzz needs
+    include: {
+      author: true,
+      claimant: true
+    }
   });
 
   const claimant: Claimant = {
@@ -143,5 +148,5 @@ export default async function handler(
   }
 
   res.status(200);
-  res.send({ ticket: ticket, claimant: claimant });
+  res.send({ ticket: updatedTicket, claimant: claimant });
 }
