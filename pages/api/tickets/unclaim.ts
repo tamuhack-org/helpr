@@ -5,26 +5,36 @@ import prisma from '../../../lib/prisma';
 import { Ticket } from '@/generated/prisma/client';
 import { getToken } from 'next-auth/jwt';
 import { isMentor } from '@/lib/helpers/permission-helper';
+import { BuzzCode, getAuthenticatedUserEmail } from '@/lib/auth';
 
 /*
  * POST Request: Unclaims ticket
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ ticket: Nullable<Ticket> }>
+  res: NextApiResponse<{ ticket: Nullable<Ticket>, code?: BuzzCode }>
 ) {
-  const token = await getToken({ req });
   const { ticketId } = req.body;
+  const authResult = await getAuthenticatedUserEmail(req);
+  if (authResult.status != 200) {
+    res.status(authResult.status);
+    res.send({
+      ticket: null,
+      code: authResult.code
+    })
+  }
 
-  if (!token) {
-    res.status(401);
-    res.send({ ticket: null });
-    return;
+  const email = authResult.email
+  if (!email) {
+    res.status(500);
+    res.send({
+      ticket: null,
+    })
   }
 
   const user = await prisma.user.findUnique({
     where: {
-      email: token?.email || '',
+      email: email
     },
     include: {
       roles: true,
@@ -50,7 +60,13 @@ export default async function handler(
     res.send({ ticket: null });
     return;
   }
-  await prisma.ticket.update({
+
+  if(ticket.claimantId !== user.id) {
+    res.status(401);
+    res.send({ticket: null, code: BuzzCode.TICKET_MISMATCH})
+  }
+
+  const updatedTicket = await prisma.ticket.update({
     where: {
       id: ticketId,
     },
@@ -62,8 +78,13 @@ export default async function handler(
         disconnect: true,
       },
     },
+    //buzz needs
+    include: {
+      author: true,
+      claimant: true
+    }
   });
 
   res.status(200);
-  res.send({ ticket: ticket });
+  res.send({ ticket: updatedTicket });
 }
