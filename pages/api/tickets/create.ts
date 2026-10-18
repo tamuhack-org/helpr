@@ -12,6 +12,7 @@ import {
 } from '../../../lib/common';
 import { getActiveEvent } from '../../../lib/eventHelper';
 import createHMAC from '@/lib/createHMAC';
+import { notifyBuzz } from '@/lib/notifyBuzz';
 
 /*
  * POST Request: Creates new ticket and assigns it to user
@@ -26,50 +27,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-
-  async function discordPing(userName: string, email: string, userId: string, ticketId: string, isMentor: boolean, discordId: string | null) {
-    const buzzUrl = process.env.BUZZ_URL;
-    if (!buzzUrl) return;
-
-    const buzzPingPath = `${buzzUrl}/helpr/ping-mentor`;
-    const user = {
-      "name": userName,
-      "email": email,
-      "user_id": userId,
-      "is_mentor": isMentor,
-      "discord_id": discordId
-    }
-    const data = {
-      "author": user,
-      "location": location,
-      "phone_number": contact,
-      "issue": issue,
-      "ticket_id": ticketId,
-      "resolved": false
-    }
-
-    const hmacDetails = createHMAC(data);
-    if (!hmacDetails) {
-      console.error("HMAC creation failed");
-      return;
-    }
-
-    const headers = {
-      'x-authorization-content-hmac': hmacDetails.signature,
-      'x-authorization-timestamp': hmacDetails.timestamp,
-    };
-
-    try {
-      const buzzResponse = await axios.post(buzzPingPath, data, { headers, timeout: 5000 });
-      if (!buzzResponse || buzzResponse.status !== 200) return;
-
-      return buzzResponse.data.message_info;
-    } catch (err) {
-      console.error("Failed to ping mentors on discord: ", err);
-      return;
-    }
-  }
-
   const token = await getToken({ req });
   const { issue, location, contact } = req.body;
 
@@ -138,22 +95,36 @@ export default async function handler(
       },
       ...(activeEvent && { event: { connect: { id: activeEvent.id } } }),
     },
+    //buzz needs
+    include: {
+      author: true,
+      claimant: true
+    }
   });
 
-  const discordMessageInfo = await discordPing(user.name, token.email!, user.id, ticket.id, user.mentor, user.discordId);
-  if (discordMessageInfo) {
-    try {
-      ticket = await prisma.ticket.update({
-        where: {
-          id: ticket.id,
-        },
-        data: {
-          discordMessageId: discordMessageInfo.message_id,
-          discordChannelId: discordMessageInfo.channel_id,
-        }
-      });
-    } catch (err) {
-      console.error("Failed to update ticket with discord message identifiers");
+  const buzzResponse = await notifyBuzz(ticket, "ping-mentor");
+  if (buzzResponse && buzzResponse.status == 200) {
+    const data = buzzResponse.data;
+    const discordMessageInfo = data.message_info;
+    if (discordMessageInfo) {
+      try {
+        ticket = await prisma.ticket.update({
+          where: {
+            id: ticket.id,
+          },
+          data: {
+            discordMessageId: discordMessageInfo.message_id,
+            discordChannelId: discordMessageInfo.channel_id,
+          },
+    //buzz needs
+    include: {
+      author: true,
+      claimant: true
+    }
+        });
+      } catch (err) {
+        console.error("Failed to update ticket with discord message identifiers");
+      }
     }
   }
 
