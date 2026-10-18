@@ -3,15 +3,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Nullable } from '../../../lib/common';
 import prisma from '../../../lib/prisma';
 import { Ticket } from '@/generated/prisma/client';
-import { getToken } from 'next-auth/jwt';
 import { isMentor } from '@/lib/helpers/permission-helper';
-import verifyHMAC from '@/lib/verifyHMAC';
-
-enum BuzzCode {
-  DiscordNotLinked = "DISCORD_NOT_LINKED",
-  HasExistingTicket = "HAS_EXISTING_TICKET",
-  AlreadyClaimedTicket = "TICKET_ALREADY_CLAIMED",
-}
+import { getAuthenticatedUserEmail, BuzzCode } from '@/lib/auth';
 
 interface Claimant {
   id: string,
@@ -27,45 +20,16 @@ export default async function handler(
   res: NextApiResponse<{ ticket: Nullable<Ticket>; claimant?: Claimant; code?: BuzzCode; error?: string, shouldShowError?: boolean }>
 ) {
   const { ticketId } = req.body;
-
-  async function getAuthenticatedUserEmail() {
-    //check browser for token 
-    const token = await getToken({ req });
-    if (token?.email) return token.email;
-
-    //TODO: hella redundancy here with db calls
-    const { discordId } = req.body;
-    if (!discordId) {
-      res.status(400);
-      res.send({ ticket: null });
-      return null;
-    }
-
-    const user = await prisma.user.findUnique({
-      where: {
-        discordId: discordId,
-      },
-    });
-    if (!user) {
-      //user not found
-      res.status(401);
-      res.send({ ticket: null, code: BuzzCode.DiscordNotLinked });
-      return null;
-    }
-
-    const reqHmacSignature = req.headers['x-authorization-content-hmac'];
-    const reqHmacTimestamp = req.headers['x-authorization-timestamp'];
-    const hmacMatch = verifyHMAC(req.body, { signature: reqHmacSignature as string, timestamp: reqHmacTimestamp as string });
-    if (!hmacMatch) {
-      res.status(400);
-      res.send({ ticket: null });
-      return null;
-    }
-
-    return user.email;
+  const authResult = await getAuthenticatedUserEmail(req);
+  if (authResult.status != 200) {
+    res.status(authResult.status);
+    res.send({
+      ticket: null,
+      code: authResult.code
+    })
   }
 
-  const email = await getAuthenticatedUserEmail();
+  const email = authResult.email
 
   if (!email) {
     res.status(400);
