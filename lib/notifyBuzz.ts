@@ -17,7 +17,6 @@ export async function notifyBuzz(ticket: Ticket, endpoint: string){
     'x-authorization-content-hmac': hmacDetails.signature,
     'x-authorization-timestamp': hmacDetails.timestamp,
   };
-  console.log(ticket)
 
   try {
     const buzzResponse = await axios.post(buzzPingPath, ticket, { headers, timeout: 5000 });
@@ -25,7 +24,7 @@ export async function notifyBuzz(ticket: Ticket, endpoint: string){
 
     return buzzResponse;
   } catch (err) {
-    console.error("Failed to ping mentors on discord: ", err);
+    console.error(`Failed to post to ${endpoint}: `, err);
     return;
   }
 }
