@@ -7,18 +7,12 @@ import { isMentor } from '@/lib/helpers/permission-helper';
 import { getAuthenticatedUserEmail, BuzzCode } from '@/lib/auth';
 import { notifyBuzz } from '@/lib/notifyBuzz';
 
-interface Claimant {
-  id: string,
-  name: string,
-  discordId: string | null
-}
-
 /*
  * POST Request: Claims Ticket
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ ticket: Nullable<Ticket>; claimant?: Claimant; code?: BuzzCode; error?: string, shouldShowError?: boolean }>
+  res: NextApiResponse<{ ticket: Nullable<Ticket>; code?: BuzzCode; error?: string, shouldShowError?: boolean }>
 ) {
   const { ticketId } = req.body;
   const authResult = await getAuthenticatedUserEmail(req);
@@ -106,14 +100,8 @@ export default async function handler(
     }
   });
 
-  const claimant: Claimant = {
-    id: user.id,
-    name: user.name,
-    discordId: user.discordId
-  }
-
   notifyBuzz(updatedTicket, "update-ticket")
 
   res.status(200);
-  res.send({ ticket: updatedTicket, claimant: claimant });
+  res.send({ ticket: updatedTicket });
 }
