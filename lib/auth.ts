@@ -1,7 +1,7 @@
 import { NextApiRequest } from "next";
 import { getToken } from "next-auth/jwt";
 import prisma from "./prisma";
-import verifyHMAC from "./verifyHMAC";
+import verifyHMACRequest from "./verifyHMACRequest";
 
 
 export enum BuzzCode {
@@ -35,9 +35,7 @@ export async function getAuthenticatedUserEmail(req: NextApiRequest): Promise<Au
 
   if (!user) return { status: 400, code: BuzzCode.DiscordNotLinked };
 
-  const reqHmacSignature = req.headers['x-authorization-content-hmac'];
-  const reqHmacTimestamp = req.headers['x-authorization-timestamp'];
-  const hmacMatch = verifyHMAC(req.body, { signature: reqHmacSignature, timestamp: reqHmacTimestamp });
+  const hmacMatch = verifyHMACRequest(req.body, req.headers);
   if (!hmacMatch) return { status: 401 };
 
   return { status: 200, email: user.email };
