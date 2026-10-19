@@ -1,14 +1,14 @@
 import crypto from 'crypto';
 
 //TODO Maybe data should be raw buffer?
-export default function verifyHMAC(data: object, reqHMAC: {signature: String, timestamp: String}){
+export default function verifyHMAC(data: object, reqHMAC: {signature: string | string[] | undefined, timestamp: string | string[] | undefined}){
     const secret = process.env.HMAC_SECRET;
     if(!secret){
       console.error("Missing HMAC secret!");
       return false;
     }
 
-    if(!reqHMAC.signature || !reqHMAC.timestamp){
+    if(!reqHMAC.signature || !reqHMAC.timestamp || Array.isArray(reqHMAC.signature) || Array.isArray((reqHMAC.timestamp))){
         console.error("Missing required request HMAC signature or timestamp");
         return false;
     }

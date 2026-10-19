@@ -37,7 +37,7 @@ export async function getAuthenticatedUserEmail(req: NextApiRequest): Promise<Au
 
   const reqHmacSignature = req.headers['x-authorization-content-hmac'];
   const reqHmacTimestamp = req.headers['x-authorization-timestamp'];
-  const hmacMatch = verifyHMAC(req.body, { signature: reqHmacSignature as string, timestamp: reqHmacTimestamp as string });
+  const hmacMatch = verifyHMAC(req.body, { signature: reqHmacSignature, timestamp: reqHmacTimestamp });
   if (!hmacMatch) return { status: 401 };
 
   return { status: 200, email: user.email };
