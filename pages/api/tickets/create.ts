@@ -103,28 +103,33 @@ export default async function handler(
   });
 
   const buzzResponse = await notifyBuzz(ticket, "ping-mentor");
-  if (buzzResponse && buzzResponse.status == 200) {
-    const data = buzzResponse.data;
-    const discordMessageInfo = data.message_info;
-    if (discordMessageInfo) {
-      try {
-        ticket = await prisma.ticket.update({
-          where: {
-            id: ticket.id,
-          },
-          data: {
-            discordMessageId: discordMessageInfo.message_id,
-            discordChannelId: discordMessageInfo.channel_id,
-          },
-    //buzz needs
-    include: {
-      author: true,
-      claimant: true
-    }
-        });
-      } catch (err) {
-        console.error("Failed to update ticket with discord message identifiers");
-      }
+  if (!buzzResponse || buzzResponse.status !== 200) {
+    //just respond and return
+    res.status(200).send({ ticket: ticket });
+    return;
+  }
+
+  //buzz created a message, associate those identifiers with ticket
+  const data = buzzResponse.data;
+  const discordMessageInfo = data.message_info;
+  if (discordMessageInfo) {
+    try {
+      ticket = await prisma.ticket.update({
+        where: {
+          id: ticket.id,
+        },
+        data: {
+          discordMessageId: discordMessageInfo.message_id,
+          discordChannelId: discordMessageInfo.channel_id,
+        },
+        //buzz needs
+        include: {
+          author: true,
+          claimant: true
+        }
+      });
+    } catch (err) {
+      console.error("Failed to update ticket with discord message identifiers");
     }
   }
 
