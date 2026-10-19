@@ -6,6 +6,7 @@ import { Ticket } from '@/generated/prisma/client';
 import { getToken } from 'next-auth/jwt';
 import { isMentor } from '@/lib/helpers/permission-helper';
 import { BuzzCode, getAuthenticatedUserEmail } from '@/lib/auth';
+import { notifyBuzz } from '@/lib/notifyBuzz';
 
 /*
  * POST Request: Unclaims ticket
@@ -84,6 +85,8 @@ export default async function handler(
       claimant: true
     }
   });
+
+  notifyBuzz(updatedTicket, "update-ticket")
 
   res.status(200);
   res.send({ ticket: updatedTicket });
