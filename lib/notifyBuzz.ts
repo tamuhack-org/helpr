@@ -20,8 +20,6 @@ export async function notifyBuzz(ticket: Ticket, endpoint: string){
 
   try {
     const buzzResponse = await axios.post(buzzPingPath, ticket, { headers, timeout: 5000 });
-    if (!buzzResponse || buzzResponse.status !== 200) return;
-
     return buzzResponse;
   } catch (err) {
     console.error(`Failed to post to ${endpoint}: `, err);
