@@ -5,6 +5,7 @@ import prisma from '../../../lib/prisma';
 import { Ticket } from '@/generated/prisma/client';
 import { isMentor } from '@/lib/helpers/permission-helper';
 import { getAuthenticatedUserEmail, BuzzCode } from '@/lib/auth';
+import { notifyBuzz } from '@/lib/notifyBuzz';
 
 interface Claimant {
   id: string,
@@ -110,6 +111,8 @@ export default async function handler(
     name: user.name,
     discordId: user.discordId
   }
+
+  notifyBuzz(updatedTicket, "update-ticket")
 
   res.status(200);
   res.send({ ticket: updatedTicket, claimant: claimant });
