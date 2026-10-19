@@ -6,6 +6,7 @@ import { Ticket } from '@/generated/prisma/client';
 import { UserWithTicketClaimant } from '../../../components/common/types';
 import { isMentor } from '@/lib/helpers/permission-helper';
 import { BuzzCode, getAuthenticatedUserEmail } from '@/lib/auth';
+import { notifyBuzz } from '@/lib/notifyBuzz';
 
 //If the claimed ticket is resolved by an admin that did not claim the ticket, make the admin the claimant
 //Probably better than leaving the claimant null or assigning it to the previous claimant
@@ -115,8 +116,10 @@ export default async function handler(
   }
 
   const updatePayload = getUpdatePayload(user, ticket);
-  const updated_ticket = await prisma.ticket.update(updatePayload);
+  const updatedTicket = await prisma.ticket.update(updatePayload);
+
+  notifyBuzz(updatedTicket, "update-ticket")
 
   res.status(200);
-  res.send({ ticket: updated_ticket });
+  res.send({ ticket: updatedTicket });
 }
