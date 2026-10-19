@@ -2,7 +2,8 @@ import { Ticket } from '@/generated/prisma/client';
 import createHMAC from './createHMAC';
 import axios from 'axios';
 
-export async function notifyBuzz(ticket: Ticket, endpoint: string){
+export async function notifyBuzz(ticket: Ticket, endpoint: string) {
+  // TODO: make BUZZ_URL part of some kinda config in settings
   const buzzUrl = process.env.BUZZ_URL;
   if (!buzzUrl) return;
 
@@ -13,6 +14,7 @@ export async function notifyBuzz(ticket: Ticket, endpoint: string){
     return;
   }
 
+  // TODO: Make this part of some kinda interface and used everywhere part of HMAC
   const headers = {
     'x-authorization-content-hmac': hmacDetails.signature,
     'x-authorization-timestamp': hmacDetails.timestamp,
