@@ -66,6 +66,7 @@ export default async function handler(
       ticket: null,
       code: authResult.code
     })
+    return;
   }
 
   const email = authResult.email
