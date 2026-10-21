@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
 
 import prisma from '../../../lib/prisma';
 import { Ticket } from '@/generated/prisma/client';
@@ -11,7 +10,6 @@ import {
   Nullable,
 } from '../../../lib/common';
 import { getActiveEvent } from '../../../lib/eventHelper';
-import createHMAC from '@/lib/createHMAC';
 import { notifyBuzz } from '@/lib/notifyBuzz';
 
 /*
@@ -82,7 +80,7 @@ export default async function handler(
   }
 
   const activeEvent = await getActiveEvent();
-  let ticket = await prisma.ticket.create({
+  const ticket = await prisma.ticket.create({
     data: {
       authorName: user.name,
       issue,
@@ -102,19 +100,17 @@ export default async function handler(
     }
   });
 
+  res.status(200).send({ ticket: ticket });
+
   const buzzResponse = await notifyBuzz(ticket, "ping-mentor");
-  if (!buzzResponse || buzzResponse.status !== 200) {
-    //just respond and return
-    res.status(200).send({ ticket: ticket });
-    return;
-  }
+  if (!buzzResponse || buzzResponse.status !== 200) return;
 
   //buzz created a message, associate those identifiers with ticket
   const data = buzzResponse.data;
   const discordMessageInfo = data.message_info;
   if (discordMessageInfo) {
     try {
-      ticket = await prisma.ticket.update({
+      await prisma.ticket.update({
         where: {
           id: ticket.id,
         },
@@ -122,16 +118,9 @@ export default async function handler(
           discordMessageId: discordMessageInfo.message_id,
           discordChannelId: discordMessageInfo.channel_id,
         },
-        //buzz needs
-        include: {
-          author: true,
-          claimant: true
-        }
       });
     } catch (err) {
-      console.error("Failed to update ticket with discord message identifiers");
+      console.error("Failed to update ticket with discord message identifiers", err);
     }
   }
-
-  res.status(200).send({ ticket: ticket });
 }
