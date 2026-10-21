@@ -75,6 +75,7 @@ export default async function handler(
     res.send({
       ticket: null,
     })
+    return;
   }
 
   const user = await prisma.user.findUnique({

@@ -32,6 +32,7 @@ export default async function handler(
     res.send({
       ticket: null,
     })
+    return;
   }
 
   const user = await prisma.user.findUnique({
@@ -66,6 +67,7 @@ export default async function handler(
   if(ticket.claimantId !== user.id) {
     res.status(401);
     res.send({ticket: null, code: BuzzCode.TICKET_MISMATCH})
+    return;
   }
 
   const updatedTicket = await prisma.ticket.update({
