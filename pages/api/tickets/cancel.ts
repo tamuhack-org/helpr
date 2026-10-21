@@ -17,7 +17,7 @@ export default async function handler(
   if (!token) {
     res.status(401);
     res.send({ ticket: null });
-    return res.send({});
+    return;
   }
 
   const ticket = await prisma.ticket.findUnique({
