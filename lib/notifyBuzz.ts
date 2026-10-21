@@ -3,12 +3,17 @@ import createHMAC from './createHMAC';
 import axios from 'axios';
 
 export async function notifyBuzz(ticket: Ticket, endpoint: string) {
+  return await postBuzz(ticket, endpoint);
+}
+
+// TODO: Think on this more
+export async function postBuzz(body: object, endpoint: string) {
   // TODO: make BUZZ_URL part of some kinda config in settings
   const buzzUrl = process.env.BUZZ_URL;
   if (!buzzUrl) return;
 
   const buzzPingPath = `${buzzUrl}/helpr/${endpoint}`;
-  const hmacDetails = createHMAC(ticket);
+  const hmacDetails = createHMAC(body);
   if (!hmacDetails) {
     console.error("HMAC creation failed");
     return;
@@ -21,11 +26,10 @@ export async function notifyBuzz(ticket: Ticket, endpoint: string) {
   };
 
   try {
-    const buzzResponse = await axios.post(buzzPingPath, ticket, { headers, timeout: 5000 });
+    const buzzResponse = await axios.post(buzzPingPath, body, { headers, timeout: 5000 });
     return buzzResponse;
   } catch (err) {
     console.error(`Failed to post to ${endpoint}: `, err);
     return;
   }
 }
-

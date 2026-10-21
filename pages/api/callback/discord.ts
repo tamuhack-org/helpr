@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 import prisma from '@/lib/prisma';
 import axios from 'axios';
+import { postBuzz } from '@/lib/notifyBuzz';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   //make sure secrets exist
@@ -59,14 +60,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    //TODO handle collisions: allow user to choose which helpr account is associated with the discord ID
+    // TODO: handle collisions: allow user to choose which helpr account is associated with the discord ID
     //I haven't set discordId column to unique because it doesn't allow multiple nulls
     await prisma.user.update({
       where: { id: user.id },
       data: { discordId: discordId },
     });
 
-    //TODO: redirect to a success page?
+    const buzz_body = {
+      role_id: process.env.MENTOR_ROLE_ID,
+      user_id: discordId,
+      server_id: process.env.DISCORD_SERVER_ID,
+    }
+
+    const buzzResponse = await postBuzz(buzz_body, "give-role")
+    if (!buzzResponse || buzzResponse.status !== 200) {
+      alert("Failed to give mentor role in discord.\nPlease ask an organizer for help");
+      return
+    }
+
+
+    // TODO: redirect to a success page?
     res.redirect('/mentor');
   } catch (error) {
     console.error(error);
