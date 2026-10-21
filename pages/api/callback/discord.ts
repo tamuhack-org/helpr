@@ -75,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const buzzResponse = await postBuzz(buzz_body, "give-role")
     if (!buzzResponse || buzzResponse.status !== 200) {
-      alert("Failed to give mentor role in discord.\nPlease ask an organizer for help");
+      // TODO: redirect somewhere asking to contact an organizer
       return
     }
 
