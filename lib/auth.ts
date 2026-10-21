@@ -24,6 +24,9 @@ export async function getAuthenticatedUserEmail(req: NextApiRequest): Promise<Au
   if (token?.email) return { status: 200, email: token.email }
 
   //TODO: hella redundancy here with db calls
+  const hmacMatch = verifyHMACRequest(req.body, req.headers);
+  if (!hmacMatch) return { status: 401 };
+
   const { discordId } = req.body;
   if (!discordId) return { status: 400 };
 
@@ -34,9 +37,6 @@ export async function getAuthenticatedUserEmail(req: NextApiRequest): Promise<Au
   });
 
   if (!user) return { status: 400, code: BuzzCode.DiscordNotLinked };
-
-  const hmacMatch = verifyHMACRequest(req.body, req.headers);
-  if (!hmacMatch) return { status: 401 };
 
   return { status: 200, email: user.email };
 }
