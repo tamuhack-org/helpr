@@ -75,7 +75,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const buzzResponse = await postBuzz(buzz_body, "give-role")
     if (!buzzResponse || buzzResponse.status !== 200) {
-      // TODO: redirect somewhere asking to contact an organizer
       console.error("Failed to link discord", buzzResponse?.statusText);
       res.redirect("/link/discord/error");
       return
