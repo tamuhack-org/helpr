@@ -5,7 +5,7 @@ import ConnectDiscord from "@/components/ui/connectDiscord"
 export default function Discord(){
   return (
     <div className="flex flex-col items-center justify-center gap-4 min-h-screen">
-      <p className="text-gray-600">Connect to receive notifications on discord!</p>
+      <p className="text-gray-600">Connect to receive ticket notifications on discord!</p>
       <ConnectDiscord />
     </div>
   )
