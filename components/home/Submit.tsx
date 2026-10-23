@@ -46,6 +46,7 @@ export const Submit = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     watch,
     formState: { errors },
@@ -98,6 +99,24 @@ export const Submit = () => {
       await mutate('/api/users/me');
       setSubmitLoading(false);
     }
+  };
+
+  const autoSubmit = async () => {
+    if (process.env.NODE_ENV !== 'development' || submitLoading) return;
+
+    setValue(
+      'issue',
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+    );
+    setValue(
+      'phone',
+      String(Math.floor(100000000 + Math.random() * 900000000))
+    );
+    setValue(
+      'location',
+      `hippity ${Math.random().toString(36).slice(2, 10)} hoppity ${Math.random().toString(36).slice(2, 10)} bippity ${Math.random().toString(36).slice(2, 10)} boppity`
+    );
+    await handleSubmit(onSubmit)();
   };
 
   const cancelTicket = async () => {
@@ -248,6 +267,16 @@ export const Submit = () => {
         >
           {submitLoading ? 'Submitting Ticket' : 'Submit Ticket'}
         </button>
+        {process.env.NODE_ENV === 'development' && (
+          <button
+            type="button"
+            onClick={autoSubmit}
+            disabled={submitLoading}
+            className="w-full py-3 px-8 bg-gray-700 text-white font-bold rounded-xl disabled:bg-gray-500"
+          >
+            Auto-submit test ticket
+          </button>
+        )}
       </form>
     </div>
   );

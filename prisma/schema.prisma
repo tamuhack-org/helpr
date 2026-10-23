@@ -74,6 +74,8 @@ model Ticket {
   author       User      @relation("AuthoredTickets", fields: [authorId], references: [id])
   claimant     User?     @relation("ClaimedTickets", fields: [claimantId], references: [id])
   event        Event?    @relation("EventTickets", fields: [eventId], references: [id])
+  discordMessageId String?
+  discordChannelId String?
 
   @@index([isResolved])
   @@index([isClaimed])
