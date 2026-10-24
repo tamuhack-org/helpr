@@ -34,7 +34,7 @@ const Home = () => {
       </div>
       <TicketStream filter={filter || 'active'} />
       <Link
-        href="/link/discord"
+        href="/link/discord/help"
         aria-label="Link Discord"
         className="fixed bottom-6 right-6 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-white shadow-lg hover:bg-blue-600"
       >

@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const discordId = userResponse.data.id;
 
-    //TODO seems redundant to get email then id
+    // TODO: seems redundant to get email then id
     //but thats how we did it before so im just sticking to it
     const user = await prisma.user.findUnique({
       where: {
@@ -74,6 +74,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const buzzResponse = await postBuzz(buzz_body, "give-role")
+    if (buzzResponse?.data?.detail?.code === "NOT_IN_SERVER") {
+      res.redirect("/link/discord/help?retry=true");
+      return
+    }
     if (!buzzResponse || buzzResponse.status !== 200) {
       console.error("Failed to link discord", buzzResponse?.statusText);
       res.redirect("/link/discord/error");
