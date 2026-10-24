@@ -30,6 +30,9 @@ export async function postBuzz(body: object, endpoint: string) {
     return buzzResponse;
   } catch (err) {
     console.error(`Failed to post to ${endpoint}: `, err);
+    if (axios.isAxiosError(err)){
+      return err.response;
+    }
     return;
   }
 }
